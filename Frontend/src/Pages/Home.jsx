@@ -7,6 +7,7 @@ import MainHome from '../Components/MainHome';
 import Offer from '../Components/Offer';
 import HeroSection from '../Components/HeroSection'
 import Footer from '../Components/Footer';
+import CustomerSupport from '../Components/CustomerSupport';
 
 
 function App() {
@@ -20,6 +21,7 @@ function App() {
       <HeroSection/>
       <MainHome />
       <Offer/>
+      <CustomerSupport/>
       <Footer/>
     </div>
   );

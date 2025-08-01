@@ -1,5 +1,6 @@
 // src/components/Offer.jsx
 import React, { useEffect, useState } from 'react';
+import { NavLink } from 'react-router-dom';
 
 const Offer = () => {
   const [offers, setOffers] = useState([]);
@@ -26,9 +27,19 @@ const Offer = () => {
               <tr key={index} className="bg-white border-b hover:bg-gray-50">
                 <td className="px-4 py-2">{index + 1}</td>
                 <td className="px-4 py-2">
-                  {`${offer.from} → ${offer.to}, ${offer.vehicle}, ₹${offer.amount}, ${offer.date}, ${offer.startTime} - ${offer.endTime}`}
+                  {`${offer.from} → ${offer.to}, ${offer.vehicle}, ₹${offer.amount}, ${offer.date}, ${offer.startTime} - ${offer.endTime}, seats ${offer.seats}`}
                 </td>
-                <td><button className='px-2 py-1 bg-green-500 rounded text-white'>Submit</button></td>
+                <td>
+                  <NavLink
+                    to="/confirmvehical"
+                    state={{ offer }} // yahan pura offer object bhej rahe hain
+                  >
+                    <button className='px-2 py-1 bg-green-500 rounded text-white'>
+                      Confirm
+                    </button>
+                  </NavLink>
+
+                </td>
               </tr>
             ))}
           </tbody>

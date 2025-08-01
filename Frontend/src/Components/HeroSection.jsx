@@ -6,9 +6,9 @@ const HeroSection = () => {
 
   const travelOptions = [
   { label: "One way travel", path: "/oneway" },
-  { label: "Out of station", path: "/outstation" },
-  { label: "Local travel", path: "/local" },
-  { label: "Ambulance", path: "/ambulance" },
+  { label: "Out of station" },   //path: "/outstation"
+  { label: "Local travel" },    //, path: "/local"
+  { label: "Ambulance" },      //path: "/ambulance"
 ];
   return (
     <motion.div

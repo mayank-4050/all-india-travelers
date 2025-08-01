@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import Select from 'react-select';
-import Navbar from '../Components/UperNavbar';
 import backgroundImg from '../Photos/travelLogo.png';
 
 const cities = [
@@ -11,21 +10,22 @@ const cities = [
   { value: 'shimla', label: 'Shimla' },
 ];
 
-const vehicles = ['Crista', 'Tavera', 'Dzire'];
+const vehicles = ['Crysta', 'Tavera', 'Dzire'];
 
 const AddOffer = () => {
   const [from, setFrom] = useState(null);
   const [to, setTo] = useState(null);
-  const [vehicle, setVehicle] = useState('')
+  const [vehicle, setVehicle] = useState('');
   const [amount, setAmount] = useState('');
   const [date, setDate] = useState('');
   const [startTime, setStartTime] = useState('');
   const [endTime, setEndTime] = useState('');
+  const [seats, setSeats] = useState('');
 
   const handleSubmit = (e) => {
     e.preventDefault();
 
-    if (!from || !to || !vehicle || !amount || !date || !startTime || !endTime) {
+    if (!from || !to || !vehicle || !amount || !date || !startTime || !endTime || !seats) {
       alert('Please fill all fields');
       return;
     }
@@ -36,6 +36,7 @@ const AddOffer = () => {
       vehicle,
       amount,
       date,
+      seats,
       startTime,
       endTime,
     };
@@ -44,21 +45,21 @@ const AddOffer = () => {
     existingOffers.push(newOffer);
     localStorage.setItem('offers', JSON.stringify(existingOffers));
 
-    alert('Offer submitted!');
+    alert('Offer submitted successfully!');
+
+    // Reset form
     setFrom(null);
     setTo(null);
     setVehicle('');
     setAmount('');
     setDate('');
+    setSeats('');
     setStartTime('');
     setEndTime('');
   };
 
   return (
-    <div className="min-h-screen bg-gray-100">
-      <Navbar />
-
-      {/* Form with background image */}
+    <div className="">
       <div
         className="mx-auto mt-10 p-6 border border-orange-500 rounded-lg shadow-md max-w-2xl relative"
         style={{
@@ -98,18 +99,29 @@ const AddOffer = () => {
               value={amount}
               onChange={(e) => setAmount(e.target.value)}
             />
+
             <input
               className="w-full border p-2 rounded"
               type="date"
               value={date}
               onChange={(e) => setDate(e.target.value)}
             />
+
+            <input
+              className="w-full border p-2 rounded"
+              type="number"
+              placeholder="Seats Available"
+              value={seats}
+              onChange={(e) => setSeats(e.target.value)}
+            />
+
             <input
               className="w-full border p-2 rounded"
               type="time"
               value={startTime}
               onChange={(e) => setStartTime(e.target.value)}
             />
+
             <input
               className="w-full border p-2 rounded"
               type="time"

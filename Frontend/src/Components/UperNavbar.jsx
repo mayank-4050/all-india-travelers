@@ -62,9 +62,9 @@ const Navbar = () => {
       >
         <div className="flex flex-col md:flex-row md:space-x-6 text-gray-700 text-sm space-y-2 md:space-y-0 items-center">
           <NavLink to="/" className={navLinkStyle}>Home</NavLink>
-          <NavLink to="/addoffer" className={navLinkStyle}>Add Offer</NavLink>
+          {/* <NavLink to="/addoffer" className={navLinkStyle}>Add Offer</NavLink> */}
           <NavLink to="/todayoffer" className={navLinkStyle}>Today's Offer</NavLink>
-          <NavLink to="/offerrequist" className={navLinkStyle}>Our Services</NavLink>
+          <NavLink to="/ourservices" className={navLinkStyle}>Our Services</NavLink>
           <NavLink to="/carrer" className={navLinkStyle}>Carrer</NavLink>
 
           {!isLoggedIn ? (
