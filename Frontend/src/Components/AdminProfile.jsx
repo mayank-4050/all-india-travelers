@@ -1,9 +1,11 @@
 import React from 'react'
 import AddOffer from '../Pages/AddOffer'
+import Navbar from '../Components/UperNavbar'
 import logo from '../Photos/All_India_Travel_Logo_Colorful.png'
 const AdminProfile = () => {
     return (
         <div className='w-full px-8 py-2'>
+            <Navbar/>
             <div className="flex flex-col md:flex-row flex-wrap gap-6 mt-6  px-4 rounded-lg ">
                 {/* Profile Card */}
                 <div className="w-full md:w-[40%] h-fit mt-10 p-4 border border-red-800 rounded-xl shadow-md bg-white">

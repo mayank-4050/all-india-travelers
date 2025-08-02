@@ -9,6 +9,7 @@ const Navbar = () => {
   const [scrolled, setScrolled] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [role, setRole] = useState(null);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -17,25 +18,40 @@ const Navbar = () => {
     const handleScroll = () => {
       setScrolled(window.scrollY > 10);
     };
-
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
   useEffect(() => {
     const token = localStorage.getItem('token');
+    const savedRole = localStorage.getItem('role');
     setIsLoggedIn(!!token);
+    setRole(savedRole);
+
+    console.log("Navbar Loaded - Saved Role:", savedRole); // Debugging
   }, []);
 
   const handleLogout = () => {
     localStorage.removeItem('token');
     localStorage.removeItem('role');
     setIsLoggedIn(false);
+    setRole(null);
     navigate('/login');
   };
 
-  const navLinkStyle = ({ isActive }) =>
-    isActive ? 'text-orange-500 font-semibold' : 'hover:text-orange-500';
+  // Role-based profile route
+  const getProfileRoute = () => {
+    switch (role) {
+      case 'Admin':
+        return '/adminprofile';
+      case 'Agent':
+        return '/agentprofile';
+      case 'Customer':
+        return '/customerprofile';
+      default:
+        return '/login'; // fallback
+    }
+  };
 
   return (
     <div
@@ -61,11 +77,10 @@ const Navbar = () => {
         className={`w-full md:w-auto mt-4 md:mt-0 ${menuOpen ? 'block' : 'hidden md:flex'}`}
       >
         <div className="flex flex-col md:flex-row md:space-x-6 text-gray-700 text-sm space-y-2 md:space-y-0 items-center">
-          <NavLink to="/" className={navLinkStyle}>Home</NavLink>
-          {/* <NavLink to="/addoffer" className={navLinkStyle}>Add Offer</NavLink> */}
-          <NavLink to="/todayoffer" className={navLinkStyle}>Today's Offer</NavLink>
-          <NavLink to="/ourservices" className={navLinkStyle}>Our Services</NavLink>
-          <NavLink to="/carrer" className={navLinkStyle}>Carrer</NavLink>
+          <NavLink to="/" className={({ isActive }) => isActive ? 'text-orange-500 font-semibold' : 'hover:text-orange-500'}>Home</NavLink>
+          <NavLink to="/todayoffer" className={({ isActive }) => isActive ? 'text-orange-500 font-semibold' : 'hover:text-orange-500'}>Today's Offer</NavLink>
+          <NavLink to="/ourservices" className={({ isActive }) => isActive ? 'text-orange-500 font-semibold' : 'hover:text-orange-500'}>Our Services</NavLink>
+          <NavLink to="/carrer" className={({ isActive }) => isActive ? 'text-orange-500 font-semibold' : 'hover:text-orange-500'}>Carrer</NavLink>
 
           {!isLoggedIn ? (
             <NavLink to="/register" className="md:ml-4">
@@ -75,11 +90,12 @@ const Navbar = () => {
             </NavLink>
           ) : (
             <div className="flex items-center space-x-2">
-              <NavLink to="/profile">
-                <button className="border border-green-600 text-green-600 px-4 py-1 rounded-2xl text-sm hover:bg-green-600 hover:text-white transition">
-                  Profile
-                </button>
-              </NavLink>
+              <button
+                onClick={() => navigate(getProfileRoute())}
+                className="border border-green-600 text-green-600 px-4 py-1 rounded-2xl text-sm hover:bg-green-600 hover:text-white transition"
+              >
+                Profile
+              </button>
               <button
                 onClick={handleLogout}
                 className="border border-red-500 text-red-500 px-4 py-1 rounded-2xl text-sm hover:bg-red-500 hover:text-white transition"

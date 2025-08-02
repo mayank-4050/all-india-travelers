@@ -1,15 +1,15 @@
-// src/components/ShowVehicle.jsx
 import React from 'react';
-import crista from '../Photos/crista.webp'
-import dzire from '../Photos/Dizire.webp'
-import tavera from '../Photos/tavera.webp'
+import crista from '../Photos/crista.webp';
+import dzire from '../Photos/Dizire.webp';
+import tavera from '../Photos/tavera.webp';
 import { NavLink } from 'react-router-dom';
 
-const ShowVehicle = ({ from, to, date, time }) => {
-  const handleFinalBooking = () => {
-    // alert("Vehicle booked successfully!");
-    // Optionally: You can clear form data or redirect user here
-  };
+const ShowVehicle = ({ from, to, date, startTime, endTime }) => {
+  const vehicles = [
+    { vehicle: 'Crysta', img: crista, seats: 7, amount: 10000 },
+    { vehicle: 'Dzire', img: dzire, seats: 5, amount: 8000 },
+    { vehicle: 'Tavera', img: tavera, seats: 8, amount: 6000 },
+  ];
 
   return (
     <div className='bg-white p-4 rounded-xl shadow-lg'>
@@ -30,91 +30,44 @@ const ShowVehicle = ({ from, to, date, time }) => {
           </tr>
         </thead>
         <tbody>
-          <tr>
-            <td className='border px-2 py-1'>{date}</td>
-            <td className='border px-2 py-1'>
-              <img
-                src={crista}
-                alt="car"
-                className='w-20 h-12 object-cover mx-auto rounded'
-              />
-            </td>
-            <td className='border px-2 py-1'>Crysta</td>
-            <td className='border px-2 py-1'>{from}</td>
-            <td className='border px-2 py-1'>{to}</td>
-            <td className='border px-2 py-1'>{time}</td>
-            <td className='border px-2 py-1'>{time}</td>
-            <td className='border px-2 py-1'>7</td>
-            <td className='border px-2 py-1'>₹10000</td>
-            <td className='border px-2 py-1'>
-              <NavLink to='/confirmvehical'>
-              <button
-                onClick={handleFinalBooking}
-                className='bg-green-500 text-white px-3 py-1 rounded hover:bg-green-600'
-              >
-                Comfirm
-              </button>
-              </NavLink>
-            </td>
-          </tr>
-        </tbody>
-        <tbody>
-          <tr>
-            <td className='border px-2 py-1'>{date}</td>
-            <td className='border px-2 py-1'>
-              <img
-                src={dzire}
-                alt="car"
-                className='w-20 h-12 object-cover mx-auto rounded'
-              />
-            </td>
-            <td className='border px-2 py-1'>Dzire</td>
-            <td className='border px-2 py-1'>{from}</td>
-            <td className='border px-2 py-1'>{to}</td>
-            <td className='border px-2 py-1'>{time}</td>
-            <td className='border px-2 py-1'>{time}</td>
-            <td className='border px-2 py-1'>7</td>
-            <td className='border px-2 py-1'>₹8000</td>
-            <td className='border px-2 py-1'>
-             <NavLink to='/confirmvehical'>
-              <button
-                onClick={handleFinalBooking}
-                className='bg-green-500 text-white px-3 py-1 rounded hover:bg-green-600'
-              >
-                Comfirm
-              </button>
-              </NavLink>
-            </td>
-          </tr>
-        </tbody>
-        <tbody>
-          <tr>
-            <td className='border px-2 py-1'>{date}</td>
-            <td className='border px-2 py-1'>
-              <img
-                src={tavera}
-                alt="car"
-                className='w-20 h-12 object-cover mx-auto rounded'
-              />
-            </td>
-            <td className='border px-2 py-1'>Tavera</td>
-         <td className='border px-2 py-1'>{from}</td>
-            <td className='border px-2 py-1'>{to}</td>
-            <td className='border px-2 py-1'>{time}</td>
-            <td className='border px-2 py-1'>{time}</td>
-            <td className='border px-2 py-1'>7</td>
-            <td className='border px-2 py-1'>₹6000</td>
-            <td className='border px-2 py-1'>
-             <NavLink to='/confirmvehical'>
-              <button
-                onClick={handleFinalBooking}
-                className='bg-green-500 text-white px-3 py-1 rounded hover:bg-green-600'
-              >
-                Comfirm
-              </button>
-              </NavLink>
-            </td>
-          </tr>
+          {vehicles.map((v, idx) => (
+            <tr key={idx}>
+              <td className='border px-2 py-1'>{date}</td>
+              <td className='border px-2 py-1'>
+                <img src={v.img} alt={v.vehicle} className='w-20 h-12 object-cover mx-auto rounded' />
+              </td>
+              <td className='border px-2 py-1'>{v.vehicle}</td>
+              <td className='border px-2 py-1'>{from}</td>
+              <td className='border px-2 py-1'>{to}</td>
+              <td className='border px-2 py-1'>{startTime}</td>
+              <td className='border px-2 py-1'>{endTime}</td>
+              <td className='border px-2 py-1'>{v.seats}</td>
+              <td className='border px-2 py-1'>₹{v.amount}</td>
+              <td className='border px-2 py-1'>
+                <NavLink
+                  to="/confirmvehical"
+                  state={{
+                    offer: {
+                      from,
+                      to,
+                      date,
+                      startTime,
+                      endTime,
+                      vehicle: v.vehicle,
+                      seats: v.seats,
+                      amount: v.amount
+                    }
+                  }}
+                >
+                  <button
+                    className='bg-green-500 text-white px-3 py-1 rounded hover:bg-green-600'
+                  >
+                    Confirm
+                  </button>
+                </NavLink>
+              </td>
+            </tr>
+          ))}
         </tbody>
       </table>
     </div>

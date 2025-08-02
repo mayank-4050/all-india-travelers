@@ -7,6 +7,8 @@ import 'swiper/css';
 import crista from '../Photos/crista.webp';
 import dizire from '../Photos/Dizire.webp';
 import tavera from '../Photos/tavera.webp';
+import zest from '../Photos/zest.webp'
+import ertiga from '../Photos/ertiga.webp'
 import ShowVehicle from './ShowVehicle';
 
 const GEOAPIFY_KEY = "d2d43c2448eb403296a3e49969fa3888"; // your API key
@@ -19,7 +21,8 @@ const MainHome = () => {
   const [fromPlace, setFromPlace] = useState(null);
   const [toPlace, setToPlace] = useState(null);
   const [date, setDate] = useState('');
-  const [time, setTime] = useState('');
+  const [startTime, setStartTime] = useState(''); // ✅ renamed from 'time'
+  const [endTime, setEndTime] = useState(''); // ✅ new field
   const [distance, setDistance] = useState(null);
   const [duration, setDuration] = useState(null);
   const [loading, setLoading] = useState(false);
@@ -55,7 +58,7 @@ const MainHome = () => {
   };
 
   const handleBooking = () => {
-    if (!fromPlace || !toPlace || !date || !time) {
+    if (!fromPlace || !toPlace || !date || !startTime || !endTime) {
       alert("Please fill all fields.");
       return;
     }
@@ -153,9 +156,29 @@ const MainHome = () => {
             )}
           </div>
 
-          {/* Date & Time */}
-          <input className='w-[80%] p-2 border rounded' type='date' value={date} onChange={(e) => setDate(e.target.value)} />
-          <input className='w-[80%] p-2 border rounded' type='time' value={time} onChange={(e) => setTime(e.target.value)} />
+          {/* Date */}
+          <input
+            className='w-[80%] p-2 border rounded'
+            type='date'
+            value={date}
+            onChange={(e) => setDate(e.target.value)}
+          />
+
+          {/* Start Time */}
+          <input
+            className='w-[80%] p-2 border rounded'
+            type='time'
+            value={startTime}
+            onChange={(e) => setStartTime(e.target.value)}
+          />
+
+          {/* End Time */}
+          <input
+            className='w-[80%] p-2 border rounded'
+            type='time'
+            value={endTime}
+            onChange={(e) => setEndTime(e.target.value)}
+          />
 
           {/* Distance info */}
           {loading ? (
@@ -180,7 +203,7 @@ const MainHome = () => {
         {/* Car Slider */}
         <div className="w-full lg:w-[50%] bg-white shadow-xl rounded-xl border" data-aos="fade-left">
           <Swiper modules={[Autoplay]} spaceBetween={30} slidesPerView={1} autoplay={{ delay: 3000 }} loop={true}>
-            {[crista, dizire, tavera].map((img, idx) => (
+            {[crista, dizire, tavera, zest,ertiga].map((img, idx) => (
               <SwiperSlide key={idx}>
                 <img src={img} alt={`Slide ${idx + 1}`} className='w-full h-64 object-contain rounded-md' />
                 <div className="w-full flex justify-between px-10 mt-3 mb-5">
@@ -200,7 +223,8 @@ const MainHome = () => {
             from={fromPlace}
             to={toPlace}
             date={date}
-            time={time}
+            startTime={startTime} // ✅ updated name
+            endTime={endTime}     // ✅ new value
           />
         </div>
       )}
