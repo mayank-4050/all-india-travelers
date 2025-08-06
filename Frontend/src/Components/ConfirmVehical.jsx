@@ -1,19 +1,19 @@
-import React from 'react';
-import Navbar from '../Components/UperNavbar';
-import { useLocation, useNavigate } from 'react-router-dom';
+import React from "react";
+import { useLocation, useNavigate } from "react-router-dom";
+import Navbar from "./UperNavbar";
 
 const ConfirmVehical = () => {
   const location = useLocation();
   const navigate = useNavigate();
-  const offer = location.state?.offer; // yahan se pura offer aayega
+  const offer = location.state?.offer;
 
   if (!offer) {
     return (
-      <div className="w-full text-center mt-10">
-        <p className="text-red-500">No offer selected.</p>
-        <button 
-          onClick={() => navigate(-1)} 
-          className="bg-orange-500 text-white px-4 py-2 mt-4 rounded"
+      <div className="text-center p-5">
+        <p className="text-red-500 font-semibold">No vehicle selected.</p>
+        <button
+          onClick={() => navigate(-1)}
+          className="mt-3 bg-orange-500 text-white px-4 py-2 rounded hover:bg-orange-600"
         >
           Go Back
         </button>
@@ -21,47 +21,54 @@ const ConfirmVehical = () => {
     );
   }
 
+  const cameFromOffer = offer.date && offer.startTime && offer.endTime;
+
   return (
-    <div className="w-full">
+    <div className="bg-gray-50 min-h-screen">
       <Navbar />
-      <div className="w-full px-4 md:px-8 py-5 flex flex-col items-center">
-        <h1 className="text-2xl font-bold italic text-red-700 text-center">
-          Confirm Your <span className="text-black">Order</span>
-        </h1>
+      <div className="max-w-2xl mx-auto p-6 bg-white shadow-md rounded-lg mt-6">
+        <h2 className="text-2xl font-bold text-orange-600 mb-6 text-center">
+          Confirm Your Booking
+        </h2>
 
-        <div className="w-full md:w-[70%] lg:w-[50%] px-6 py-5 border border-red-700 rounded-lg mt-5 bg-white shadow-md flex flex-col gap-4">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
-            <p><span className="font-semibold">Source Address:</span> {offer.from}</p>
-            <p><span className="font-semibold">Destination Address:</span> {offer.to}</p>
-          </div>
+        {/* Booking Details */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm sm:text-base">
+          <p><b>From:</b> {offer.from}</p>
+          <p><b>To:</b> {offer.to}</p>
+          <p><b>Pickup Date:</b> {offer.pickupDate || offer.date}</p>
+          <p><b>Drop Date:</b> {offer.dropDate || "N/A"}</p>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
-            <p><span className="font-semibold">Date:</span> {offer.date}</p>
-            <p><span className="font-semibold">Car Name:</span> {offer.vehicle}</p>
-          </div>
+          {cameFromOffer ? (
+            <p><b>Waiting Time:</b> {offer.startTime} - {offer.endTime}</p>
+          ) : (
+            <>
+              <p><b>Pickup Time:</b> {offer.startTime}</p>
+              <p><b>Drop Time:</b> {offer.endTime || "N/A"}</p>
+            </>
+          )}
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
-            <p><span className="font-semibold">Start Time:</span> {offer.startTime}</p>
-            <p><span className="font-semibold">End Time:</span> {offer.endTime}</p>
-          </div>
+          <p><b>Car Name:</b> {offer.vehicle}</p>
+          <p><b>Seats:</b> {offer.seats}</p>
+          <p><b>Price:</b> ₹{offer.amount}</p>
+          {offer.pickupInfo && <p><b>Pickup Info:</b> {offer.pickupInfo}</p>}
+        </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
-            <p><span className="font-semibold">Seats:</span> {offer.seats}</p>
-            <p><span className="font-semibold">Price:</span> ₹{offer.amount}</p>
-          </div>
-
-          <div className="flex flex-wrap gap-3 mt-4">
-            <button className="flex-1 min-w-[100px] py-2 rounded-lg text-white bg-gray-500 hover:bg-gray-600 transition">
-              Cancel
-            </button>
-            <button className="flex-1 min-w-[100px] py-2 rounded-lg text-white bg-red-700 hover:bg-red-800 transition">
-              Book
-            </button>
-          </div>
-
-          <p className="text-sm text-gray-600 mt-2">
-            For any enquiry: <span className="font-semibold">Call xxxxxxxxx</span>
-          </p>
+        {/* Action Buttons */}
+        <div className="mt-8 flex flex-wrap gap-3 justify-center">
+          <button
+            onClick={() => navigate(-1)}
+            className="px-5 py-2 bg-gray-500 text-white rounded hover:bg-gray-600 transition"
+          >
+            Cancel
+          </button>
+          <button
+            onClick={() =>
+              navigate("/customerdetailform", { state: { offer } })
+            }
+            className="px-5 py-2 bg-orange-500 text-white rounded hover:bg-orange-600 transition"
+          >
+            Add Passenger Details
+          </button>
         </div>
       </div>
     </div>

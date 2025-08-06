@@ -6,9 +6,9 @@ const HeroSection = () => {
 
   const travelOptions = [
   { label: "One way travel", path: "/oneway" },
-  { label: "Out of station" },   //path: "/outstation"
+  { label: "Round trip Travel" },   //path: "/outstation"
   { label: "Local travel" },    //, path: "/local"
-  { label: "Ambulance" },      //path: "/ambulance"
+  { label: "Airport/Railway Station" },      //path: "/ambulance"
 ];
   return (
     <motion.div
@@ -33,7 +33,7 @@ const HeroSection = () => {
 
         {/* Travel Type Buttons */}
         <motion.div
-  className="w-full sm:w-[50%] h-fit rounded-xl bg-white px-4 py-2 flex flex-wrap sm:flex-nowrap justify-center sm:justify-between items-center gap-2 sm:gap-0 shadow-lg"
+  className="w-full sm:w-[60%] h-fit rounded-xl bg-white px-4 py-2 flex flex-wrap sm:flex-nowrap justify-center sm:justify-between items-center gap-2 sm:gap-0 shadow-lg"
   initial={{ scale: 0.95 }}
   animate={{ scale: 1 }}
   transition={{ delay: 0.3, duration: 0.4 }}

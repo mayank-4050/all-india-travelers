@@ -11,7 +11,8 @@ import OneWayTravel from './Pages/OneWayTravel';
 import Offer from './Components/Offer';
 import OurServices from './Pages/OurServices';
 import ConfirmVehical from './Components/ConfirmVehical';
-
+import CustomerDetailForm from './Components/CustomerDetailForm';
+import PayAdvance from './Pages/PayAdvance'
 // Profiles
 import AdminProfile from './Components/AdminProfile';
 import AgentProfile from './Components/AgentProfile';
@@ -34,6 +35,8 @@ const App = () => {
         <Route path="/oneway" element={<OneWayTravel />} />
         <Route path="/addoffer" element={<AddOffer />} />
         <Route path="/confirmvehical" element={<ConfirmVehical />} />
+        <Route path="/customerdetailform" element={<CustomerDetailForm />} />
+        <Route path="/payadvance" element={<PayAdvance />} />
 
         {/* Profile Pages */}
         <Route path="/adminprofile" element={<AdminProfile />} />

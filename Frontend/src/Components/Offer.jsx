@@ -1,14 +1,23 @@
-// src/components/Offer.jsx
 import React, { useEffect, useState } from 'react';
-import { NavLink } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 
 const Offer = () => {
   const [offers, setOffers] = useState([]);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const stored = JSON.parse(localStorage.getItem('offers') || '[]');
     setOffers(stored);
   }, []);
+
+  const handleConfirm = (offer) => {
+    const token = localStorage.getItem("token");
+    if (!token) {
+      navigate("/login");
+      return;
+    }
+    navigate("/confirmvehical", { state: { offer } });
+  };
 
   return (
     <div className="w-full flex flex-col items-center">
@@ -30,15 +39,12 @@ const Offer = () => {
                   {`${offer.from} → ${offer.to}, ${offer.vehicle}, ₹${offer.amount}, ${offer.date}, ${offer.startTime} - ${offer.endTime}, seats ${offer.seats}`}
                 </td>
                 <td>
-                  <NavLink
-                    to="/confirmvehical"
-                    state={{ offer }} // yahan pura offer object bhej rahe hain
+                  <button
+                    onClick={() => handleConfirm(offer)}
+                    className="px-2 py-1 bg-green-500 rounded text-white hover:bg-green-600"
                   >
-                    <button className='px-2 py-1 bg-green-500 rounded text-white'>
-                      Confirm
-                    </button>
-                  </NavLink>
-
+                    Confirm
+                  </button>
                 </td>
               </tr>
             ))}

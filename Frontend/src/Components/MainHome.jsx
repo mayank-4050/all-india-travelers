@@ -1,4 +1,3 @@
-// src/components/MainHome.jsx
 import React, { useState, useEffect, useRef } from 'react';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { Autoplay } from 'swiper/modules';
@@ -7,8 +6,8 @@ import 'swiper/css';
 import crista from '../Photos/crista.webp';
 import dizire from '../Photos/Dizire.webp';
 import tavera from '../Photos/tavera.webp';
-import zest from '../Photos/zest.webp'
-import ertiga from '../Photos/ertiga.webp'
+import zest from '../Photos/zest.webp';
+import ertiga from '../Photos/ertiga.webp';
 import ShowVehicle from './ShowVehicle';
 
 const GEOAPIFY_KEY = "d2d43c2448eb403296a3e49969fa3888"; // your API key
@@ -20,9 +19,12 @@ const MainHome = () => {
   const [toSuggestions, setToSuggestions] = useState([]);
   const [fromPlace, setFromPlace] = useState(null);
   const [toPlace, setToPlace] = useState(null);
-  const [date, setDate] = useState('');
-  const [startTime, setStartTime] = useState(''); // ✅ renamed from 'time'
-  const [endTime, setEndTime] = useState(''); // ✅ new field
+
+  const [pickupDate, setPickupDate] = useState('');
+  const [dropDate, setDropDate] = useState('');
+  const [startTime, setStartTime] = useState('');
+  const [endTime, setEndTime] = useState('');
+
   const [distance, setDistance] = useState(null);
   const [duration, setDuration] = useState(null);
   const [loading, setLoading] = useState(false);
@@ -58,7 +60,7 @@ const MainHome = () => {
   };
 
   const handleBooking = () => {
-    if (!fromPlace || !toPlace || !date || !startTime || !endTime) {
+    if (!fromPlace || !toPlace || !pickupDate || !dropDate || !startTime || !endTime) {
       alert("Please fill all fields.");
       return;
     }
@@ -95,97 +97,122 @@ const MainHome = () => {
   return (
     <div className='w-full h-fit justify-center flex mt-8 bg-gray-50 pb-10 flex-col items-center'>
       <div className="w-[95%] flex flex-col lg:flex-row gap-8 items-start justify-center">
-        
+
         {/* Booking Form */}
-        <div className="w-full lg:w-[50%] bg-white shadow-xl rounded-xl p-6 border border-yellow-400 flex flex-col items-center gap-5" data-aos="fade-right">
+        <div className="w-full lg:w-[50%] bg-white shadow-xl rounded-xl py-3 border border-yellow-400 flex flex-col items-center gap-5" data-aos="fade-right">
           <h2 className='font-bold text-2xl text-orange-500'>Book Your Journey</h2>
 
-          {/* From input */}
-          <div className="w-[80%] relative">
-            <input
-              type="text"
-              placeholder="From"
-              value={fromQuery}
-              onChange={(e) => fetchFromSuggestions(e.target.value)}
-              className="w-full border p-2 rounded"
-            />
-            {fromSuggestions.length > 0 && (
-              <ul className="absolute bg-white border w-full max-h-40 overflow-y-auto z-10">
-                {fromSuggestions.map((place, idx) => (
-                  <li
-                    key={idx}
-                    className="p-2 hover:bg-gray-200 cursor-pointer"
-                    onClick={() => {
-                      setFromPlace(place.properties.formatted);
-                      setFromQuery(place.properties.formatted);
-                      setFromSuggestions([]);
-                    }}
-                  >
-                    {place.properties.formatted}
-                  </li>
-                ))}
-              </ul>
-            )}
+          {/* From & To input (Same Row) */}
+          <div className="w-[80%] flex gap-4">
+            <div className="w-1/2 relative">
+              <label className="block mb-1 font-medium text-gray-700">From</label>
+              <input
+                type="text"
+                placeholder="Enter starting location"
+                value={fromQuery}
+                onChange={(e) => fetchFromSuggestions(e.target.value)}
+                className="w-full border px-2 py-1 rounded"
+              />
+              {fromSuggestions.length > 0 && (
+                <ul className="absolute bg-white border w-full max-h-40 overflow-y-auto z-10">
+                  {fromSuggestions.map((place, idx) => (
+                    <li
+                      key={idx}
+                      className="p-2 hover:bg-gray-200 cursor-pointer"
+                      onClick={() => {
+                        setFromPlace(place.properties.formatted);
+                        setFromQuery(place.properties.formatted);
+                        setFromSuggestions([]);
+                      }}
+                    >
+                      {place.properties.formatted}
+                    </li>
+                  ))}
+                </ul>
+              )}
+            </div>
+
+            <div className="w-1/2 relative">
+              <label className="block mb-1 font-medium text-gray-700">To</label>
+              <input
+                type="text"
+                placeholder="Enter destination"
+                value={toQuery}
+                onChange={(e) => fetchToSuggestions(e.target.value)}
+                className="w-full border px-2 py-1 rounded"
+              />
+              {toSuggestions.length > 0 && (
+                <ul className="absolute bg-white border w-full max-h-40 overflow-y-auto z-10">
+                  {toSuggestions.map((place, idx) => (
+                    <li
+                      key={idx}
+                      className="p-2 hover:bg-gray-200 cursor-pointer"
+                      onClick={() => {
+                        setToPlace(place.properties.formatted);
+                        setToQuery(place.properties.formatted);
+                        setToSuggestions([]);
+                      }}
+                    >
+                      {place.properties.formatted}
+                    </li>
+                  ))}
+                </ul>
+              )}
+            </div>
           </div>
 
-          {/* To input */}
-          <div className="w-[80%] relative">
-            <input
-              type="text"
-              placeholder="To"
-              value={toQuery}
-              onChange={(e) => fetchToSuggestions(e.target.value)}
-              className="w-full border p-2 rounded"
-            />
-            {toSuggestions.length > 0 && (
-              <ul className="absolute bg-white border w-full max-h-40 overflow-y-auto z-10">
-                {toSuggestions.map((place, idx) => (
-                  <li
-                    key={idx}
-                    className="p-2 hover:bg-gray-200 cursor-pointer"
-                    onClick={() => {
-                      setToPlace(place.properties.formatted);
-                      setToQuery(place.properties.formatted);
-                      setToSuggestions([]);
-                    }}
-                  >
-                    {place.properties.formatted}
-                  </li>
-                ))}
-              </ul>
-            )}
+          {/* Pickup & Drop Date (Same Row) */}
+          <div className="w-[80%] flex gap-4">
+            <div className="w-1/2">
+              <label className="block mb-1 font-medium text-gray-700">Pickup Date</label>
+              <input
+                className='w-full px-2 py-1 border rounded'
+                type='date'
+                value={pickupDate}
+                onChange={(e) => setPickupDate(e.target.value)}
+              />
+            </div>
+
+            <div className="w-1/2">
+              <label className="block mb-1 font-medium text-gray-700">Drop Date</label>
+              <input
+                className='w-full px-2 py-1 border rounded'
+                type='date'
+                value={dropDate}
+                onChange={(e) => setDropDate(e.target.value)}
+              />
+            </div>
           </div>
 
-          {/* Date */}
-          <input
-            className='w-[80%] p-2 border rounded'
-            type='date'
-            value={date}
-            onChange={(e) => setDate(e.target.value)}
-          />
+          {/* Pickup & Drop Time (Same Row) */}
+          <div className="w-[80%] flex gap-4">
+            <div className="w-1/2">
+              <label className="block mb-1 font-medium text-gray-700">Pickup Time</label>
+              <input
+                className='w-full px-2 py-1 border rounded'
+                type='time'
+                value={startTime}
+                onChange={(e) => setStartTime(e.target.value)}
+              />
+            </div>
 
-          {/* Start Time */}
-          <input
-            className='w-[80%] p-2 border rounded'
-            type='time'
-            value={startTime}
-            onChange={(e) => setStartTime(e.target.value)}
-          />
-
-          {/* End Time */}
-          <input
-            className='w-[80%] p-2 border rounded'
-            type='time'
-            value={endTime}
-            onChange={(e) => setEndTime(e.target.value)}
-          />
+            <div className="w-1/2">
+              <label className="block mb-1 font-medium text-gray-700">Drop Time</label>
+              <input
+                className='w-full px-2 py-1 border rounded'
+                type='time'
+                value={endTime}
+                onChange={(e) => setEndTime(e.target.value)}
+              />
+            </div>
+          </div>
 
           {/* Distance info */}
           {loading ? (
             <div className="text-sm text-gray-500">Calculating route...</div>
           ) : (
             distance && (
-              <div className="w-[80%] text-center text-sm text-green-700 border border-green-400 p-2 rounded bg-green-50">
+              <div className="w-[80%] text-center text-sm text-green-700 border border-green-400 px-2 py-1 rounded bg-green-50">
                 Distance: <b>{distance} km</b> | Duration: <b>{duration} mins</b>
               </div>
             )
@@ -200,10 +227,11 @@ const MainHome = () => {
           </button>
         </div>
 
+
         {/* Car Slider */}
         <div className="w-full lg:w-[50%] bg-white shadow-xl rounded-xl border" data-aos="fade-left">
           <Swiper modules={[Autoplay]} spaceBetween={30} slidesPerView={1} autoplay={{ delay: 3000 }} loop={true}>
-            {[crista, dizire, tavera, zest,ertiga].map((img, idx) => (
+            {[crista, dizire, tavera, zest, ertiga].map((img, idx) => (
               <SwiperSlide key={idx}>
                 <img src={img} alt={`Slide ${idx + 1}`} className='w-full h-64 object-contain rounded-md' />
                 <div className="w-full flex justify-between px-10 mt-3 mb-5">
@@ -222,9 +250,10 @@ const MainHome = () => {
           <ShowVehicle
             from={fromPlace}
             to={toPlace}
-            date={date}
-            startTime={startTime} // ✅ updated name
-            endTime={endTime}     // ✅ new value
+            pickupDate={pickupDate}
+            dropDate={dropDate}
+            startTime={startTime}
+            endTime={endTime}
           />
         </div>
       )}
