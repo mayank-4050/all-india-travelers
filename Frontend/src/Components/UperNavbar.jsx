@@ -78,7 +78,7 @@ const Navbar = () => {
       >
         <div className="flex flex-col md:flex-row md:space-x-6 text-gray-700 text-sm space-y-2 md:space-y-0 items-center">
           <NavLink to="/" className={({ isActive }) => isActive ? 'text-orange-500 font-semibold' : 'hover:text-orange-500'}>Home</NavLink>
-          <NavLink to="/todayoffer" className={({ isActive }) => isActive ? 'text-orange-500 font-semibold' : 'hover:text-orange-500'}>Today's Offer</NavLink>
+          <NavLink to="/todayoffer" className={({ isActive }) => isActive ? 'text-orange-500 font-semibold' : 'hover:text-orange-500'}>Limited-Time Offer</NavLink>
           <NavLink to="/ourservices" className={({ isActive }) => isActive ? 'text-orange-500 font-semibold' : 'hover:text-orange-500'}>Our Services</NavLink>
           <NavLink to="/carrer" className={({ isActive }) => isActive ? 'text-orange-500 font-semibold' : 'hover:text-orange-500'}>Carrer</NavLink>
 

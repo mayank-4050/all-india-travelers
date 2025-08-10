@@ -20,10 +20,10 @@ const HeroSection = () => {
       <div className="w-[95%] h-fit bg-gradient-to-r from-blue-500 via-yellow-500 to-red-500 rounded-xl py-4 px-7 flex flex-col items-center gap-4 shadow-xl">
         
         {/* Contact Info */}
-        <div className="flex flex-col sm:flex-row w-full sm:w-[25%] justify-between text-white text-sm gap-2 sm:gap-0">
+        <div className="flex flex-col sm:flex-row w-full sm:w-[27%] justify-between text-white text-sm gap-2 sm:gap-0">
           <div className="flex items-center gap-1 hover:text-gray-200 transition">
             <i className="fa-solid fa-phone"></i>
-            <p>+91 xxxxxxxxxx</p>
+            <p>+91 7987189304</p>
           </div>
           <div className="flex items-center gap-1 hover:text-gray-200 transition">
             <i className="fa-solid fa-envelope"></i>

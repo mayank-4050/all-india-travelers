@@ -2,13 +2,12 @@ const express = require('express');
 const cors = require('cors');
 const dotenv = require('dotenv');
 const path = require('path');
-const mongoose = require('mongoose');
+const connectDB = require('./config/db');
 
 // Load env variables
 dotenv.config();
 
 // Connect to MongoDB
-const connectDB = require('./config/db');
 connectDB();
 
 const app = express();
@@ -22,10 +21,10 @@ app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
 // Routes
 const authRoutes = require('./routes/authRoutes');
-const distanceRoutes = require('./routes/distanceRoutes'); // Optional, if using
+const distanceRoutes = require('./routes/distanceRoutes');  // Add this line
 
 app.use('/api/auth', authRoutes);
-app.use('/api/distance', distanceRoutes); // Optional
+app.use('/api/distance', distanceRoutes);  // Add this line
 
 app.get('/', (req, res) => {
   res.send('API is running...');

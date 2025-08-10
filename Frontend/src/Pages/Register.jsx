@@ -9,7 +9,8 @@ const Register = () => {
     fullName: '',
     email: '',
     mobile: '',
-    address: '',
+    area: '',
+    city: '',
     state: '',
     pincode: '',
     idProofType: '',
@@ -29,7 +30,10 @@ const Register = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    if (!role) return alert('Role is required');
+    if (!role) {
+      alert('Role is required');
+      return;
+    }
     if (formData.password !== formData.confirmPassword) {
       alert('Passwords do not match!');
       return;
@@ -95,6 +99,7 @@ const Register = () => {
           )}
 
           {/* Common Fields */}
+
           <div>
             <label className="block mb-1 font-semibold">Full Name:</label>
             <input
@@ -131,12 +136,49 @@ const Register = () => {
             />
           </div>
 
+          {/* New Address Fields */}
           <div>
-            <label className="block mb-1 font-semibold">Address:</label>
+            <label className="block mb-1 font-semibold">Area:</label>
             <input
               type="text"
-              name="address"
-              value={formData.address}
+              name="area"
+              value={formData.area}
+              onChange={handleChange}
+              className="w-full border py-1 px-2 rounded"
+              required
+            />
+          </div>
+
+          <div>
+            <label className="block mb-1 font-semibold">City:</label>
+            <input
+              type="text"
+              name="city"
+              value={formData.city}
+              onChange={handleChange}
+              className="w-full border py-1 px-2 rounded"
+              required
+            />
+          </div>
+
+          <div>
+            <label className="block mb-1 font-semibold">State:</label>
+            <input
+              type="text"
+              name="state"
+              value={formData.state}
+              onChange={handleChange}
+              className="w-full border py-1 px-2 rounded"
+              required
+            />
+          </div>
+
+          <div>
+            <label className="block mb-1 font-semibold">Pincode:</label>
+            <input
+              type="text"
+              name="pincode"
+              value={formData.pincode}
               onChange={handleChange}
               className="w-full border py-1 px-2 rounded"
               required
@@ -146,26 +188,6 @@ const Register = () => {
           {/* Agent-only Fields */}
           {role === 'Agent' && (
             <>
-              <div>
-                <label className="block mb-1 font-semibold">State:</label>
-                <input
-                  type="text"
-                  name="state"
-                  value={formData.state}
-                  onChange={handleChange}
-                  className="w-full border py-1 px-2 rounded"
-                />
-              </div>
-              <div>
-                <label className="block mb-1 font-semibold">Pincode:</label>
-                <input
-                  type="text"
-                  name="pincode"
-                  value={formData.pincode}
-                  onChange={handleChange}
-                  className="w-full border py-1 px-2 rounded"
-                />
-              </div>
               <div>
                 <label className="block mb-1 font-semibold">ID Proof Type:</label>
                 <select

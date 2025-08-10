@@ -6,68 +6,66 @@ import tavera from '../Photos/tavera.webp';
 import zest from '../Photos/zest.webp';
 import ertiga from '../Photos/ertiga.webp';
 
-const ShowVehicle = () => {
-
+const OneWayShowVecl = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const {
     from, to, pickupDate, dropDate, date,
     startTime, endTime, pickupInfo,
-    distance, duration // from OneWayForm
+    distance, duration
   } = location.state || {};
 
   const finalPickupDate = pickupDate || date || "";
 
-  const calculateRate = (vehicle, km, hrs) => {
+  const calculateRate = (vehicle, distanceKm) => {
     if (vehicle === 'Dzire') {
-      if (km <= 20 && hrs <= 2) return 800;
-      if (km <= 40 && hrs <= 2) return 1200;
-      if (km <= 80 && hrs <= 4) return 2000;
-      if (km <= 100 && hrs <= 4) return 20;
-      if (km <= 250 && hrs <= 6) return 18;
-      if (km > 250 && hrs <= 8) return 16;
+      if (distanceKm <= 20) return { amount: 800, perKmRate: null };
+      if (distanceKm <= 40) return { amount: 1200, perKmRate: null };
+      if (distanceKm <= 80) return { amount: 2000, perKmRate: null };
+      if (distanceKm <= 100) return { amount: 20 * distanceKm, perKmRate: 20 };
+      if (distanceKm <= 250) return { amount: 18 * distanceKm, perKmRate: 18 };
+      if (distanceKm > 250) return { amount: 16 * distanceKm, perKmRate: 16 };
     }
 
     if (vehicle === 'Crysta') {
-      if (km <= 20 && hrs <= 2) return 1395;
-      if (km <= 40 && hrs <= 4) return 2295;
-      if (km <= 80 && hrs <= 4) return 2795;
-      if (km <= 100 && hrs <= 4) return 32;
-      if (km <= 250 && hrs <= 6) return 30;
-      if (km > 250 && hrs <= 8) return 28;
+      if (distanceKm <= 20) return { amount: 1395, perKmRate: null };
+      if (distanceKm <= 40) return { amount: 2295, perKmRate: null };
+      if (distanceKm <= 80) return { amount: 2795, perKmRate: null };
+      if (distanceKm <= 100) return { amount: 32 * distanceKm, perKmRate: 32 };
+      if (distanceKm <= 250) return { amount: 30 * distanceKm, perKmRate: 30 };
+      if (distanceKm > 250) return { amount: 28 * distanceKm, perKmRate: 28 };
     }
 
     if (vehicle === 'Tavera') {
-      if (km <= 20 && hrs <= 2) return 1995;
-      if (km <= 40 && hrs <= 4) return 1595;
-      if (km <= 80 && hrs <= 2) return 1195;
-      if (km <= 100 && hrs <= 4) return 25;
-      if (km <= 250 && hrs <= 6) return 23;
-      if (km > 250 && hrs <= 8) return 22;
+      if (distanceKm <= 20) return { amount: 1995, perKmRate: null };
+      if (distanceKm <= 40) return { amount: 1595, perKmRate: null };
+      if (distanceKm <= 80) return { amount: 1195, perKmRate: null };
+      if (distanceKm <= 100) return { amount: 25 * distanceKm, perKmRate: 25 };
+      if (distanceKm <= 250) return { amount: 23 * distanceKm, perKmRate: 23 };
+      if (distanceKm > 250) return { amount: 22 * distanceKm, perKmRate: 22 };
     }
 
     if (vehicle === 'Zest') {
-      if (km <= 20 && hrs <= 2) return 745;
-      if (km <= 40 && hrs <= 4) return 1195;
-      if (km <= 80 && hrs <= 4) return 1795;
-      if (km <= 100 && hrs <= 4) return 19;
-      if (km <= 250 && hrs <= 6) return 17;
-      if (km > 250 && hrs <= 8) return 15;
+      if (distanceKm <= 20) return { amount: 745, perKmRate: null };
+      if (distanceKm <= 40) return { amount: 1195, perKmRate: null };
+      if (distanceKm <= 80) return { amount: 1795, perKmRate: null };
+      if (distanceKm <= 100) return { amount: 19 * distanceKm, perKmRate: 19 };
+      if (distanceKm <= 250) return { amount: 17 * distanceKm, perKmRate: 17 };
+      if (distanceKm > 250) return { amount: 15 * distanceKm, perKmRate: 15 };
     }
 
     if (vehicle === 'Ertiga') {
-      if (km <= 20 && hrs <= 2) return 1395;
-      if (km <= 40 && hrs <= 4) return 1795;
-      if (km <= 80 && hrs <= 2) return 2195;
-      if (km <= 100 && hrs <= 4) return 26;
-      if (km <= 250 && hrs <= 6) return 24;
-      if (km > 250 && hrs <= 8) return 22;
+      if (distanceKm <= 20) return { amount: 1395, perKmRate: null };
+      if (distanceKm <= 40) return { amount: 1795, perKmRate: null };
+      if (distanceKm <= 80) return { amount: 2195, perKmRate: null };
+      if (distanceKm <= 100) return { amount: 26 * distanceKm, perKmRate: 26 };
+      if (distanceKm <= 250) return { amount: 24 * distanceKm, perKmRate: 24 };
+      if (distanceKm > 250) return { amount: 22 * distanceKm, perKmRate: 22 };
     }
 
-    return 10; // default rate if no condition matches
+    return { amount: 15 * distanceKm, perKmRate: 15 }; // Default rate
   };
 
-  const hours = Math.ceil((duration || 0) / 60);
   const km = Math.ceil(distance || 0);
 
   const vehicles = [
@@ -77,9 +75,8 @@ const ShowVehicle = () => {
     { vehicle: 'Zest', img: zest, seats: 6 },
     { vehicle: 'Ertiga', img: ertiga, seats: 6 },
   ].map(v => {
-    const rate = calculateRate(v.vehicle, km, hours);
-    const amount = typeof rate === 'number' && rate < 1000 ? rate * km : rate;
-    return { ...v, amount };
+    const { amount, perKmRate } = calculateRate(v.vehicle, km);
+    return { ...v, amount, perKmRate };
   });
 
   const handleConfirm = (v) => {
@@ -89,7 +86,7 @@ const ShowVehicle = () => {
       return;
     }
 
-    navigate("/confirmvehical", {
+    navigate("/onewayconfirmvehical", {
       state: {
         offer: {
           from,
@@ -101,7 +98,9 @@ const ShowVehicle = () => {
           pickupInfo,
           vehicle: v.vehicle,
           seats: v.seats,
-          amount: v.amount
+          amount: v.amount,
+          perKmRate: v.perKmRate,
+          distance: km
         }
       }
     });
@@ -131,7 +130,8 @@ const ShowVehicle = () => {
               {endTime && <th className='border px-2 py-2'>End Time</th>}
               {pickupInfo && <th className='border px-2 py-2'>Pickup Info</th>}
               <th className='border px-2 py-2'>Seats</th>
-              <th className='border px-2 py-2'>Amount</th>
+              <th className='border px-2 py-2'>Amount (₹)</th>
+              <th className='border px-2 py-2'>Distance (km)</th>
               <th className='border px-2 py-2'>Action</th>
             </tr>
           </thead>
@@ -158,7 +158,11 @@ const ShowVehicle = () => {
                 {endTime && <td className='border px-2 py-2 whitespace-nowrap'>{endTime}</td>}
                 {pickupInfo && <td className='border px-2 py-2'>{pickupInfo}</td>}
                 <td className='border px-2 py-2'>{v.seats}</td>
-                <td className='border px-2 py-2 text-green-600 font-semibold'>₹{v.amount}</td>
+                
+                <td className='border px-2 py-2'>{km} km</td>
+                <td className='border px-2 py-2 text-green-600 font-semibold'>
+                  ₹{v.amount.toLocaleString('en-IN')}
+                </td>
                 <td className='border px-2 py-2'>
                   <button
                     onClick={() => handleConfirm(v)}
@@ -176,4 +180,4 @@ const ShowVehicle = () => {
   );
 };
 
-export default ShowVehicle;
+export default OneWayShowVecl;

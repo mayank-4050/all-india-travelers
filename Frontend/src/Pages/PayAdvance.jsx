@@ -6,24 +6,23 @@ const PayAdvance = () => {
   const location = useLocation();
   const navigate = useNavigate();
 
-  // Passenger data
+  // Passenger and Offer Data
   const passenger = JSON.parse(localStorage.getItem('passengerData')) || {};
-
-  // Offer data
   const offer = location.state?.offer || {};
 
-  // Safe numeric conversion
   const baseAmount = parseFloat(offer.amount) || 0;
-  const toll = 500;
-  const gst = baseAmount * 0.05;
-  const total = baseAmount + toll + gst;
+  const distance = parseFloat(offer.distance) || 0;
 
-  // Captcha State
+  // Driver Allowance: ₹200 if distance > 100km
+  const driverAllowance = distance > 100 ? 200 : 0;
+
+  const total = baseAmount + driverAllowance;
+
+  // Captcha
   const [captcha, setCaptcha] = useState('');
   const [captchaInput, setCaptchaInput] = useState('');
   const [isTermsChecked, setIsTermsChecked] = useState(false);
 
-  // Generate random alphanumeric captcha
   const generateCaptcha = () => {
     const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
     let code = "";
@@ -34,12 +33,10 @@ const PayAdvance = () => {
     setCaptchaInput('');
   };
 
-  // Run once when page loads
   useEffect(() => {
     generateCaptcha();
   }, []);
 
-  // Validation for Pay button
   const isPayDisabled = !isTermsChecked || captchaInput !== captcha;
 
   if (!offer.from || !offer.vehicle) {
@@ -59,9 +56,8 @@ const PayAdvance = () => {
   return (
     <div className="w-full bg-gray-50 min-h-screen">
       <Navbar />
-
       <div className="max-w-5xl mx-auto p-6 space-y-8">
-        
+
         {/* Vehicle Details */}
         <section className="bg-white p-5 rounded-xl shadow border">
           <h2 className="text-lg font-bold text-orange-600 mb-3">Vehicle Details</h2>
@@ -73,17 +69,16 @@ const PayAdvance = () => {
             <p><b>Pickup Info:</b> {offer.pickupInfo || "N/A"}</p>
             <p><b>Car Name:</b> {offer.vehicle}</p>
             <p><b>Seats:</b> {offer.seats}</p>
-            <p><b>Distance:</b> {offer.distance || "N/A"} km</p>
+            <p><b>Distance:</b> {distance} km</p>
           </div>
         </section>
 
-        {/* Charges */}
+        {/* Charges Section */}
         <section className="bg-white p-5 rounded-xl shadow border">
           <h2 className="text-lg font-bold text-orange-600 mb-3">Charges</h2>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 text-sm">
-            <p><b>Base Price:</b> ₹{baseAmount}</p>
-            <p><b>Toll Tax & Parking:</b> ₹{toll}</p>
-            <p><b>GST (5%):</b> ₹{gst.toFixed(2)}</p>
+            <p><b>Base Price:</b> ₹{baseAmount.toFixed(2)}</p>
+            <p><b>Driver Allowance:</b> ₹{driverAllowance.toFixed(2)}</p>
             <p className="col-span-full"><b>Total:</b> ₹{total.toFixed(2)}</p>
           </div>
         </section>
@@ -104,7 +99,6 @@ const PayAdvance = () => {
 
         {/* Terms & Captcha */}
         <div className="bg-white p-5 rounded-xl shadow border space-y-4">
-          {/* Terms */}
           <label className="flex items-center gap-2 text-sm">
             <input
               type="checkbox"
@@ -114,7 +108,6 @@ const PayAdvance = () => {
             I agree to the <span className="text-blue-500 cursor-pointer">Terms & Conditions</span>
           </label>
 
-          {/* Captcha */}
           <div className="space-y-2">
             <div className="flex items-center gap-3">
               <span className="px-4 py-2 bg-gray-200 rounded font-mono tracking-widest select-none">
@@ -138,7 +131,7 @@ const PayAdvance = () => {
           </div>
         </div>
 
-        {/* Payment Button */}
+        {/* Pay Button */}
         <div className="flex justify-end">
           <button
             disabled={isPayDisabled}

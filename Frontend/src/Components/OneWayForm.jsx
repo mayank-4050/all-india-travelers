@@ -1,7 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
 import axios from "axios";
-import ShowVehicle from "./ShowVehicle";
-
+import { useNavigate } from "react-router-dom";
 const GEOAPIFY_KEY = "d2d43c2448eb403296a3e49969fa3888";
 
 const OneWayForm = () => {
@@ -17,8 +16,8 @@ const OneWayForm = () => {
   const [distance, setDistance] = useState(null);
   const [duration, setDuration] = useState(null);
   const [loading, setLoading] = useState(false);
-  const [showTable, setShowTable] = useState(false);
-  const tableRef = useRef(null);
+
+  const navigate = useNavigate();
 
   const fetchPickupSuggestions = async (value) => {
     setPickupQuery(value);
@@ -74,10 +73,18 @@ const OneWayForm = () => {
       alert("Please fill all fields");
       return;
     }
-    setShowTable(true);
-    setTimeout(() => {
-      tableRef.current?.scrollIntoView({ behavior: "smooth" });
-    }, 100);
+
+    navigate("/onewayshowvehical", {
+      state: {
+        from: pickupPlace,
+        to: dropPlace,
+        date: journeyDate,
+        startTime: time,
+        pickupInfo,
+        distance,
+        duration,
+      },
+    });
   };
 
   return (
@@ -159,27 +166,28 @@ const OneWayForm = () => {
             className="w-full px-4 py-1 border rounded-lg"
           />
 
-          {/* Distance */}
-          {loading ? (
-            <div className="text-sm text-gray-500">Calculating route...</div>
-          ) : (
-            distance && (
-              <div className="text-center text-sm text-green-700 border py-1 rounded bg-green-50">
-                Distance: <b>{distance} km</b> | Duration: <b>{duration} mins</b>
-              </div>
-            )
-          )}
-
           {/* Pickup Info */}
           <select
             value={pickupInfo}
             onChange={(e) => setPickupInfo(e.target.value)}
             className="w-full px-4 py-1 border rounded-lg"
           >
-            <option>Bus station to Bus station</option>
+            <option>Bus station to Bus station</option> 
             <option>Railway Station to Railway Station</option>
             <option>Highway to Highway</option>
           </select>
+
+          {/* Distance */}
+          {loading ? (
+            <div className="text-sm text-gray-500">Calculating route...</div>
+          ) : (
+            distance && (
+              <div className="text-center text-sm text-green-700 border py-1 rounded bg-green-50">
+                Distance: <b>{distance} km</b> | Duration: {" "}
+                <b>{Math.floor(duration / 60)}h {Math.round(duration % 60)}m</b>
+              </div>
+            )
+          )}
 
           {/* Submit */}
           <button
@@ -190,19 +198,6 @@ const OneWayForm = () => {
           </button>
         </form>
       </div>
-
-      {/* ShowVehicle */}
-      {showTable && (
-        <div ref={tableRef} className="w-[95%] mt-10">
-          <ShowVehicle
-            from={pickupPlace}
-            to={dropPlace}
-            date={journeyDate}
-            startTime={time}
-            pickupInfo={pickupInfo}
-          />
-        </div>
-      )}
     </div>
   );
 };

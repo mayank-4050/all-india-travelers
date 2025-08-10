@@ -13,10 +13,16 @@ import OurServices from './Pages/OurServices';
 import ConfirmVehical from './Components/ConfirmVehical';
 import CustomerDetailForm from './Components/CustomerDetailForm';
 import PayAdvance from './Pages/PayAdvance'
+import ShowVehicle from './Components/ShowVehicle';
+import OneWayShowVecl from './Components/OneWayShowVecl';
+import OneWayConVecl from './Components/OneWayConVecl';
+import OneWayPayAdvnc from './Components/OneWayPayAdvnc'
+
 // Profiles
 import AdminProfile from './Components/AdminProfile';
 import AgentProfile from './Components/AgentProfile';
 import CustomerProfile from './Components/CustomerProfile';
+import OneWayDutySlip from './Components/OneWaydutySlip';
 
 const App = () => {
   return (
@@ -30,6 +36,13 @@ const App = () => {
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
         <Route path="/offer" element={<Offer />} />
+        <Route path="/onewayshowvehical" element={<OneWayShowVecl />} />
+        <Route path="/onewayconfirmvehical" element={<OneWayConVecl />} />
+        <Route path="/onewaypayadvance" element={<OneWayPayAdvnc />} />
+        <Route path="/showvehicle" element={<ShowVehicle />} />
+        <Route path="/onewaydutyslip" element={<OneWayDutySlip />} />
+
+
 
         {/* Travel / Booking */}
         <Route path="/oneway" element={<OneWayTravel />} />
