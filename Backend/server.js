@@ -21,10 +21,12 @@ app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
 // Routes
 const authRoutes = require('./routes/authRoutes');
-const distanceRoutes = require('./routes/distanceRoutes');  // Add this line
+const distanceRoutes = require('./routes/distanceRoutes');
+const bookingRoutes = require('./routes/bookingroute'); // Import booking routes
 
 app.use('/api/auth', authRoutes);
-app.use('/api/distance', distanceRoutes);  // Add this line
+app.use('/api/distance', distanceRoutes);
+app.use('/api/bookings', bookingRoutes); // Add booking routes
 
 app.get('/', (req, res) => {
   res.send('API is running...');

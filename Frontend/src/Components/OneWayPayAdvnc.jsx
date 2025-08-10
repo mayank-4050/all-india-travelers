@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import Navbar from '../Components/UperNavbar';
 import { useLocation, useNavigate } from 'react-router-dom';
 
-const PayAdvance = () => {
+const OneWayPayAdvnc = () => {
   const location = useLocation();
   const navigate = useNavigate();
 
@@ -22,7 +22,7 @@ const PayAdvance = () => {
   const generateCaptcha = () => {
     const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
     setCaptcha(
-      Array.from({ length: 6 }, () => 
+      Array.from({ length: 6 }, () =>
         chars.charAt(Math.floor(Math.random() * chars.length))
       ).join('')
     );
@@ -30,6 +30,63 @@ const PayAdvance = () => {
   };
 
   useEffect(() => generateCaptcha(), []);
+
+ const handleBooking = async () => {
+  try {
+    const token = localStorage.getItem('token');
+    if (!token) throw new Error('No token found');
+
+    const bookingData = {
+      from: offer.from,
+      to: offer.to,
+      date: offer.pickupDate || offer.date,
+      time: offer.startTime,
+      vehicle: offer.vehicle,
+      seats: offer.seats,
+      distance: distance,
+      baseAmount: baseAmount,
+      driverAllowance: driverAllowance,
+      totalAmount: total,
+      passenger: {
+        name: passenger.name,
+        phone: passenger.phone,
+        email: passenger.email,
+        idType: passenger.idType,
+        idNumber: passenger.idNumber
+      }
+    };
+
+    const response = await fetch('http://localhost:5000/api/bookings', {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${token}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(bookingData)
+    });
+
+    if (!response.ok) {
+      throw new Error('Failed to create booking');
+    }
+
+    const data = await response.json();
+    console.log('Booking created successfully:', data);
+
+    // ✅ Show success message
+    alert('🎉 Booking successful! Redirecting to your profile...');
+
+    // ✅ Navigate to profile
+    navigate('/customerprofile');
+
+  } catch (error) {
+    console.error('Error creating booking:', error);
+    alert('❌ Failed to create booking. Please try again.');
+  }
+};
+
+
+
+
 
   if (!offer.from || !offer.vehicle) {
     return (
@@ -48,7 +105,7 @@ const PayAdvance = () => {
   return (
     <div className="w-full bg-gray-50 min-h-screen">
       <Navbar />
-      
+
       <div className="max-w-4xl mx-auto p-6 space-y-6">
         {/* Vehicle Details */}
         <div className="bg-white rounded-lg shadow-sm p-6 space-y-4">
@@ -119,7 +176,7 @@ const PayAdvance = () => {
             <div>
               <p className="text-gray-500">Contact</p>
               <p className="font-medium">
-                {passenger.phone}<br/>
+                {passenger.phone}<br />
                 {passenger.email}
               </p>
             </div>
@@ -149,13 +206,13 @@ const PayAdvance = () => {
                 </label>
               </div>
             </div>
-            
+
             <div className="flex-1">
               <div className="flex items-center space-x-3">
                 <span className="px-4 py-2 bg-gray-100 rounded-lg font-mono tracking-wider border">
                   {captcha}
                 </span>
-                <button 
+                <button
                   onClick={generateCaptcha}
                   className="text-blue-600 hover:text-blue-800 text-sm font-medium"
                 >
@@ -176,6 +233,7 @@ const PayAdvance = () => {
         {/* Payment Button */}
         <div className="flex justify-end">
           <button
+            onClick={handleBooking}
             disabled={captchaInput !== captcha || !isTermsChecked}
             className="px-8 py-3 bg-green-600 hover:bg-green-700 text-white font-medium rounded-lg shadow-md transition duration-150 disabled:opacity-50 disabled:cursor-not-allowed"
           >
@@ -187,4 +245,4 @@ const PayAdvance = () => {
   );
 };
 
-export default PayAdvance;
+export default OneWayPayAdvnc;
