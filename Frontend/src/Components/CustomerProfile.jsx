@@ -14,17 +14,71 @@ const CustomerProfile = () => {
     createdAt: ''
   });
 
-  const [bookings, setBookings] = useState([]); // New state for bookings
+  const [bookings, setBookings] = useState([]); // bookings array
   const [isEditing, setIsEditing] = useState(false);
 
+  // Helper: format ISO date (removes T00:00:00.000Z and shows readable date)
+  const formatDate = (dateStr) => {
+    if (!dateStr) return 'Not provided';
+    const d = new Date(dateStr);
+    if (Number.isNaN(d.getTime())) return dateStr;
+    return d.toLocaleDateString('en-IN', {
+      day: '2-digit',
+      month: 'short',
+      year: 'numeric'
+    });
+  };
+
+  // Helper: extract pickup time from booking object (checks multiple possible fields)
+  const getPickupTime = (booking) => {
+    if (!booking) return 'Not provided';
+
+    const candidates = [
+      booking.pickupTime,
+      booking.time,
+      booking.startTime,
+      booking.journey?.pickupTime,
+      booking.journey?.time,
+      booking.journey?.startTime,
+      booking.pickup_time,
+      booking.timeSlot
+    ];
+
+    for (const c of candidates) {
+      if (c && String(c).trim() !== '') return String(c);
+    }
+
+    // Fallback: if date has a non-midnight time, extract it
+    const dateCandidate = booking.pickupDate || booking.date || booking.journey?.pickupDate || booking.journey?.date;
+    if (dateCandidate) {
+      const d = new Date(dateCandidate);
+      if (!Number.isNaN(d.getTime())) {
+        const hours = d.getHours();
+        const minutes = d.getMinutes();
+        if (hours !== 0 || minutes !== 0) {
+          // return local-time HH:MM
+          return d.toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit' });
+        }
+      }
+    }
+
+    return 'Not provided';
+  };
+
+  // Helper: friendly "from" and "to" extraction (supports a few common shapes)
+  const getFrom = (booking) =>
+    booking?.from || booking?.journey?.from || booking?.pickupLocation || booking?.origin || '';
+  const getTo = (booking) =>
+    booking?.to || booking?.journey?.to || booking?.dropLocation || booking?.destination || '';
+
   useEffect(() => {
-    const fetchProfile = async () => {
+    const fetchProfileAndBookings = async () => {
       try {
         const token = localStorage.getItem('token');
         if (!token) throw new Error('No token found');
 
         // Fetch profile
-        const response = await fetch('http://localhost:5000/api/auth/profile', {
+        const profileRes = await fetch('http://localhost:5000/api/auth/profile', {
           method: 'GET',
           headers: {
             'Authorization': `Bearer ${token}`,
@@ -32,26 +86,26 @@ const CustomerProfile = () => {
           }
         });
 
-        if (!response.ok) {
+        if (!profileRes.ok) {
           throw new Error('Failed to fetch profile');
         }
 
-        const data = await response.json();
+        const profileData = await profileRes.json();
 
         setProfile({
-          name: data.fullName || '',
-          phone: data.mobile || '',
-          email: data.email || '',
-          area: data.area || '',
-          city: data.city || '',
-          state: data.state || '',
-          pincode: data.pincode || '',
-          profileImage: data.profileImage || '',
-          createdAt: data.createdAt || ''
+          name: profileData.fullName || '',
+          phone: profileData.mobile || '',
+          email: profileData.email || '',
+          area: profileData.area || profileData.address || '',
+          city: profileData.city || '',
+          state: profileData.state || '',
+          pincode: profileData.pincode || '',
+          profileImage: profileData.profileImage || '',
+          createdAt: profileData.createdAt || ''
         });
 
         // Fetch bookings
-        const bookingsResponse = await fetch('http://localhost:5000/api/bookings', {
+        const bookingsRes = await fetch('http://localhost:5000/api/bookings', {
           method: 'GET',
           headers: {
             'Authorization': `Bearer ${token}`,
@@ -59,18 +113,43 @@ const CustomerProfile = () => {
           }
         });
 
-        if (!bookingsResponse.ok) {
-          throw new Error('Failed to fetch bookings');
+        if (!bookingsRes.ok) {
+          console.warn('Bookings fetch returned not OK, trying /api/bookings/my...');
+          const altRes = await fetch('http://localhost:5000/api/bookings/my', {
+            method: 'GET',
+            headers: {
+              'Authorization': `Bearer ${token}`,
+              'Content-Type': 'application/json',
+            }
+          });
+          if (altRes.ok) {
+            const altData = await altRes.json();
+            setBookings(Array.isArray(altData) ? altData.map(booking => ({ ...booking, status: 'Pending' })) : (altData.bookings || altData.data || []).map(booking => ({ ...booking, status: 'Pending' })));
+          } else {
+            console.warn('Alternative bookings endpoint also failed');
+            setBookings([]);
+          }
+          return;
         }
 
-        const bookingsData = await bookingsResponse.json();
-        setBookings(bookingsData.data || bookingsData || []); // Adjust based on your backend response
+        const bookingsData = await bookingsRes.json();
+        if (Array.isArray(bookingsData)) {
+          setBookings(bookingsData.map(booking => ({ ...booking, status: 'Pending' })));
+        } else if (bookingsData.bookings) {
+          setBookings(bookingsData.bookings.map(booking => ({ ...booking, status: 'Pending' })));
+        } else if (bookingsData.data) {
+          setBookings(bookingsData.data.map(booking => ({ ...booking, status: 'Pending' })));
+        } else if (bookingsData.result) {
+          setBookings(bookingsData.result.map(booking => ({ ...booking, status: 'Pending' })));
+        } else {
+          setBookings(bookingsData ? [{ ...bookingsData, status: 'Pending' }] : []);
+        }
       } catch (error) {
         console.error('Error fetching profile or bookings:', error);
       }
     };
 
-    fetchProfile();
+    fetchProfileAndBookings();
   }, []);
 
   const handleInputChange = (e) => {
@@ -351,15 +430,20 @@ const CustomerProfile = () => {
             {bookings.length > 0 ? (
               bookings.map((booking, index) => (
                 <div key={index} className="border-b py-2">
-                  <p className="font-medium">From: {booking.from || booking.journey?.from}</p>
-                  <p className="font-medium">To: {booking.to || booking.journey?.to}</p>
-                  <p className="text-gray-500">
-                    Date: {booking.pickupDate || booking.date || booking.journey?.pickupDate}
-                  </p><p className="text-gray-500" >Pickup Time: {booking.time}</p>
+                  <p className="font-medium">From: {getFrom(booking)}</p>
+                  <p className="font-medium">To: {getTo(booking)}</p>
 
                   <p className="text-gray-500">
-                    Total Amount: ₹{booking.totalAmount || booking.journey?.totalAmount}
+                    Date: {formatDate(booking.pickupDate || booking.date || booking.journey?.pickupDate || booking.journey?.date)}
                   </p>
+
+                  <p className="text-gray-500">Pickup Time: {getPickupTime(booking)}</p>
+
+                  <p className="text-gray-500">
+                    Total Amount: ₹{booking.totalAmount || booking.journey?.totalAmount || booking.amount || '0'}
+                  </p>
+
+                  <p className="text-red-500"><span className='text-black'>Status:</span> {booking.status}</p> {/* Displaying the status */}
                 </div>
               ))
             ) : (

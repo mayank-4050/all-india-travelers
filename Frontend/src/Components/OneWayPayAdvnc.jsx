@@ -1,10 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import Navbar from '../Components/UperNavbar';
 import { useLocation, useNavigate } from 'react-router-dom';
+import { useBooking } from '../Components/BookingContext'; // Import the BookingContext
 
 const OneWayPayAdvnc = () => {
   const location = useLocation();
   const navigate = useNavigate();
+  const { setBookingData } = useBooking(); // Get the context function
 
   // Data setup
   const passenger = JSON.parse(localStorage.getItem('passengerData')) || {};
@@ -31,62 +33,71 @@ const OneWayPayAdvnc = () => {
 
   useEffect(() => generateCaptcha(), []);
 
- const handleBooking = async () => {
-  try {
-    const token = localStorage.getItem('token');
-    if (!token) throw new Error('No token found');
+  const handleBooking = async () => {
+    try {
+      const token = localStorage.getItem('token');
+      if (!token) throw new Error('No token found');
 
-    const bookingData = {
-      from: offer.from,
-      to: offer.to,
-      date: offer.pickupDate || offer.date,
-      time: offer.startTime,
-      vehicle: offer.vehicle,
-      seats: offer.seats,
-      distance: distance,
-      baseAmount: baseAmount,
-      driverAllowance: driverAllowance,
-      totalAmount: total,
-      passenger: {
-        name: passenger.name,
-        phone: passenger.phone,
-        email: passenger.email,
-        idType: passenger.idType,
-        idNumber: passenger.idNumber
+      const bookingData = {
+        from: offer.from,
+        to: offer.to,
+        date: offer.pickupDate || offer.date,
+        time: offer.startTime,
+        vehicle: offer.vehicle,
+        seats: offer.seats,
+        distance: distance,
+        baseAmount: baseAmount,
+        driverAllowance: driverAllowance,
+        totalAmount: total,
+        passenger: {
+          name: passenger.name,
+          phone: passenger.phone,
+          email: passenger.email,
+          idType: passenger.idType,
+          idNumber: passenger.idNumber
+        }
+      };
+
+      // Create booking
+      const response = await fetch('http://localhost:5000/api/bookings', {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(bookingData)
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to create booking');
       }
-    };
 
-    const response = await fetch('http://localhost:5000/api/bookings', {
-      method: 'POST',
-      headers: {
-        'Authorization': `Bearer ${token}`,
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(bookingData)
-    });
+      const data = await response.json();
+      console.log('Booking created successfully:', data);
 
-    if (!response.ok) {
-      throw new Error('Failed to create booking');
+      // Set booking data in context
+      setBookingData(bookingData); // Set the booking data in context
+
+      // Send booking data to admin
+      await fetch('http://localhost:5000/api/admin/bookings', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(bookingData)
+      });
+
+      // ✅ Show success message
+      alert('🎉 Booking successful! Redirecting to your profile...');
+
+      // ✅ Navigate to profile
+      navigate('/customerprofile');
+
+    } catch (error) {
+      console.error('Error creating booking:', error);
+      alert('❌ Failed to create booking. Please try again.');
     }
-
-    const data = await response.json();
-    console.log('Booking created successfully:', data);
-
-    // ✅ Show success message
-    alert('🎉 Booking successful! Redirecting to your profile...');
-
-    // ✅ Navigate to profile
-    navigate('/customerprofile');
-
-  } catch (error) {
-    console.error('Error creating booking:', error);
-    alert('❌ Failed to create booking. Please try again.');
-  }
-};
-
-
-
-
+  };
 
   if (!offer.from || !offer.vehicle) {
     return (

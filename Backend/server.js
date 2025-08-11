@@ -1,19 +1,28 @@
+// server.js
 const express = require('express');
+const http = require('http'); // needed for socket.io
+const { Server } = require('socket.io');
 const cors = require('cors');
 const dotenv = require('dotenv');
 const path = require('path');
 const connectDB = require('./config/db');
 
-// Load env variables
 dotenv.config();
-
-// Connect to MongoDB
 connectDB();
 
 const app = express();
+const server = http.createServer(app); // wrap express
+const io = new Server(server, {
+  cors: {
+    origin: "*", // adjust to your frontend URL for security
+    methods: ["GET", "POST"]
+  }
+});
+
+app.set('io', io); // ✅ store io so routes can emit events
+
 const PORT = process.env.PORT || 5000;
 
-// Middlewares
 app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
@@ -22,16 +31,25 @@ app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 // Routes
 const authRoutes = require('./routes/authRoutes');
 const distanceRoutes = require('./routes/distanceRoutes');
-const bookingRoutes = require('./routes/bookingroute'); // Import booking routes
+const bookingRoutes = require('./routes/bookingroute');
 
 app.use('/api/auth', authRoutes);
 app.use('/api/distance', distanceRoutes);
-app.use('/api/bookings', bookingRoutes); // Add booking routes
+app.use('/api/bookings', bookingRoutes);
+
+// socket.io connection
+io.on('connection', (socket) => {
+  console.log("🔌 Admin connected:", socket.id);
+
+  socket.on('disconnect', () => {
+    console.log("❌ Admin disconnected:", socket.id);
+  });
+});
 
 app.get('/', (req, res) => {
   res.send('API is running...');
 });
 
-app.listen(PORT, () => {
+server.listen(PORT, () => {
   console.log(`✅ Server running on http://localhost:${PORT}`);
 });
