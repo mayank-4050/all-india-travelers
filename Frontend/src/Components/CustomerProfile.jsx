@@ -14,10 +14,9 @@ const CustomerProfile = () => {
     createdAt: ''
   });
 
-  const [bookings, setBookings] = useState([]); // bookings array
+  const [bookings, setBookings] = useState([]);
   const [isEditing, setIsEditing] = useState(false);
 
-  // Helper: format ISO date (removes T00:00:00.000Z and shows readable date)
   const formatDate = (dateStr) => {
     if (!dateStr) return 'Not provided';
     const d = new Date(dateStr);
@@ -29,7 +28,6 @@ const CustomerProfile = () => {
     });
   };
 
-  // Helper: extract pickup time from booking object (checks multiple possible fields)
   const getPickupTime = (booking) => {
     if (!booking) return 'Not provided';
 
@@ -48,7 +46,6 @@ const CustomerProfile = () => {
       if (c && String(c).trim() !== '') return String(c);
     }
 
-    // Fallback: if date has a non-midnight time, extract it
     const dateCandidate = booking.pickupDate || booking.date || booking.journey?.pickupDate || booking.journey?.date;
     if (dateCandidate) {
       const d = new Date(dateCandidate);
@@ -56,7 +53,6 @@ const CustomerProfile = () => {
         const hours = d.getHours();
         const minutes = d.getMinutes();
         if (hours !== 0 || minutes !== 0) {
-          // return local-time HH:MM
           return d.toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit' });
         }
       }
@@ -65,11 +61,60 @@ const CustomerProfile = () => {
     return 'Not provided';
   };
 
-  // Helper: friendly "from" and "to" extraction (supports a few common shapes)
   const getFrom = (booking) =>
     booking?.from || booking?.journey?.from || booking?.pickupLocation || booking?.origin || '';
   const getTo = (booking) =>
     booking?.to || booking?.journey?.to || booking?.dropLocation || booking?.destination || '';
+
+  const confirmBooking = async (bookingId) => {
+    try {
+      const token = localStorage.getItem('token');
+      if (!token) throw new Error('No token found');
+
+      const response = await fetch(`http://localhost:5000/api/bookings/${bookingId}/confirm`, {
+        method: 'PUT',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json',
+        },
+      });
+
+      if (!response.ok) throw new Error('Failed to confirm booking');
+
+      setBookings(prevBookings =>
+        prevBookings.map(booking =>
+          booking.id === bookingId ? { ...booking, status: 'Confirmed' } : booking
+        )
+      );
+    } catch (error) {
+      console.error('Error confirming booking:', error);
+    }
+  };
+
+  const cancelBooking = async (bookingId) => {
+    try {
+      const token = localStorage.getItem('token');
+      if (!token) throw new Error('No token found');
+
+      const response = await fetch(`http://localhost:5000/api/bookings/${bookingId}/cancel`, {
+        method: 'PUT',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json',
+        },
+      });
+
+      if (!response.ok) throw new Error('Failed to cancel booking');
+
+      setBookings(prevBookings =>
+        prevBookings.map(booking =>
+          booking.id === bookingId ? { ...booking, status: 'Canceled' } : booking
+        )
+      );
+    } catch (error) {
+      console.error('Error canceling booking:', error);
+    }
+  };
 
   useEffect(() => {
     const fetchProfileAndBookings = async () => {
@@ -77,7 +122,6 @@ const CustomerProfile = () => {
         const token = localStorage.getItem('token');
         if (!token) throw new Error('No token found');
 
-        // Fetch profile
         const profileRes = await fetch('http://localhost:5000/api/auth/profile', {
           method: 'GET',
           headers: {
@@ -86,10 +130,7 @@ const CustomerProfile = () => {
           }
         });
 
-        if (!profileRes.ok) {
-          throw new Error('Failed to fetch profile');
-        }
-
+        if (!profileRes.ok) throw new Error('Failed to fetch profile');
         const profileData = await profileRes.json();
 
         setProfile({
@@ -104,7 +145,6 @@ const CustomerProfile = () => {
           createdAt: profileData.createdAt || ''
         });
 
-        // Fetch bookings
         const bookingsRes = await fetch('http://localhost:5000/api/bookings', {
           method: 'GET',
           headers: {
@@ -134,15 +174,15 @@ const CustomerProfile = () => {
 
         const bookingsData = await bookingsRes.json();
         if (Array.isArray(bookingsData)) {
-          setBookings(bookingsData.map(booking => ({ ...booking, status: 'Pending' })));
+          setBookings(bookingsData.map(booking => ({ ...booking, status: booking.status || 'Pending' })));
         } else if (bookingsData.bookings) {
-          setBookings(bookingsData.bookings.map(booking => ({ ...booking, status: 'Pending' })));
+          setBookings(bookingsData.bookings.map(booking => ({ ...booking, status: booking.status || 'Pending' })));
         } else if (bookingsData.data) {
-          setBookings(bookingsData.data.map(booking => ({ ...booking, status: 'Pending' })));
+          setBookings(bookingsData.data.map(booking => ({ ...booking, status: booking.status || 'Pending' })));
         } else if (bookingsData.result) {
-          setBookings(bookingsData.result.map(booking => ({ ...booking, status: 'Pending' })));
+          setBookings(bookingsData.result.map(booking => ({ ...booking, status: booking.status || 'Pending' })));
         } else {
-          setBookings(bookingsData ? [{ ...bookingsData, status: 'Pending' }] : []);
+          setBookings(bookingsData ? [{ ...bookingsData, status: bookingsData.status || 'Pending' }] : []);
         }
       } catch (error) {
         console.error('Error fetching profile or bookings:', error);
@@ -193,9 +233,7 @@ const CustomerProfile = () => {
         }),
       });
 
-      if (!response.ok) {
-        throw new Error('Failed to update profile');
-      }
+      if (!response.ok) throw new Error('Failed to update profile');
 
       const updatedData = await response.json();
 
@@ -223,7 +261,6 @@ const CustomerProfile = () => {
 
       <div className="max-w-4xl mx-auto p-6">
         <div className="bg-white rounded-xl shadow-md overflow-hidden">
-          {/* Header */}
           <div className="bg-orange-600 p-6 text-white">
             <h1 className="text-2xl font-bold">Customer Profile</h1>
             <p className="text-orange-100">Manage your personal information</p>
@@ -234,9 +271,7 @@ const CustomerProfile = () => {
             )}
           </div>
 
-          {/* Profile Content */}
           <div className="p-6">
-            {/* Profile Picture Section */}
             <div className="flex flex-col items-center mb-8">
               <div className="relative w-32 h-32 rounded-full bg-gray-200 overflow-hidden">
                 {profile.profileImage ? (
@@ -266,10 +301,8 @@ const CustomerProfile = () => {
               )}
             </div>
 
-            {/* Profile Form */}
             <form onSubmit={handleSubmit}>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                {/* Personal Info */}
                 <div className="space-y-4">
                   <h2 className="text-lg font-semibold text-gray-800 border-b pb-2">
                     Personal Information
@@ -321,7 +354,6 @@ const CustomerProfile = () => {
                   </div>
                 </div>
 
-                {/* Address Section */}
                 <div className="space-y-4">
                   <h2 className="text-lg font-semibold text-gray-800 border-b pb-2">
                     Address Information
@@ -389,7 +421,6 @@ const CustomerProfile = () => {
                 </div>
               </div>
 
-              {/* Action Buttons */}
               <div className="flex justify-end mt-8 space-x-4">
                 {isEditing ? (
                   <>
@@ -421,7 +452,6 @@ const CustomerProfile = () => {
           </div>
         </div>
 
-        {/* Ride History */}
         <div className="mt-6 bg-white rounded-xl shadow-md overflow-hidden">
           <div className="p-6">
             <h2 className="text-lg font-semibold text-gray-800 border-b pb-2 mb-4">
@@ -429,21 +459,44 @@ const CustomerProfile = () => {
             </h2>
             {bookings.length > 0 ? (
               bookings.map((booking, index) => (
-                <div key={index} className="border-b py-2">
-                  <p className="font-medium">From: {getFrom(booking)}</p>
-                  <p className="font-medium">To: {getTo(booking)}</p>
-
-                  <p className="text-gray-500">
-                    Date: {formatDate(booking.pickupDate || booking.date || booking.journey?.pickupDate || booking.journey?.date)}
-                  </p>
-
-                  <p className="text-gray-500">Pickup Time: {getPickupTime(booking)}</p>
-
-                  <p className="text-gray-500">
-                    Total Amount: ₹{booking.totalAmount || booking.journey?.totalAmount || booking.amount || '0'}
-                  </p>
-
-                  <p className="text-red-500"><span className='text-black'>Status:</span> {booking.status}</p> {/* Displaying the status */}
+                <div key={index} className="border-b py-4">
+                  <div className="mb-2">
+                    <p className="font-medium">From: {getFrom(booking)}</p>
+                    <p className="font-medium">To: {getTo(booking)}</p>
+                    <p className="text-gray-500">
+                      Date: {formatDate(booking.pickupDate || booking.date || booking.journey?.pickupDate)}
+                    </p>
+                    <p className="text-gray-500">Pickup Time: {getPickupTime(booking)}</p>
+                    <p className="text-gray-500">
+                      Total Amount: ₹{booking.totalAmount || booking.journey?.totalAmount || booking.amount || '0'}
+                    </p>
+                    <p>
+                      <strong>Status:</strong> <span className={`px-2 py-1 rounded-full text-xs ${
+                        booking.status === 'Confirmed' ? 'bg-green-100 text-green-800' :
+                        booking.status === 'Canceled' ? 'bg-red-100 text-red-800' :
+                        'bg-yellow-100 text-yellow-800'
+                      }`}>
+                        {booking.status}
+                      </span>
+                    </p>
+                  </div>
+                  
+                  {booking.status === 'Pending' && (
+                    <div className="flex space-x-2 mb-2">
+                      <button
+                        onClick={() => confirmBooking(booking.id)}
+                        className="px-3 py-1 bg-green-600 text-white text-sm rounded hover:bg-green-700"
+                      >
+                        Confirm
+                      </button>
+                      <button
+                        onClick={() => cancelBooking(booking.id)}
+                        className="px-3 py-1 bg-red-600 text-white text-sm rounded hover:bg-red-700"
+                      >
+                        Cancel
+                      </button>
+                    </div>
+                  )}
                 </div>
               ))
             ) : (

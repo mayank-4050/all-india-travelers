@@ -34,7 +34,28 @@ router.post('/', authMiddleware, async (req, res) => {
   }
 });
 
+// Update booking status by ID
+router.put('/:id/status', async (req, res) => {
+  try {
+    const { status } = req.body;
 
+    // Find booking and update status
+    const updatedBooking = await Booking.findByIdAndUpdate(
+      req.params.id,
+      { status },
+      { new: true } // return updated doc
+    );
+
+    if (!updatedBooking) {
+      return res.status(404).json({ message: 'Booking not found' });
+    }
+
+    res.json(updatedBooking);
+  } catch (error) {
+    console.error("Error updating booking status:", error);
+    res.status(500).json({ message: 'Server error' });
+  }
+});
 
 
 // GET USER BOOKINGS (Customer)
