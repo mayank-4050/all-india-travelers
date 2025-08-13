@@ -3,11 +3,11 @@ import { Swiper, SwiperSlide } from 'swiper/react';
 import { Autoplay } from 'swiper/modules';
 import axios from 'axios';
 import 'swiper/css';
-import crista from '../Photos/crista.webp';
-import dizire from '../Photos/Dizire.webp';
-import tavera from '../Photos/tavera.webp';
-import zest from '../Photos/zest.webp';
-import ertiga from '../Photos/ertiga.webp';
+import crista from '../Photos/crista.jpg';
+import dizire from '../Photos/Dizire.jpg';
+import tavera from '../Photos/tavera.jpg';
+import zest from '../Photos/zest.jpg';
+import ertiga from '../Photos/ertiga.jpg';
 import ShowVehicle from './ShowVehicle';
 
 const GEOAPIFY_KEY = "d2d43c2448eb403296a3e49969fa3888"; // your API key
@@ -232,16 +232,18 @@ const MainHome = () => {
         <div className="w-full lg:w-[50%] bg-white shadow-xl rounded-xl border" data-aos="fade-left">
           <Swiper modules={[Autoplay]} spaceBetween={30} slidesPerView={1} autoplay={{ delay: 3000 }} loop={true}>
             {[crista, dizire, tavera, zest, ertiga].map((img, idx) => (
-              <SwiperSlide key={idx}>
-                <img src={img} alt={`Slide ${idx + 1}`} className='w-full h-64 object-contain rounded-md' />
-                <div className="w-full flex justify-between px-10 mt-3 mb-5">
-                  <p>Price: <span className='text-blue-500 font-bold'>₹2000</span></p>
-                  <button className='bg-orange-500 text-white px-3 py-1 rounded'>Book Now</button>
+              <SwiperSlide key={idx} className="relative">
+                <img src={img} alt={`Slide ${idx + 1}`} className='w-full h-full object-cover rounded-md' />
+                <div className="absolute bottom-0 left-0 right-0  bg-opacity-50 p-4 flex justify-between items-center rounded-b-md">
+                  <p className='text-white'> <span className='text-blue-500 font-bold'></span></p>
+
+                  <button className='bg-orange-500 text-white px-3 py-1 rounded hover:bg-orange-600'>Book Now</button>
                 </div>
               </SwiperSlide>
             ))}
           </Swiper>
         </div>
+
       </div>
 
       {/* Show Vehicle Table */}

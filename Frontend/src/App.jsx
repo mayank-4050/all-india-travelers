@@ -5,7 +5,6 @@ import { BookingProvider } from './Components/BookingContext';
 import Home from './Pages/Home';
 import AddOffer from './Pages/AddOffer';
 import TodayOffer from './Pages/TodayOffer';
-import Carrer from './Pages/Carrer';
 import Login from './Pages/Login';
 import Register from './Pages/Register';
 import OneWayTravel from './Pages/OneWayTravel';
@@ -28,6 +27,11 @@ import OneWayDutySlip from './Components/OneWaydutySlip';
 // Booking components
 import AllBookings from './Components/AllBookings';
 import BookingDetail from './Components/BookingDetail'; // NEW component
+import AllCustomers from './Components/AllCustomers';
+import AdCusDetail from './Components/AdCusDetail';
+import AllAgents from './Components/AllAgents';
+import AdAgentDetail from './Components/AdAgentDetail';
+import ContactUs from './Pages/ContactUs';
 
 const App = () => {
   return (
@@ -38,7 +42,7 @@ const App = () => {
           <Route path="/" element={<Home />} />
           <Route path="/todayoffer" element={<TodayOffer />} />
           <Route path="/ourservices" element={<OurServices />} />
-          <Route path="/carrer" element={<Carrer />} />
+          <Route path="/contactus" element={<ContactUs />} />
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
           <Route path="/offer" element={<Offer />} />
@@ -51,6 +55,10 @@ const App = () => {
           {/* Booking Routes */}
           <Route path="/admin/view-bookings" element={<AllBookings />} /> {/* All bookings */}
           <Route path="/bookingdetail/:id" element={<BookingDetail />} />
+          <Route path="/allcustomers" element={<AllCustomers />} />
+          <Route path="/singlecustomerdetail/:id" element={<AdCusDetail />} />
+          <Route path="/allagents" element={<AllAgents />} />
+          <Route path="/singleagentdetail/:id" element={<AdAgentDetail />} />
 
 
 

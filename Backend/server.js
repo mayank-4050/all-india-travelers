@@ -6,6 +6,7 @@ const cors = require('cors');
 const dotenv = require('dotenv');
 const path = require('path');
 const connectDB = require('./config/db');
+const userRoutes = require('./routes/UserRoute');
 
 dotenv.config();
 connectDB();
@@ -36,6 +37,8 @@ const bookingRoutes = require('./routes/bookingroute');
 app.use('/api/auth', authRoutes);
 app.use('/api/distance', distanceRoutes);
 app.use('/api/bookings', bookingRoutes);
+app.use('/api/users', userRoutes);
+
 
 // socket.io connection
 io.on('connection', (socket) => {

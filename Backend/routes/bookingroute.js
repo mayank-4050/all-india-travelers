@@ -91,12 +91,15 @@ router.get('/all', authMiddleware, adminMiddleware, async (req, res) => {
 });
 
 // UPDATE BOOKING STATUS (Admin)
+// UPDATE BOOKING STATUS (Admin)
 router.patch('/:id/status', authMiddleware, adminMiddleware, async (req, res) => {
   try {
     const { status } = req.body;
-    if (!['pending', 'confirmed', 'cancelled'].includes(status)) {
+    if (!['pending', 'confirmed', 'cancelled', 'cancelled by the customer'].includes(status)) {
       return res.status(400).json({ success: false, error: 'Invalid status value' });
     }
+    // ...
+
 
     const booking = await Booking.findByIdAndUpdate(
       req.params.id,

@@ -17,6 +17,28 @@ const CustomerProfile = () => {
   const [bookings, setBookings] = useState([]);
   const [isEditing, setIsEditing] = useState(false);
 
+  // --- helpers ---
+  const normalize = (s) => String(s || '').trim().toLowerCase();
+  const getId = (b) => b?._id || b?.id || b?.bookingId;
+
+  // Customer-facing display mapping
+  const displayStatusForCustomer = (status) => {
+    const s = normalize(status);
+    if (s === 'cancelled by the customer') return 'Cancellation Pending';
+    if (s === 'cancelled') return 'Canceled';
+    if (s === 'confirmed') return 'Confirmed';
+    if (s === 'pending') return 'Pending';
+    return status || 'Pending';
+  };
+
+  const statusBadgeClass = (status) => {
+    const s = normalize(status);
+    if (s === 'confirmed') return 'bg-green-100 text-green-800';
+    if (s === 'cancelled' || s === 'cancelled by the customer') return 'bg-red-100 text-red-800';
+    if (s === 'pending') return 'bg-yellow-100 text-yellow-800';
+    return 'bg-gray-100 text-gray-800';
+  };
+
   const formatDate = (dateStr) => {
     if (!dateStr) return 'Not provided';
     const d = new Date(dateStr);
@@ -66,6 +88,7 @@ const CustomerProfile = () => {
   const getTo = (booking) =>
     booking?.to || booking?.journey?.to || booking?.dropLocation || booking?.destination || '';
 
+  // (kept for completeness; not used for this task)
   const confirmBooking = async (bookingId) => {
     try {
       const token = localStorage.getItem('token');
@@ -83,7 +106,7 @@ const CustomerProfile = () => {
 
       setBookings(prevBookings =>
         prevBookings.map(booking =>
-          booking.id === bookingId ? { ...booking, status: 'Confirmed' } : booking
+          getId(booking) === bookingId ? { ...booking, status: 'confirmed' } : booking
         )
       );
     } catch (error) {
@@ -91,28 +114,37 @@ const CustomerProfile = () => {
     }
   };
 
-  const cancelBooking = async (bookingId) => {
+  // ✅ Customer cancel → DB: "cancelled by the customer" ; UI (customer): "Cancellation Pending"
+  const handleCancelByCustomer = async (bookingId) => {
     try {
       const token = localStorage.getItem('token');
       if (!token) throw new Error('No token found');
 
-      const response = await fetch(`http://localhost:5000/api/bookings/${bookingId}/cancel`, {
-        method: 'PUT',
+      const response = await fetch(`http://localhost:5000/api/bookings/${bookingId}/status`, {
+        method: 'PUT', // customer-facing status update route in your backend
         headers: {
           'Authorization': `Bearer ${token}`,
           'Content-Type': 'application/json',
         },
+        body: JSON.stringify({ status: 'cancelled by the customer' })
       });
 
-      if (!response.ok) throw new Error('Failed to cancel booking');
+      if (!response.ok) {
+        console.error('Failed to cancel booking');
+        return;
+      }
 
-      setBookings(prevBookings =>
-        prevBookings.map(booking =>
-          booking.id === bookingId ? { ...booking, status: 'Canceled' } : booking
+      // You can read the updated doc from response if needed:
+      // const updated = await response.json();
+
+      // Optimistic UI: set to "cancelled by the customer" (customer screen will show "Cancellation Pending")
+      setBookings(prev =>
+        prev.map(b =>
+          getId(b) === bookingId ? { ...b, status: 'cancelled by the customer' } : b
         )
       );
-    } catch (error) {
-      console.error('Error canceling booking:', error);
+    } catch (err) {
+      console.error('Error cancelling booking:', err);
     }
   };
 
@@ -164,7 +196,11 @@ const CustomerProfile = () => {
           });
           if (altRes.ok) {
             const altData = await altRes.json();
-            setBookings(Array.isArray(altData) ? altData.map(booking => ({ ...booking, status: 'Pending' })) : (altData.bookings || altData.data || []).map(booking => ({ ...booking, status: 'Pending' })));
+            setBookings(
+              Array.isArray(altData)
+                ? altData.map(booking => ({ ...booking, status: normalize(booking.status) || 'pending' }))
+                : (altData.bookings || altData.data || []).map(booking => ({ ...booking, status: normalize(booking.status) || 'pending' }))
+            );
           } else {
             console.warn('Alternative bookings endpoint also failed');
             setBookings([]);
@@ -174,15 +210,15 @@ const CustomerProfile = () => {
 
         const bookingsData = await bookingsRes.json();
         if (Array.isArray(bookingsData)) {
-          setBookings(bookingsData.map(booking => ({ ...booking, status: booking.status || 'Pending' })));
+          setBookings(bookingsData.map(booking => ({ ...booking, status: booking.status || 'pending' })));
         } else if (bookingsData.bookings) {
-          setBookings(bookingsData.bookings.map(booking => ({ ...booking, status: booking.status || 'Pending' })));
+          setBookings(bookingsData.bookings.map(booking => ({ ...booking, status: booking.status || 'pending' })));
         } else if (bookingsData.data) {
-          setBookings(bookingsData.data.map(booking => ({ ...booking, status: booking.status || 'Pending' })));
+          setBookings(bookingsData.data.map(booking => ({ ...booking, status: booking.status || 'pending' })));
         } else if (bookingsData.result) {
-          setBookings(bookingsData.result.map(booking => ({ ...booking, status: booking.status || 'Pending' })));
+          setBookings(bookingsData.result.map(booking => ({ ...booking, status: booking.status || 'pending' })));
         } else {
-          setBookings(bookingsData ? [{ ...bookingsData, status: bookingsData.status || 'Pending' }] : []);
+          setBookings(bookingsData ? [{ ...bookingsData, status: bookingsData.status || 'pending' }] : []);
         }
       } catch (error) {
         console.error('Error fetching profile or bookings:', error);
@@ -458,47 +494,42 @@ const CustomerProfile = () => {
               Ride History
             </h2>
             {bookings.length > 0 ? (
-              bookings.map((booking, index) => (
-                <div key={index} className="border-b py-4">
-                  <div className="mb-2">
-                    <p className="font-medium">From: {getFrom(booking)}</p>
-                    <p className="font-medium">To: {getTo(booking)}</p>
-                    <p className="text-gray-500">
-                      Date: {formatDate(booking.pickupDate || booking.date || booking.journey?.pickupDate)}
-                    </p>
-                    <p className="text-gray-500">Pickup Time: {getPickupTime(booking)}</p>
-                    <p className="text-gray-500">
-                      Total Amount: ₹{booking.totalAmount || booking.journey?.totalAmount || booking.amount || '0'}
-                    </p>
-                    <p>
-                      <strong>Status:</strong> <span className={`px-2 py-1 rounded-full text-xs ${
-                        booking.status === 'Confirmed' ? 'bg-green-100 text-green-800' :
-                        booking.status === 'Canceled' ? 'bg-red-100 text-red-800' :
-                        'bg-yellow-100 text-yellow-800'
-                      }`}>
-                        {booking.status}
-                      </span>
-                    </p>
-                  </div>
-                  
-                  {booking.status === 'Pending' && (
-                    <div className="flex space-x-2 mb-2">
-                      <button
-                        onClick={() => confirmBooking(booking.id)}
-                        className="px-3 py-1 bg-green-600 text-white text-sm rounded hover:bg-green-700"
-                      >
-                        Confirm
-                      </button>
-                      <button
-                        onClick={() => cancelBooking(booking.id)}
-                        className="px-3 py-1 bg-red-600 text-white text-sm rounded hover:bg-red-700"
-                      >
-                        Cancel
-                      </button>
+              bookings.map((booking, index) => {
+                const id = getId(booking);
+                const statusDisplay = displayStatusForCustomer(booking.status);
+                return (
+                  <div key={id || index} className="border-b py-4">
+                    <div className="mb-2">
+                      <p className="font-medium">From: {getFrom(booking)}</p>
+                      <p className="font-medium">To: {getTo(booking)}</p>
+                      <p className="text-gray-500">
+                        Date: {formatDate(booking.pickupDate || booking.date || booking.journey?.pickupDate)}
+                      </p>
+                      <p className="text-gray-500">Pickup Time: {getPickupTime(booking)}</p>
+                      <p className="text-gray-500">
+                        Total Amount: ₹{booking.totalAmount || booking.journey?.totalAmount || booking.amount || '0'}
+                      </p>
+                      <p>
+                        <strong>Status:</strong>{' '}
+                        <span className={`px-2 py-1 rounded-full text-xs ${statusBadgeClass(booking.status)}`}>
+                          {statusDisplay}
+                        </span>
+                      </p>
                     </div>
-                  )}
-                </div>
-              ))
+
+                    {/* Only ONE button: Cancel Booking 
+                        Show when status is pending or confirmed */}
+                    {['pending', 'confirmed'].includes(normalize(booking.status)) && (
+                      <button
+                        onClick={() => handleCancelByCustomer(id)}
+                        className="mt-2 px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700"
+                      >
+                        Cancel Booking
+                      </button>
+                    )}
+                  </div>
+                );
+              })
             ) : (
               <div className="text-center py-8 text-gray-500">
                 <i className="fas fa-car text-4xl mb-2"></i>

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import crista from '../Photos/crista.webp'
+import crista from '../Photos/crista.jpg'
 import train1 from '../Photos/train1.jpeg'
 import train2 from '../Photos/train2.jpeg'
 import train3 from '../Photos/train3.jpeg'

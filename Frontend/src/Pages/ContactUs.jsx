@@ -1,12 +1,15 @@
 import React from 'react'
 import UperNavbar from '../Components/UperNavbar'
+import Footer from '../Components/Footer'
 
-const Carrer = () => {
+
+const ContactUs = () => {
   return (
     <div>
       <UperNavbar/>
+      <Footer/>
     </div>
   )
 }
 
-export default Carrer
+export default ContactUs

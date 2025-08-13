@@ -4,11 +4,12 @@ import { useNavigate } from "react-router-dom";
 const GEOAPIFY_KEY = "d2d43c2448eb403296a3e49969fa3888";
 
 const OneWayForm = () => {
-  const [pickupQuery, setPickupQuery] = useState("");
+  const [pickupPlace, setPickupPlace] = useState("Jabalpur, MP, India");
+  const [pickupQuery, setPickupQuery] = useState("Jabalpur, MP, India");
   const [dropQuery, setDropQuery] = useState("");
   const [pickupSuggestions, setPickupSuggestions] = useState([]);
   const [dropSuggestions, setDropSuggestions] = useState([]);
-  const [pickupPlace, setPickupPlace] = useState(null);
+  // const [pickupPlace, setPickupPlace] = useState(null);
   const [dropPlace, setDropPlace] = useState(null);
   const [journeyDate, setJourneyDate] = useState("");
   const [time, setTime] = useState("");
@@ -93,34 +94,20 @@ const OneWayForm = () => {
         <h2 className="text-2xl font-bold text-gray-800 mb-4 text-center">
           One Way Booking
         </h2>
+        <p className="text-[10px] bg-red-300 text-red-800 p-3 rounded">हमें असुविधा के लिए खेद है, लेकिन फिलहाल कुछ संचालन संबंधी कारणों से हमारी सेवाएँ केवल जबलपुर से ही उपलब्ध हैं। हम जल्द ही विस्तार करने की कोशिश कर रहे हैं और आपके सहयोग की सराहना करते हैं।</p>
         <form onSubmit={handleSubmit} className="space-y-4">
+          {/* Pickup */}
           {/* Pickup */}
           <div className="relative">
             <input
               type="text"
               placeholder="Pickup Place"
-              value={pickupQuery}
-              onChange={(e) => fetchPickupSuggestions(e.target.value)}
-              className="w-full px-4 py-1 border rounded-lg"
+              value="Jabalpur, MP, India"
+              readOnly
+              className="w-full px-4 py-1 border rounded-lg bg-gray-100 cursor-not-allowed mt-3"
             />
-            {pickupSuggestions.length > 0 && (
-              <ul className="absolute bg-white border w-full max-h-40 overflow-y-auto z-10">
-                {pickupSuggestions.map((place, idx) => (
-                  <li
-                    key={idx}
-                    className="p-1 hover:bg-gray-200 cursor-pointer"
-                    onClick={() => {
-                      setPickupPlace(place.properties.formatted);
-                      setPickupQuery(place.properties.formatted);
-                      setPickupSuggestions([]);
-                    }}
-                  >
-                    {place.properties.formatted}
-                  </li>
-                ))}
-              </ul>
-            )}
           </div>
+
 
           {/* Drop */}
           <div className="relative">
@@ -172,7 +159,7 @@ const OneWayForm = () => {
             onChange={(e) => setPickupInfo(e.target.value)}
             className="w-full px-4 py-1 border rounded-lg"
           >
-            <option>Bus station to Bus station</option> 
+            <option>Bus station to Bus station</option>
             <option>Railway Station to Railway Station</option>
             <option>Highway to Highway</option>
           </select>

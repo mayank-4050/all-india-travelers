@@ -1,10 +1,10 @@
 import React from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
-import crista from '../Photos/crista.webp';
-import dzire from '../Photos/Dizire.webp';
-import tavera from '../Photos/tavera.webp';
-import zest from '../Photos/zest.webp';
-import ertiga from '../Photos/ertiga.webp';
+import crista from '../Photos/crista.jpg';
+import dzire from '../Photos/Dizire.jpg';
+import tavera from '../Photos/tavera.jpg';
+import zest from '../Photos/zest.jpg';
+import ertiga from '../Photos/ertiga.jpg';
 
 const ShowVehicle = () => {
 

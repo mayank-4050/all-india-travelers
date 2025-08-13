@@ -163,6 +163,18 @@ const AdminProfile = () => {
             >
               📅 View Bookings
             </Link>
+            <Link
+              to="/allcustomers"
+              className="block px-4 py-2 rounded-lg hover:bg-orange-100 text-gray-700"
+            >
+              👥 All Customers
+            </Link>
+            <Link
+              to="/allagents"
+              className="block px-4 py-2 rounded-lg hover:bg-orange-100 text-gray-700"
+            >
+              🤝 All Agents
+            </Link>
           </nav>
         </aside>
 
