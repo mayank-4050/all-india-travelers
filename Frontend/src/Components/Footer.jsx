@@ -30,9 +30,9 @@ const Footer = () => {
                         {/* Left Section */}
                         <div className="w-full lg:w-[30%] flex flex-col">
                             <img className='w-[50%] h-auto' src={Footerlogo} alt="Footer Logo" />
-                            <p className='text-gray-500 mt-2'>Gopal Hotel Chandmari Adhartal Jabalpur M.P. 482004</p>
-                            <span className='text-gray-500'>xxxxxxxxx</span>
-                            <span className='text-gray-500'>xyz@gmail.com</span>
+                            <p className='text-gray-500 mt-2'>Anshika Online Siddh Baba Road Lalmati Jabalpur M.P. 482001</p>
+                            <span className='text-gray-500'>7987189304</span>
+                            <span className='text-gray-500'>allindiatrevls6607@gmail.com</span>
                             <div className="flex gap-3 mt-5">
                                 <img className='w-7' src={whatsapp} alt="Whatsapp" />
                                 <img className='w-7' src={insta} alt="Instagram" />

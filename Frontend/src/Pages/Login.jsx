@@ -26,7 +26,8 @@ const Login = () => {
 
       // Save token & role in localStorage
       localStorage.setItem('token', token);
-      localStorage.setItem('role', userRole);
+      localStorage.setItem('role', userRole.toLowerCase()); // ✅ lowercase me store
+
 
       // Save customer details for later use
       localStorage.setItem('customerData', JSON.stringify({
@@ -52,7 +53,7 @@ const Login = () => {
     <div className="w-full flex flex-col items-center">
       <Navbar />
       <div className="w-full md:w-[40%] mt-6 rounded py-6 px-5 flex flex-col items-center border border-orange-500 shadow-md bg-white">
-        
+
         <h1 className="text-orange-500 italic font-bold text-2xl mb-5">Login</h1>
 
         {errorMessage && (

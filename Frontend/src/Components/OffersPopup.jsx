@@ -9,7 +9,7 @@ export default function OffersPopup() {
       setShowPopup(true);
     }, 300);
     return () => clearTimeout(timer);
-  }, []);
+  }, []); // Always runs on refresh
 
   const closePopup = () => {
     setShowPopup(false);
@@ -18,18 +18,20 @@ export default function OffersPopup() {
   return (
     <>
       {showPopup && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-[9999]">
-          <div className="bg-white p-6 rounded-lg shadow-lg max-w-2xl w-full relative">
-            {/* Close Icon */}
+        <div className="fixed inset-0 bg-black/30 backdrop-blur-md flex items-center justify-center z-[9999] p-2">
+          <div className="bg-white rounded-xl shadow-2xl w-full max-w-4xl relative overflow-hidden">
+            {/* Close Button */}
             <button
               onClick={closePopup}
-              className="absolute top-2 right-2 text-gray-500 hover:text-red-500 text-2xl z-50"
+              className="absolute top-3 right-3 text-gray-600 hover:text-red-500 text-l font-bold z-50"
             >
               ✖
             </button>
 
-            {/* Offer component */}
-            <Offer />
+            {/* Offer Content with scroll on small screens */}
+            <div className="overflow-x-auto max-h-[90vh]">
+              <Offer />
+            </div>
           </div>
         </div>
       )}

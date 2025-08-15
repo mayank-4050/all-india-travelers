@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import Navbar from './UperNavbar';
+import { NavLink } from 'react-router-dom';
 
 const CustomerProfile = () => {
   const [profile, setProfile] = useState({
@@ -485,6 +486,9 @@ const CustomerProfile = () => {
                 )}
               </div>
             </form>
+            <NavLink to='/customertermsconditions'>
+            <p className='text-blue-500'>Customer Terms & Conditions</p>
+            </NavLink>
           </div>
         </div>
 

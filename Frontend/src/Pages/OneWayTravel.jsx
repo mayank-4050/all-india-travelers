@@ -8,7 +8,7 @@ const OneWayTravel = () => {
     <div>
       <UperNavbar />
       <HeroSection />
-      <OneWayForm />
+      <OneWayForm /> 
     </div>
   )
 }
