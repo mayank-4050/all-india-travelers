@@ -7,6 +7,7 @@ const dotenv = require('dotenv');
 const path = require('path');
 const connectDB = require('./config/db');
 const userRoutes = require('./routes/UserRoute');
+const offerRoutes = require('./routes/OfferRoute');
 
 dotenv.config();
 connectDB();
@@ -38,7 +39,7 @@ app.use('/api/auth', authRoutes);
 app.use('/api/distance', distanceRoutes);
 app.use('/api/bookings', bookingRoutes);
 app.use('/api/users', userRoutes);
-
+app.use('/api/offers', offerRoutes);
 
 // socket.io connection
 io.on('connection', (socket) => {

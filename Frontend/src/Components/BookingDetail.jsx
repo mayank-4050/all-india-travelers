@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { useParams, useLocation } from "react-router-dom";
+import { useParams, useLocation, NavLink } from "react-router-dom";
 import axios from "axios";
 
 const BookingDetail = () => {
@@ -29,24 +29,23 @@ const BookingDetail = () => {
     }
   }, [id, booking]);
 
-const updateBookingStatus = async (status) => {
-  if (!id) return;
-  setUpdating(true);
-  try {
-    const token = localStorage.getItem("token");
-    const res = await axios.patch(
-      `http://localhost:5000/api/bookings/${id}/status`,
-      { status },
-      { headers: { Authorization: `Bearer ${token}` } }
-    );
-    setBooking((prev) => ({ ...prev, status: res.data.data.status }));
-  } catch (err) {
-    console.error(`Error updating booking to ${status}:`, err);
-  } finally {
-    setUpdating(false);
-  }
-};
-
+  const updateBookingStatus = async (status) => {
+    if (!id) return;
+    setUpdating(true);
+    try {
+      const token = localStorage.getItem("token");
+      const res = await axios.patch(
+        `http://localhost:5000/api/bookings/${id}/status`,
+        { status },
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+      setBooking((prev) => ({ ...prev, status: res.data.data.status }));
+    } catch (err) {
+      console.error(`Error updating booking to ${status}:`, err);
+    } finally {
+      setUpdating(false);
+    }
+  };
 
   if (loading) return <p className="text-center mt-6">Loading booking details...</p>;
   if (!booking) return <p className="text-center mt-6">Booking not found.</p>;
@@ -95,13 +94,13 @@ const updateBookingStatus = async (status) => {
       {/* Booked By */}
       {booking.user && (
         <div className="bg-white rounded-lg shadow-md p-6 border border-gray-200">
-          <h2 className="text-lg font-semibold mb-4 border-b pb-2">Booked By (User)</h2>
+          <h2 className="text-lg font-semibold mb-4 border-b pb-2">Booked By (User )</h2>
           <p><strong>User ID:</strong> {booking.user._id}</p>
         </div>
       )}
 
       {/* Action Buttons */}
-      <div className="flex gap-4">
+      <div className="flex gap-4 mb-5">
         <button
           onClick={() => updateBookingStatus("cancelled")}
           disabled={updating}
@@ -116,6 +115,15 @@ const updateBookingStatus = async (status) => {
         >
           Confirm Booking
         </button>
+        <NavLink
+          to="/onewaydutyslip"
+          state={{
+            offer: booking,  // Send the entire booking object
+            advanceAmount: booking.advanceAmount || 0 // Send advance amount as is
+          }}
+        >
+          <button>Generate Duty Slip</button>
+        </NavLink>
       </div>
     </div>
   );

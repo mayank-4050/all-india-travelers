@@ -26,6 +26,12 @@ import AdAgentDetail from './Components/AdAgentDetail'
 import AgentProfile from './Components/AgentProfile'
 import AgentTermCondition from './Components/AgentTermCondition'
 import CustomerTermCondition from './Components/CustomerTermCondition'
+import QRCode from "./Pages/QRCode";
+import OneWaydutySlip from './Components/OneWaydutySlip'
+import AdvanceConAdmin from './Pages/AdvanceConAdmin'
+import OfferConVehical from "./Components/OfferConVehical";
+import OfferPayAdvnc from "./Components/OfferPayAdvnc";
+import AddOffer from "./Pages/AddOffer";
 
 
 export default function App() {
@@ -97,14 +103,15 @@ export default function App() {
             </ProtectedRoute>
           }
         />
-        {/* <Route
-          path="/admin/oneway"
+        <Route
+          path="/advanceconformation"
           element={
             <ProtectedRoute allowedRoles={["admin"]}>
-              <OneWayTravel />
+              <AdvanceConAdmin />
             </ProtectedRoute>
           }
-        /> */}
+        />
+
 
 
 
@@ -193,8 +200,50 @@ export default function App() {
             </ProtectedRoute>
           }
         />
+        <Route
+          path="/qr-code"
+          element={
+            <ProtectedRoute allowedRoles={["admin", "customer"]}>
+              <QRCode />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/onewaydutyslip"
+          element={
+            <ProtectedRoute allowedRoles={["admin", "customer"]}>
+              <OneWaydutySlip />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/offerconvehical"
+          element={
+            <ProtectedRoute allowedRoles={["admin", "customer"]}>
+              <OfferConVehical />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/offerpayadvance"
+          element={
+            <ProtectedRoute allowedRoles={["admin", "customer"]}>
+              <OfferPayAdvnc />
+            </ProtectedRoute>
+          }
+        />
 
 
+        {/* for Admin/Agent */}
+
+          <Route
+          path="/addoffer"
+          element={
+            <ProtectedRoute allowedRoles={["admin", "agent"]}>
+              <AddOffer />
+            </ProtectedRoute>
+          }
+        />
 
 
 

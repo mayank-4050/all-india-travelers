@@ -4,7 +4,7 @@ const AgentTermCondition = () => {
     return (
         <div className='w-full p-10 flex flex-col items-center '>
             <div className=" flex items-center flex-col border rounded-xl">
-                <h1 className='text-2xl italic text-black font-bold'>Terms and conditions for Citizen & Passengers</h1>
+                <h1 className='text-2xl italic text-black font-bold'>Terms and conditions for Agent</h1>
             <div className="p-5">
                 <p className='text-orange-500'>1. Eligibility </p>
                 <p>

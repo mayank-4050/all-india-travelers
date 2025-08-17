@@ -1,11 +1,11 @@
 import React from 'react'
 import Offer from '../Components/Offer'
-import UperNavbar from '../Components/UperNavbar'
+import Navbar from '../Components/UperNavbar'
 
 const TodayOffer = () => {
   return (
     <div>
-      <UperNavbar/>
+      <Navbar/>
       <Offer/>
     </div>
   )

@@ -1,10 +1,10 @@
 import React from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
-import crista from '../Photos/crista.jpg';
-import dzire from '../Photos/Dizire.jpg';
-import tavera from '../Photos/tavera.jpg';
-import zest from '../Photos/zest.jpg';
-import ertiga from '../Photos/ertiga.jpg';
+import crista from '/Photos/crysta.jpg';
+import dzire from '/Photos/dzire.jpg';
+import tavera from '/Photos/tavera.jpg';
+import zest from '/Photos/zest.jpg';
+import ertiga from '/Photos/ertiga.webp';
 
 const OneWayShowVecl = () => {
   const navigate = useNavigate();
@@ -130,8 +130,9 @@ const OneWayShowVecl = () => {
               {endTime && <th className='border px-2 py-2'>End Time</th>}
               {pickupInfo && <th className='border px-2 py-2'>Pickup Info</th>}
               <th className='border px-2 py-2'>Seats</th>
-              <th className='border px-2 py-2'>Amount (₹)</th>
               <th className='border px-2 py-2'>Distance (km)</th>
+              <th className='border px-2 py-2'>Amount (₹)</th>
+              
               <th className='border px-2 py-2'>Action</th>
             </tr>
           </thead>

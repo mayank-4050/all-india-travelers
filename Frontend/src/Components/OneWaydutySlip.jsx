@@ -6,16 +6,24 @@ const OneWayDutySlip = () => {
     const offer = location.state?.offer || {};
     const passenger = JSON.parse(localStorage.getItem('passengerData')) || {};
 
-    // Default values for charges (replace with actual logic as needed)
-    const baseAmount = parseFloat(offer.amount) || 0;
+    // Charges setup (use the values from the offer)
+    const baseAmount = parseFloat(offer.baseAmount) || 0; // Ensure these properties exist in the booking object
     const distance = parseFloat(offer.distance) || 0;
-    const driverAllowance = distance > 100 ? 200 : 0;
-    const haltingCharges = 500; // Example value
-    const tollTaxAndParking = 300; // Example value
-    const extraHoursCharges = 0; // Example value
-    const extraKmCharges = 0; // Example value
+    const driverAllowance = parseFloat(offer.driverAllowance) || 0;
+    const haltingCharges = parseFloat(offer.haltingCharges) || 0;
+    const tollTaxAndParking = parseFloat(offer.tollTaxAndParking) || 0;
+    const extraHoursCharges = parseFloat(offer.extraHoursCharges) || 0;
+    const extraKmCharges = parseFloat(offer.extraKmCharges) || 0;
+    const advanceAmount = parseFloat(offer.advanceAmount) || 0; // new
 
-    const totalAmount = baseAmount + driverAllowance + haltingCharges + tollTaxAndParking + extraHoursCharges + extraKmCharges;
+    // Total calculation
+    const totalAmount =
+        baseAmount +
+        driverAllowance +
+        haltingCharges +
+        tollTaxAndParking +
+        extraHoursCharges +
+        extraKmCharges;
 
     return (
         <div className="max-w-4xl mx-auto p-8 bg-white">
@@ -46,7 +54,7 @@ const OneWayDutySlip = () => {
                             <h2 className="text-xl font-semibold border-b-2 border-gray-300 pb-2 mb-3">Trip Metrics</h2>
                             <div className="space-y-2">
                                 <p><span className="font-medium w-32 inline-block">Distance:</span> {distance} km</p>
-                                <p><span className="font-medium w-32 inline-block">Time:</span> {offer.startTime || 'N/A'}</p>
+                                <p><span className="font-medium w-32 inline-block">Time:</span> {offer.time || 'N/A'}</p>
                                 <p><span className="font-medium w-32 inline-block">Date:</span> {offer.pickupDate || offer.date || 'N/A'}</p>
                                 <p><span className="font-medium w-32 inline-block">Seats:</span> {offer.seats || 'N/A'}</p>
                             </div>
@@ -82,9 +90,13 @@ const OneWayDutySlip = () => {
                             <span>Extra KM Charges:</span>
                             <span>₹{extraKmCharges.toFixed(2)}</span>
                         </div>
-                        <div className="flex justify-between border-t-2 border-gray-300 pt-2 font-bold text-lg">
+                        <div className="flex justify-between border-t-2 border-gray-300 pt-2 font-bold">
                             <span>Total Amount:</span>
                             <span>₹{totalAmount.toFixed(2)}</span>
+                        </div>
+                        <div className="flex justify-between">
+                            <span>Advance Paid:</span>
+                            <span>₹{advanceAmount.toFixed(2)}</span>
                         </div>
                     </div>
                 </div>

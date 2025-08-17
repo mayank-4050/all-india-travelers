@@ -1,13 +1,13 @@
 import React from 'react';
-import backgroundImg from '../Photos/travelLogo.png';
-import Footerlogo from '../Photos/All_India_Travel_Logo_Colorful.png';
-import insta from '../Photos/insta.png';
-import whatsapp from '../Photos/whatsapp.png';
-import facebook from '../Photos/facebook.png';
-import twiter from '../Photos/twiter.png'
-import Linkedin from '../Photos/linkedin.png';
-import visting from '../Photos/visting.jpg';
-import footerImg from '../Photos/footerImg.jpg'
+import backgroundImg from '/Photos/all india travels.png';
+import insta from '/Photos/insta.png';
+import whatsapp from '/Photos/whatsapp.png';
+import facebook from '/Photos/facebook.png';
+import twiter from '/Photos/twiter.png'
+import Linkedin from '/Photos/Linkedin.png'
+import visting from '/Photos/visting.jpg';
+import footerImg from '/Photos/footerImg.jpg'
+import Footerlogo from '/Photos/allindiatravelsback.png'
 
 const Footer = () => {
     return (

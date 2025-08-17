@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import Navbar from './UperNavbar';
-import { NavLink } from 'react-router-dom';
+import { NavLink, useNavigate } from 'react-router-dom';
 
 const CustomerProfile = () => {
   const [profile, setProfile] = useState({
@@ -17,6 +17,10 @@ const CustomerProfile = () => {
 
   const [bookings, setBookings] = useState([]);
   const [isEditing, setIsEditing] = useState(false);
+  const navigate = useNavigate(); // Use useNavigate for navigation
+
+  // QR code image URL
+  const qrCodeImageUrl = 'https://example.com/qr-code.png'; // Replace with your QR code image URL
 
   // --- helpers ---
   const normalize = (s) => String(s || '').trim().toLowerCase();
@@ -292,6 +296,12 @@ const CustomerProfile = () => {
     }
   };
 
+  // Function to handle the "Pay Advance" button click
+  const handlePayAdvance = (bookingId) => {
+    // Navigate to the QR code image
+    navigate('/qr-code'); // Adjust the route as necessary
+  };
+
   return (
     <div className="min-h-screen bg-gray-50">
       <Navbar />
@@ -487,12 +497,12 @@ const CustomerProfile = () => {
               </div>
             </form>
             <NavLink to='/customertermsconditions'>
-            <p className='text-blue-500'>Customer Terms & Conditions</p>
+              <p className='text-blue-500'>Customer Terms & Conditions</p>
             </NavLink>
           </div>
         </div>
 
-        <div className="mt-6 bg-white rounded-xl shadow-md overflow-hidden">
+               <div className="mt-6 bg-white rounded-xl shadow-md overflow-hidden">
           <div className="p-6">
             <h2 className="text-lg font-semibold text-gray-800 border-b pb-2 mb-4">
               Ride History
@@ -529,6 +539,16 @@ const CustomerProfile = () => {
                         className="mt-2 px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700"
                       >
                         Cancel Booking
+                      </button>
+                    )}
+
+                    {/* Show "Pay Advance" button if status is confirmed */}
+                    {normalize(booking.status) === 'confirmed' && (
+                      <button
+                        onClick={() => handlePayAdvance(id)}
+                        className="mt-2 ml-4 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
+                      >
+                        Pay Advance
                       </button>
                     )}
                   </div>

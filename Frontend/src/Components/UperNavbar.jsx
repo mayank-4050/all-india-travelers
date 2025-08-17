@@ -3,6 +3,7 @@ import { NavLink, useNavigate } from "react-router-dom";
 import AOS from "aos";
 import "aos/dist/aos.css";
 import { Menu, X } from "lucide-react";
+import logo from '/Photos/all india travels.png'
 
 const Navbar = () => {
   const [scrolled, setScrolled] = useState(false);
@@ -63,13 +64,8 @@ const Navbar = () => {
         }`}
     >
       {/* Title */}
-      <div className="flex flex-col items-center md:items-start">
-        <h1 className="text-2xl md:text-3xl font-extrabold tracking-wide text-gray-800 font-serif">
-          All India Travels
-        </h1>
-        <p className="text-xs md:text-sm text-gray-500 italic -mt-1">
-          and online services
-        </p>
+      <div className="w-50">
+        <img src={logo}></img>
       </div>
 
       {/* Mobile Menu Toggle */}

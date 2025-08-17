@@ -1,6 +1,6 @@
 import React from 'react'
 
-const ConfirmVehical = () => {
+const OfferPayAdvnc = () => {
   return (
     <div>
       
@@ -8,4 +8,4 @@ const ConfirmVehical = () => {
   )
 }
 
-export default ConfirmVehical
+export default OfferPayAdvnc
