@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import Navbar from "./UperNavbar";
 import { Link } from "react-router-dom";
 import { io } from "socket.io-client";
+import { Menu } from "lucide-react"; // for mobile menu icon
 
 // Connect to backend socket server
 const socket = io("http://localhost:5000", { transports: ["websocket"] });
@@ -21,6 +22,7 @@ const AdminProfile = () => {
 
   const [isEditing, setIsEditing] = useState(false);
   const [notification, setNotification] = useState(null);
+  const [sidebarOpen, setSidebarOpen] = useState(false);
 
   // Fetch admin profile on load
   useEffect(() => {
@@ -154,38 +156,53 @@ const AdminProfile = () => {
 
       <div className="flex">
         {/* Sidebar */}
-        <aside className="w-64 bg-white shadow-md p-6 border-r h-screen fixed">
-          <h2 className="text-xl font-bold mb-6 text-orange-600">Admin Panel</h2>
-          <nav className="space-y-4">
-            <Link
-              to="/admin/view-bookings"
-              className="block px-4 py-2 rounded-lg hover:bg-orange-100 text-gray-700"
-            >
-              📅 View Bookings
-            </Link>
-            <Link
-              to="/allcustomers"
-              className="block px-4 py-2 rounded-lg hover:bg-orange-100 text-gray-700"
-            >
-              👥 All Customers
-            </Link>
-            <Link
-              to="/allagents"
-              className="block px-4 py-2 rounded-lg hover:bg-orange-100 text-gray-700"
-            >
-              🤝 All Agents
-            </Link>
-            <Link
-              to="/alloffersforadmin"
-              className="block px-4 py-2 rounded-lg hover:bg-orange-100 text-gray-700"
-            >
-                All Offers with agent info
-            </Link>
-          </nav>
+        <aside
+          className={`fixed  left-0 h-full w-64 bg-white shadow-md border-r transform transition-transform duration-300 z-40
+          ${sidebarOpen ? "translate-x-0" : "-translate-x-full"} md:translate-x-0`}
+        >
+          <div className="p-6">
+            <h2 className="text-xl font-bold mb-6 text-orange-600">
+              Admin Panel
+            </h2>
+            <nav className="space-y-4">
+              <Link
+                to="/admin/view-bookings"
+                className="block px-4 py-2 rounded-lg hover:bg-orange-100 text-gray-700"
+              >
+                📅 View Bookings
+              </Link>
+              <Link
+                to="/allcustomers"
+                className="block px-4 py-2 rounded-lg hover:bg-orange-100 text-gray-700"
+              >
+                👥 All Customers
+              </Link>
+              <Link
+                to="/allagents"
+                className="block px-4 py-2 rounded-lg hover:bg-orange-100 text-gray-700"
+              >
+                🤝 All Agents
+              </Link>
+              <Link
+                to="/alloffersforadmin"
+                className="block px-4 py-2 rounded-lg hover:bg-orange-100 text-gray-700"
+              >
+                🎁 All Offers with Agent Info
+              </Link>
+            </nav>
+          </div>
         </aside>
 
+        {/* Sidebar Toggle Button (Mobile Only) */}
+        <button
+          onClick={() => setSidebarOpen(!sidebarOpen)}
+          className="md:hidden fixed top-20 left-4 z-50 bg-orange-600 text-white p-2 rounded-lg shadow-lg"
+        >
+          <Menu size={22} />
+        </button>
+
         {/* Main Content */}
-        <div className="flex-1 max-w-4xl mx-auto p-6 ml-64">
+        <div className="flex-1 max-w-4xl mx-auto p-6 md:ml-64">
           <div className="bg-white rounded-xl shadow-md overflow-hidden">
             {/* Header */}
             <div className="bg-orange-600 p-6 text-white">
@@ -205,7 +222,7 @@ const AdminProfile = () => {
             <div className="p-6">
               {/* Profile Picture */}
               <div className="flex flex-col items-center mb-8">
-                <div className="relative w-32 h-32 rounded-full bg-gray-200 overflow-hidden">
+                <div className="relative w-32 h-32 rounded-full bg-gray-200 overflow-hidden ring-4 ring-orange-200">
                   {profile.profileImage ? (
                     <img
                       src={profile.profileImage}
