@@ -12,14 +12,14 @@ const isStrongPassword = (password) => password.length >= 8;
 
 exports.register = async (req, res) => {
   try {
-    const { 
-      role, fullName, email, mobile, area,city,state,pincode, password, confirmPassword,
+    const {
+      role, fullName, email, mobile, area, city, state, pincode, password, confirmPassword,
       travelerName, idProofType
     } = req.body;
 
-   if (!role || !fullName || !email || !mobile || !area || !city || !state || !pincode || !password || !confirmPassword) {
-  return res.status(400).json({ success: false, message: 'All required fields must be provided' });
-}
+    if (!role || !fullName || !email || !mobile || !area || !city || !state || !pincode || !password || !confirmPassword) {
+      return res.status(400).json({ success: false, message: 'All required fields must be provided' });
+    }
 
 
     if (!['Admin', 'Agent', 'Customer'].includes(role)) {
@@ -64,24 +64,24 @@ exports.register = async (req, res) => {
 
     const hashedPassword = await bcrypt.hash(password, 10);
 
-   const newUser = new User({
-  role,
-  fullName,
-  email,
-  mobile,
-  area,
-  city,
-  state,
-  pincode,
-  password: hashedPassword,
-  ...(role === 'Agent' && {
-    travelerName,
-    state,
-    pincode,
-    idProofType,
-    idProofImage: req.file ? `/uploads/${req.file.filename}` : null
-  })
-});
+    const newUser = new User({
+      role,
+      fullName,
+      email,
+      mobile,
+      area,
+      city,
+      state,
+      pincode,
+      password: hashedPassword,
+      ...(role === 'Agent' && {
+        travelerName,
+        state,
+        pincode,
+        idProofType,
+        idProofImage: req.file ? `/uploads/${req.file.filename}` : null
+      })
+    });
 
 
     await newUser.save();
@@ -119,14 +119,14 @@ exports.register = async (req, res) => {
 
 exports.login = async (req, res) => {
   try {
-    const { role, emailOrMobile, password } = req.body;
+    const { emailOrMobile, password } = req.body;
 
-    if (!role || !emailOrMobile || !password) {
-      return res.status(400).json({ success: false, message: 'All fields are required' });
+    if (!emailOrMobile || !password) {
+      return res.status(400).json({ success: false, message: 'Email/Mobile and password are required' });
     }
 
+    // find user by email OR mobile
     const user = await User.findOne({
-      role,
       $or: [{ email: emailOrMobile }, { mobile: emailOrMobile }]
     });
 
@@ -134,11 +134,13 @@ exports.login = async (req, res) => {
       return res.status(401).json({ success: false, message: 'Invalid credentials' });
     }
 
+    // check password
     const isPasswordValid = await bcrypt.compare(password, user.password);
     if (!isPasswordValid) {
       return res.status(401).json({ success: false, message: 'Invalid credentials' });
     }
 
+    // create JWT
     const token = jwt.sign({ userId: user._id, role: user.role }, JWT_SECRET, { expiresIn: '1d' });
 
     const userResponse = {

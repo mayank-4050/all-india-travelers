@@ -6,7 +6,6 @@ import Navbar from '../Components/UperNavbar';
 const Login = () => {
   const [emailOrMobile, setEmailOrMobile] = useState('');
   const [password, setPassword] = useState('');
-  const [role, setRole] = useState('Customer');
   const [errorMessage, setErrorMessage] = useState('');
   const navigate = useNavigate();
 
@@ -17,25 +16,24 @@ const Login = () => {
     try {
       const response = await axios.post('http://localhost:5000/api/auth/login', {
         emailOrMobile,
-        password,
-        role,
+        password
       });
 
       const { token, user } = response.data;
       const userRole = user.role;
 
-      // Save token & role in localStorage
+      // ✅ Save token & role
       localStorage.setItem('token', token);
-      localStorage.setItem('role', userRole.toLowerCase()); // ✅ lowercase me store
+      localStorage.setItem('role', userRole.toLowerCase());
 
-
-      // Save customer details for later use
+      // ✅ Save customer details
       localStorage.setItem('customerData', JSON.stringify({
         name: user.fullName || "",
         email: user.email || "",
         phone: user.mobile || ""
       }));
 
+      // ✅ Navigate based on actual role from backend
       if (userRole === "Admin") {
         navigate("/adminprofile");
       } else if (userRole === "Agent") {
@@ -63,16 +61,6 @@ const Login = () => {
         )}
 
         <form onSubmit={handleSubmit} className="space-y-4 w-full">
-          <select
-            value={role}
-            onChange={(e) => setRole(e.target.value)}
-            className="border py-2 px-3 rounded w-full"
-          >
-            <option value="Admin">Admin</option>
-            <option value="Agent">Agent</option>
-            <option value="Customer">Customer</option>
-          </select>
-
           <input
             type="text"
             placeholder="Email or Mobile"

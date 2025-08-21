@@ -1,9 +1,9 @@
-// routes/offerRoutes.js
 const express = require("express");
 const router = express.Router();
-const Offer = require("../models/Offer"); // ✅ no .js needed, Node resolves automatically
+const Offer = require("../models/Offer");
+const sendSMS = require("../utils/sendSMS"); // ✅ utility import
 
-// ✅ Save Offer
+// ✅ Save Offer & Send SMS
 router.post("/", async (req, res) => {
   try {
     console.log("📥 Incoming Offer:", req.body);
@@ -16,7 +16,17 @@ router.post("/", async (req, res) => {
     const offer = new Offer(req.body);
     await offer.save();
 
-    res.status(201).json({ success: true, data: offer });
+    // 📲 SMS text for admin
+    const smsText = `📢 New Offer Posted!
+From: ${offer.from}
+To: ${offer.to}
+Vehicle: ${offer.vehicle}
+Amount: ₹${offer.amount}`;
+
+    // ✅ Send SMS
+    await sendSMS(process.env.ADMIN_PHONE, smsText);
+
+    res.status(201).json({ success: true, data: offer, message: "Offer added & SMS sent to admin" });
   } catch (err) {
     console.error("❌ Offer Save Error:", err);
     res.status(500).json({ success: false, error: err.message });

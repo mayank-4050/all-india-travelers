@@ -32,6 +32,7 @@ import AdvanceConAdmin from './Pages/AdvanceConAdmin'
 import OfferConVehical from "./Components/OfferConVehical";
 import OfferPayAdvnc from "./Components/OfferPayAdvnc";
 import AddOffer from "./Pages/AddOffer";
+import AllOfferForAdmin from './Pages/AllOfferForAdmin'
 
 
 export default function App() {
@@ -108,6 +109,14 @@ export default function App() {
           element={
             <ProtectedRoute allowedRoles={["admin"]}>
               <AdvanceConAdmin />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/alloffersforadmin"
+          element={
+            <ProtectedRoute allowedRoles={["admin"]}>
+              <AllOfferForAdmin />
             </ProtectedRoute>
           }
         />

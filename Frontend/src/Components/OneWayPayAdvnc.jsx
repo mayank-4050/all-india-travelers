@@ -213,7 +213,7 @@ const OneWayPayAdvnc = () => {
                   className="mt-1 h-5 w-5 rounded border-gray-300 text-blue-600 focus:ring-blue-500"
                 />
                 <label htmlFor="terms-checkbox" className="text-sm text-gray-700">
-                  I agree to the <a href="#" className="text-blue-600 hover:underline">terms and conditions</a>
+                  I agree to the <a href="/customertermsconditions" className="text-blue-600 hover:underline">terms and conditions</a>
                 </label>
               </div>
             </div>

@@ -175,6 +175,12 @@ const AdminProfile = () => {
             >
               🤝 All Agents
             </Link>
+            <Link
+              to="/alloffersforadmin"
+              className="block px-4 py-2 rounded-lg hover:bg-orange-100 text-gray-700"
+            >
+                All Offers with agent info
+            </Link>
           </nav>
         </aside>
 
