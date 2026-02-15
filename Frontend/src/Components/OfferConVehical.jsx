@@ -34,7 +34,7 @@ const OfferConVehical = () => {
   }
 
   const handleProceed = () => {
-    navigate('/customerdetailform', { state: { offer } });
+    navigate('/onewaypayadvance', { state: { offer } });
   };
 
   // ✅ Match image with car name

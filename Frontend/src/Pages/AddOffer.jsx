@@ -1,11 +1,16 @@
 import React, { useState, useEffect } from "react";
 import AsyncSelect from "react-select/async";
 import axios from "axios";
+import { useLocation, useNavigate } from "react-router-dom";
 
 const GEOAPIFY_KEY = "d2d43c2448eb403296a3e49969fa3888";
-const vehicles = ["Crysta", "Tavera", "Dzire"];
+const vehicles = ["Crysta", "Tavera", "Dzire", "Zest", "Ertiga"];
 
 const AddOffer = () => {
+  const location = useLocation();
+  const navigate = useNavigate();
+  const editOffer = location.state?.editOffer;
+
   const [from, setFrom] = useState(null);
   const [to, setTo] = useState(null);
   const [vehicle, setVehicle] = useState("");
@@ -15,8 +20,24 @@ const AddOffer = () => {
   const [endTime, setEndTime] = useState("");
   const [seats, setSeats] = useState("");
   const [distance, setDistance] = useState(null);
+  const [loading, setLoading] = useState(false);
 
-  // 🔹 Load city/place suggestions from Geoapify API
+  // 🔥 PREFILL FORM IF EDIT MODE
+  useEffect(() => {
+    if (editOffer) {
+      setFrom({ label: editOffer.from, value: editOffer.from });
+      setTo({ label: editOffer.to, value: editOffer.to });
+      setVehicle(editOffer.vehicle);
+      setAmount(editOffer.amount);
+      setDate(editOffer.date);
+      setSeats(editOffer.seats);
+      setStartTime(editOffer.startTime);
+      setEndTime(editOffer.endTime);
+      setDistance(editOffer.distance || null);
+    }
+  }, [editOffer]);
+
+  // 🔹 Load city suggestions
   const loadOptions = async (inputValue) => {
     if (inputValue.length < 3) return [];
     const res = await fetch(
@@ -29,15 +50,18 @@ const AddOffer = () => {
     }));
   };
 
-  // 🔹 Fetch distance when From & To are selected
+  // 🔹 Fetch distance
   useEffect(() => {
     const fetchDistance = async () => {
       if (from && to) {
         try {
-          const res = await axios.post("http://localhost:5000/api/distance", {
-            from: from.label,
-            to: to.label,
-          });
+          const res = await axios.post(
+            "http://localhost:5000/api/distance",
+            {
+              from: from.label,
+              to: to.label,
+            }
+          );
           setDistance(res.data.distance);
         } catch (err) {
           console.error("Distance error:", err);
@@ -48,170 +72,167 @@ const AddOffer = () => {
     fetchDistance();
   }, [from, to]);
 
-  // 🔹 Submit Offer to backend
+  // 🔥 SUBMIT (CREATE OR UPDATE)
   const handleSubmit = async (e) => {
     e.preventDefault();
+
     if (!from || !to || !vehicle || !amount || !date || !startTime || !endTime || !seats) {
       alert("Please fill all fields");
       return;
     }
 
-  const newOffer = {
-  from: from?.label || from || "",
-  to: to?.label || to || "",
-  vehicle: vehicle.charAt(0).toUpperCase() + vehicle.slice(1).toLowerCase(), // ensures "Crysta", "Tavera", "Dzire"
-  amount: Number(amount) || 0,
-  date: date || "",
-  seats: Number(seats) || 0,
-  startTime: startTime || "",
-  endTime: endTime || "",
-  distance: distance ? Number(distance) : 0,
-};
+    const token = localStorage.getItem("token");
+    if (!token) {
+      alert("Please login first");
+      return;
+    }
 
-
+    const offerData = {
+      from: from.label,
+      to: to.label,
+      vehicle,
+      amount: Number(amount),
+      date,
+      seats: Number(seats),
+      startTime,
+      endTime,
+      distance: distance || 0,
+    };
 
     try {
-      await axios.post("http://localhost:5000/api/offers", newOffer);
-      alert("✅ Offer submitted successfully!");
+      setLoading(true);
 
-      // Reset form
-      setFrom(null);
-      setTo(null);
-      setVehicle("");
-      setAmount("");
-      setDate("");
-      setSeats("");
-      setStartTime("");
-      setEndTime("");
-      setDistance(null);
+      if (editOffer) {
+        // 🔥 UPDATE MODE
+        await axios.put(
+          `http://localhost:5000/api/offers/${editOffer._id}`,
+          offerData,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+
+        alert("✅ Offer updated successfully!");
+      } else {
+        // 🔥 CREATE MODE
+        await axios.post(
+          "http://localhost:5000/api/offers",
+          offerData,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+
+        alert("✅ Offer submitted successfully!");
+      }
+
+      navigate("/my-offers"); // Redirect after success
+
     } catch (err) {
-      console.error("Offer submit error:", err);
-      alert("❌ Failed to submit offer");
+      console.error("Offer submit error:", err.response?.data || err.message);
+      alert(err.response?.data?.message || "❌ Something went wrong");
+    } finally {
+      setLoading(false);
     }
   };
 
   return (
-    <div className="">
-      <div
-        className="mx-auto mt-10 p-6 border border-orange-500 rounded-lg shadow-md max-w-2xl relative"
-        // style={{
-        //   backgroundImage: `url(${backgroundImg})`,
-        //   backgroundSize: "cover",
-        //   backgroundPosition: "center",
-        // }}
-      >
-        <div className="absolute inset-0 bg-white bg-opacity-80 rounded-lg"></div>
-        <div className="relative z-10">
-          <h2 className="text-xl font-bold mb-4 text-center text-orange-500 italic">
-            Add Travel <span className="text-black">Offer</span>
-          </h2>
+    <div className="min-h-screen bg-gray-50 flex justify-center items-center p-4">
+      <div className="bg-white p-6 rounded-xl shadow-lg w-full max-w-2xl">
+        <h2 className="text-2xl font-bold text-center text-orange-600 mb-6">
+          {editOffer ? "Update Travel Offer" : "Add Travel Offer"}
+        </h2>
 
-          <form
-            onSubmit={handleSubmit}
-            className="grid grid-cols-1 md:grid-cols-2 gap-4"
+        <form onSubmit={handleSubmit} className="grid grid-cols-1 md:grid-cols-2 gap-4">
+
+          <AsyncSelect
+            cacheOptions
+            loadOptions={loadOptions}
+            placeholder="From"
+            value={from}
+            onChange={setFrom}
+          />
+
+          <AsyncSelect
+            cacheOptions
+            loadOptions={loadOptions}
+            placeholder="To"
+            value={to}
+            onChange={setTo}
+          />
+
+          <select
+            className="border p-2 rounded"
+            value={vehicle}
+            onChange={(e) => setVehicle(e.target.value)}
           >
-            {/* From Place */}
-            <AsyncSelect
-              cacheOptions
-              loadOptions={loadOptions}
-              placeholder="From"
-              value={from}
-              onChange={setFrom}
-            />
+            <option value="">Select Vehicle</option>
+            {vehicles.map((v, i) => (
+              <option key={i} value={v}>{v}</option>
+            ))}
+          </select>
 
-            {/* To Place */}
-            <AsyncSelect
-              cacheOptions
-              loadOptions={loadOptions}
-              placeholder="To"
-              value={to}
-              onChange={setTo}
-            />
+          <input
+            className="border p-2 rounded"
+            type="number"
+            placeholder="Amount"
+            value={amount}
+            onChange={(e) => setAmount(e.target.value)}
+          />
 
-            {/* Vehicle */}
-            <select
-              className="w-full border p-2 rounded"
-              value={vehicle}
-              onChange={(e) => setVehicle(e.target.value)}
+          <input
+            className="border p-2 rounded"
+            type="date"
+            value={date}
+            onChange={(e) => setDate(e.target.value)}
+          />
+
+          <input
+            className="border p-2 rounded"
+            type="number"
+            placeholder="Seats Available"
+            value={seats}
+            onChange={(e) => setSeats(e.target.value)}
+          />
+
+          <input
+            className="border p-2 rounded"
+            type="time"
+            value={startTime}
+            onChange={(e) => setStartTime(e.target.value)}
+          />
+
+          <input
+            className="border p-2 rounded"
+            type="time"
+            value={endTime}
+            onChange={(e) => setEndTime(e.target.value)}
+          />
+
+          <div className="md:col-span-2">
+            <button
+              type="submit"
+              disabled={loading}
+              className="w-full bg-orange-500 hover:bg-orange-600 text-white p-2 rounded-lg transition"
             >
-              <option value="">Select Vehicle</option>
-              {vehicles.map((v, i) => (
-                <option key={i} value={v}>
-                  {v}
-                </option>
-              ))}
-            </select>
+              {loading
+                ? "Processing..."
+                : editOffer
+                ? "Update Offer"
+                : "Submit Offer"}
+            </button>
+          </div>
+        </form>
 
-            {/* Amount */}
-            <input
-              className="w-full border p-2 rounded"
-              type="text"
-              placeholder="Amount"
-              value={amount}
-              onChange={(e) => setAmount(e.target.value)}
-            />
-
-            {/* Date */}
-            <input
-              className="w-full border p-2 rounded"
-              type="date"
-              value={date}
-              onChange={(e) => setDate(e.target.value)}
-            />
-
-            {/* Seats */}
-            <input
-              className="w-full border p-2 rounded"
-              type="number"
-              placeholder="Seats Available"
-              value={seats}
-              onChange={(e) => setSeats(e.target.value)}
-            />
-
-            {/* Pickup Time */}
-            <div className="flex flex-col">
-              <label className="text-sm font-semibold text-gray-700 mb-1">
-                Pickup Time
-              </label>
-              <input
-                className="w-full border p-2 rounded"
-                type="time"
-                value={startTime}
-                onChange={(e) => setStartTime(e.target.value)}
-              />
-            </div>
-
-            {/* Drop Time */}
-            <div className="flex flex-col">
-              <label className="text-sm font-semibold text-gray-700 mb-1">
-                Drop Time
-              </label>
-              <input
-                className="w-full border p-2 rounded"
-                type="time"
-                value={endTime}
-                onChange={(e) => setEndTime(e.target.value)}
-              />
-            </div>
-
-            {/* Submit button */}
-            <div className="md:col-span-2">
-              <button
-                type="submit"
-                className="w-full bg-orange-500 text-white p-2 rounded hover:bg-orange-600"
-              >
-                Submit Offer
-              </button>
-            </div>
-          </form>
-
-          {/* Show calculated distance */}
-          {distance && (
-            <p className="mt-2 text-center text-green-700 font-semibold">
-              Distance: {distance} km
-            </p>
-          )}
-        </div>
+        {distance && (
+          <p className="mt-4 text-center text-green-600 font-semibold">
+            Distance: {distance} km
+          </p>
+        )}
       </div>
     </div>
   );

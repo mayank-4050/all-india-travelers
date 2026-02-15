@@ -2,9 +2,8 @@ import React, { useState, useEffect } from "react";
 import Navbar from "./UperNavbar";
 import { Link } from "react-router-dom";
 import { io } from "socket.io-client";
-import { Menu } from "lucide-react"; // for mobile menu icon
+import { Menu } from "lucide-react";
 
-// Connect to backend socket server
 const socket = io("http://localhost:5000", { transports: ["websocket"] });
 
 const AdminProfile = () => {
@@ -24,7 +23,7 @@ const AdminProfile = () => {
   const [notification, setNotification] = useState(null);
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
-  // Fetch admin profile on load
+  // Fetch admin profile
   useEffect(() => {
     const fetchProfile = async () => {
       try {
@@ -61,20 +60,11 @@ const AdminProfile = () => {
     fetchProfile();
   }, []);
 
-  // Listen for new booking notifications
+  // Booking notifications
   useEffect(() => {
-    socket.on("connect", () => {
-      console.log("✅ Connected to socket server");
-    });
-
     socket.on("newBooking", (booking) => {
-      console.log("📢 New booking received:", booking);
       setNotification(`📢 New booking from ${booking.customerName}`);
       setTimeout(() => setNotification(null), 5000);
-    });
-
-    socket.on("disconnect", () => {
-      console.log("❌ Disconnected from socket server");
     });
 
     return () => {
@@ -102,7 +92,6 @@ const AdminProfile = () => {
     e.preventDefault();
     try {
       const token = localStorage.getItem("token");
-      if (!token) throw new Error("No token found");
 
       const response = await fetch("http://localhost:5000/api/auth/profile", {
         method: "PUT",
@@ -147,7 +136,6 @@ const AdminProfile = () => {
     <div className="min-h-screen bg-gray-50">
       <Navbar />
 
-      {/* Notification Banner */}
       {notification && (
         <div className="fixed top-4 right-4 bg-green-600 text-white px-6 py-3 rounded-lg shadow-lg z-50 animate-bounce">
           {notification}
@@ -155,45 +143,60 @@ const AdminProfile = () => {
       )}
 
       <div className="flex">
+
         {/* Sidebar */}
         <aside
-          className={`fixed  left-0 h-full w-64 bg-white shadow-md border-r transform transition-transform duration-300 z-40
+          className={`fixed left-0 h-full w-64 bg-white shadow-md border-r transform transition-transform duration-300 z-40
           ${sidebarOpen ? "translate-x-0" : "-translate-x-full"} md:translate-x-0`}
         >
           <div className="p-6">
             <h2 className="text-xl font-bold mb-6 text-orange-600">
               Admin Panel
             </h2>
+
             <nav className="space-y-4">
+
               <Link
                 to="/admin/view-bookings"
                 className="block px-4 py-2 rounded-lg hover:bg-orange-100 text-gray-700"
               >
                 📅 View Bookings
               </Link>
+
               <Link
                 to="/allcustomers"
                 className="block px-4 py-2 rounded-lg hover:bg-orange-100 text-gray-700"
               >
                 👥 All Customers
               </Link>
+
               <Link
                 to="/allagents"
                 className="block px-4 py-2 rounded-lg hover:bg-orange-100 text-gray-700"
               >
                 🤝 All Agents
               </Link>
+
+              {/* ✅ NEW OPTION */}
+              <Link
+                to="/admin/agent-requests"
+                className="block px-4 py-2 rounded-lg hover:bg-orange-100 text-gray-700"
+              >
+                📝 Agent Requests
+              </Link>
+
               <Link
                 to="/alloffersforadmin"
                 className="block px-4 py-2 rounded-lg hover:bg-orange-100 text-gray-700"
               >
                 🎁 All Offers with Agent Info
               </Link>
+
             </nav>
           </div>
         </aside>
 
-        {/* Sidebar Toggle Button (Mobile Only) */}
+        {/* Sidebar Toggle (Mobile) */}
         <button
           onClick={() => setSidebarOpen(!sidebarOpen)}
           className="md:hidden fixed top-20 left-4 z-50 bg-orange-600 text-white p-2 rounded-lg shadow-lg"
@@ -204,7 +207,7 @@ const AdminProfile = () => {
         {/* Main Content */}
         <div className="flex-1 max-w-4xl mx-auto p-6 md:ml-64">
           <div className="bg-white rounded-xl shadow-md overflow-hidden">
-            {/* Header */}
+
             <div className="bg-orange-600 p-6 text-white">
               <h1 className="text-2xl font-bold">Admin Profile</h1>
               <p className="text-orange-100">
@@ -218,9 +221,8 @@ const AdminProfile = () => {
               )}
             </div>
 
-            {/* Profile Content */}
             <div className="p-6">
-              {/* Profile Picture */}
+
               <div className="flex flex-col items-center mb-8">
                 <div className="relative w-32 h-32 rounded-full bg-gray-200 overflow-hidden ring-4 ring-orange-200">
                   {profile.profileImage ? (
@@ -235,120 +237,58 @@ const AdminProfile = () => {
                     </div>
                   )}
                 </div>
-                {isEditing && (
-                  <div className="mt-4">
-                    <label className="text-xs bg-gray-100 hover:bg-gray-200 px-3 py-1 rounded cursor-pointer transition">
-                      <input
-                        type="file"
-                        accept="image/*"
-                        onChange={handleImageChange}
-                        className="hidden"
-                      />
-                      Change Photo
-                    </label>
-                  </div>
-                )}
               </div>
 
-              {/* Profile Form */}
               <form onSubmit={handleSubmit}>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                  {/* Personal Info */}
+
                   <div className="space-y-4">
                     <h2 className="text-lg font-semibold text-gray-800 border-b pb-2">
                       Personal Information
                     </h2>
-                    {[
-                      { label: "Full Name", name: "name", type: "text" },
-                      { label: "Email", name: "email", type: "email" },
-                      { label: "Phone", name: "phone", type: "tel" },
-                    ].map((field) => (
-                      <div key={field.name}>
-                        <label className="block text-sm font-medium text-gray-700 mb-1">
-                          {field.label}
-                        </label>
-                        {isEditing ? (
-                          <input
-                            type={field.type}
-                            name={field.name}
-                            value={profile[field.name]}
-                            onChange={handleInputChange}
-                            className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-orange-500"
-                          />
-                        ) : (
-                          <p className="px-4 py-2 bg-gray-50 rounded-lg">
-                            {profile[field.name]}
-                          </p>
-                        )}
-                      </div>
-                    ))}
+
+                    <p className="px-4 py-2 bg-gray-50 rounded-lg">
+                      {profile.name}
+                    </p>
+
+                    <p className="px-4 py-2 bg-gray-50 rounded-lg">
+                      {profile.email}
+                    </p>
+
+                    <p className="px-4 py-2 bg-gray-50 rounded-lg">
+                      {profile.phone}
+                    </p>
                   </div>
 
-                  {/* Address Info */}
                   <div className="space-y-4">
                     <h2 className="text-lg font-semibold text-gray-800 border-b pb-2">
                       Address Information
                     </h2>
-                    {[
-                      { label: "Area", name: "area" },
-                      { label: "City", name: "city" },
-                      { label: "State", name: "state" },
-                      { label: "Pincode", name: "pincode" },
-                    ].map((field) => (
-                      <div key={field.name}>
-                        <label className="block text-sm font-medium text-gray-700 mb-1">
-                          {field.label}
-                        </label>
-                        {isEditing ? (
-                          <input
-                            type="text"
-                            name={field.name}
-                            value={profile[field.name]}
-                            onChange={handleInputChange}
-                            className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-orange-500"
-                          />
-                        ) : (
-                          <p className="px-4 py-2 bg-gray-50 rounded-lg">
-                            {profile[field.name]}
-                          </p>
-                        )}
-                      </div>
-                    ))}
+
+                    <p className="px-4 py-2 bg-gray-50 rounded-lg">
+                      {profile.area}
+                    </p>
+
+                    <p className="px-4 py-2 bg-gray-50 rounded-lg">
+                      {profile.city}
+                    </p>
+
+                    <p className="px-4 py-2 bg-gray-50 rounded-lg">
+                      {profile.state}
+                    </p>
+
+                    <p className="px-4 py-2 bg-gray-50 rounded-lg">
+                      {profile.pincode}
+                    </p>
                   </div>
                 </div>
 
-                {/* Action Buttons */}
-                <div className="flex justify-end mt-8 space-x-4">
-                  {isEditing ? (
-                    <>
-                      <button
-                        type="button"
-                        onClick={() => setIsEditing(false)}
-                        className="px-6 py-2 border border-gray-300 rounded-lg hover:bg-gray-50"
-                      >
-                        Cancel
-                      </button>
-                      <button
-                        type="submit"
-                        className="px-6 py-2 bg-orange-600 text-white rounded-lg hover:bg-orange-700"
-                      >
-                        Save Changes
-                      </button>
-                    </>
-                  ) : (
-                    <button
-                      type="button"
-                      onClick={() => setIsEditing(true)}
-                      className="px-6 py-2 bg-orange-600 text-white rounded-lg hover:bg-orange-700"
-                    >
-                      Edit Profile
-                    </button>
-                  )}
-                </div>
               </form>
+
             </div>
           </div>
         </div>
+
       </div>
     </div>
   );

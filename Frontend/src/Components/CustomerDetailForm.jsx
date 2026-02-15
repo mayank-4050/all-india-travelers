@@ -28,7 +28,7 @@ const CustomerDetailForm = () => {
   if (!offer) {
     return <p className="text-center text-red-500 mt-5">No trip data found.</p>;
   }
-
+  
   return (
     <div className='w-full'>
       <Navbar />

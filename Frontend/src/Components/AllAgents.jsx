@@ -1,127 +1,166 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-import { useNavigate } from "react-router-dom";
-
-const ViewIcon = () => (
-  <svg
-    xmlns="http://www.w3.org/2000/svg"
-    className="h-5 w-5 inline-block mr-1"
-    fill="none"
-    viewBox="0 0 24 24"
-    stroke="currentColor"
-    strokeWidth={2}
-  >
-    <path
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
-    />
-    <path
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"
-    />
-  </svg>
-);
 
 const AllAgents = () => {
   const [agents, setAgents] = useState([]);
   const [loading, setLoading] = useState(true);
-  const navigate = useNavigate(); 
+  const [openId, setOpenId] = useState(null); // 👈 toggle row
 
- useEffect(() => {
-  const fetchAgents = async () => {
-    try {
-      const res = await axios.get("http://localhost:5000/api/users/agents");
-      setAgents(res.data);
-    } catch (error) {
-      console.error("Error fetching agents:", error);
-    } finally {
-      setLoading(false);
-    }
+  useEffect(() => {
+    const fetchAgents = async () => {
+      try {
+        const token = localStorage.getItem("token");
+
+        const res = await axios.get(
+          "http://localhost:5000/api/admin/approved-agents",
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+
+        setAgents(res.data.agents);
+
+      } catch (error) {
+        console.error(
+          "Error fetching agents:",
+          error.response?.data || error.message
+        );
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchAgents();
+  }, []);
+
+  const toggleDetails = (id) => {
+    setOpenId(openId === id ? null : id);
   };
 
-  fetchAgents();
-}, []);
+  const renderImage = (label, imagePath) => {
+    if (!imagePath) return null;
 
-
-  const handleViewClick = (id) => {
-    navigate(`/singleagentdetail/${id}`);
+    return (
+      <div className="min-w-[140px] text-center">
+        <p className="text-xs font-medium mb-1">{label}</p>
+        <a
+          href={`http://localhost:5000${imagePath}`}
+          target="_blank"
+          rel="noreferrer"
+        >
+          <img
+            src={`http://localhost:5000${imagePath}`}
+            alt={label}
+            className="w-36 h-24 object-cover rounded border hover:scale-105 transition"
+          />
+        </a>
+      </div>
+    );
   };
-
-  
 
   if (loading) {
     return (
-      <p className="p-6 text-center text-lg font-semibold text-gray-500 animate-pulse">
-        Loading agents...
-      </p>
+      <div className="flex justify-center items-center h-40">
+        <p className="text-lg font-semibold text-gray-500 animate-pulse">
+          Loading approved agents...
+        </p>
+      </div>
     );
   }
 
   return (
     <div className="p-6 max-w-7xl mx-auto">
-      <h2 className="text-3xl font-extrabold mb-6 text-gradient bg-gradient-to-r from-orange-400 to-blue-500 bg-clip-text text-transparent">
-        All Agents
+      <h2 className="text-3xl font-bold mb-6 text-orange-600">
+        Approved Agents
       </h2>
-      <div className="overflow-x-auto rounded-lg shadow-lg border border-gray-200">
-        <table className="min-w-full table-auto border-collapse text-sm font-medium">
-          <thead className="bg-gradient-to-r from-orange-400 to-blue-500 text-white sticky top-0">
-            <tr>
-              {[
-                "ID",
-                "Travels Name",
-                "Full Name",
-                "Email",
-                "Mobile",
-                "Area",
-                "City",
-                "State",
-                "Pincode",
-                "ID Proof",
-                "More",
-              ].map((header) => (
-                <th
-                  key={header}
-                  className="py-3 px-5 text-left tracking-wide select-none"
-                >
-                  {header}
-                </th>
-              ))}
-            </tr>
-          </thead>
-          <tbody>
-            {agents.map((agent, idx) => (
-              <tr
-                key={agent._id}
-                className={`transition-colors duration-300 ${
-                  idx % 2 === 0 ? "bg-white" : "bg-gray-50"
-                } hover:bg-green-50 cursor-pointer`}
-              >
-                <td className="py-3 px-5 max-w-xs truncate">{agent._id}</td>
-                <td className="py-3 px-5 max-w-xs truncate">{agent.travelerName}</td>
-                <td className="py-3 px-5">{agent.fullName}</td>
-                <td className="py-3 px-5">{agent.email}</td>
-                <td className="py-3 px-5">{agent.mobile}</td>
-                <td className="py-3 px-5">{agent.area}</td>
-                <td className="py-3 px-5">{agent.city}</td>
-                <td className="py-3 px-5">{agent.state}</td>
-                <td className="py-3 px-5">{agent.pincode}</td>
-                <td className="py-3 px-5">{agent.idProofType}</td>
-                <td className="py-3 px-5">
-                 <button
-                    onClick={() => handleViewClick(agent._id)}
-                    className="inline-flex items-center gap-1 bg-gradient-to-r from-green-500 to-blue-600 hover:from-green-600 hover:to-blue-700 text-white px-4 py-1 rounded-lg shadow-md transition-transform active:scale-95 focus:outline-none focus:ring-2 focus:ring-green-400"
-                  >
-                    <ViewIcon />
-                    View
-                  </button>
-                </td>
+
+      {agents.length === 0 ? (
+        <div className="bg-gray-100 p-6 rounded text-center text-gray-600 font-medium">
+          No approved agents found.
+        </div>
+      ) : (
+        <div className="overflow-x-auto rounded-lg shadow border">
+          <table className="min-w-full text-sm">
+            <thead className="bg-orange-600 text-white">
+              <tr>
+                <th className="px-4 py-3 text-left">Travel Name</th>
+                <th className="px-4 py-3 text-left">Full Name</th>
+                <th className="px-4 py-3 text-left">Email</th>
+                <th className="px-4 py-3 text-left">Mobile</th>
+                <th className="px-4 py-3 text-left">City</th>
+                <th className="px-4 py-3 text-left">State</th>
+                <th className="px-4 py-3 text-left">Action</th>
               </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
+            </thead>
+
+            <tbody>
+              {agents.map((agent, index) => (
+                <React.Fragment key={agent._id}>
+                  
+                  {/* ===== NORMAL ROW ===== */}
+                  <tr
+                    className={`${
+                      index % 2 === 0 ? "bg-white" : "bg-gray-50"
+                    } hover:bg-green-50 transition`}
+                  >
+                    <td className="px-4 py-3">{agent.travelerName || "-"}</td>
+                    <td className="px-4 py-3">{agent.fullName}</td>
+                    <td className="px-4 py-3">{agent.email}</td>
+                    <td className="px-4 py-3">{agent.mobile}</td>
+                    <td className="px-4 py-3">{agent.city}</td>
+                    <td className="px-4 py-3">{agent.state}</td>
+                    <td className="px-4 py-3">
+                      <button
+                        onClick={() => toggleDetails(agent._id)}
+                        className="bg-blue-600 hover:bg-blue-700 text-white px-3 py-1 rounded transition active:scale-95"
+                      >
+                        {openId === agent._id ? "Hide Details" : "View Details"}
+                      </button>
+                    </td>
+                  </tr>
+
+                  {/* ===== EXPANDED ROW ===== */}
+                  {openId === agent._id && (
+                    <tr className="bg-gray-100">
+                      <td colSpan="7" className="px-6 py-5">
+
+                        {/* Extra Info */}
+                        <div className="grid md:grid-cols-3 gap-4 text-sm mb-6">
+                          <p><strong>Area:</strong> {agent.area}</p>
+                          <p><strong>Pincode:</strong> {agent.pincode}</p>
+                          <p><strong>ID Type:</strong> {agent.idProofType}</p>
+                          <p><strong>Registered:</strong> {new Date(agent.createdAt).toLocaleDateString()}</p>
+                        </div>
+
+                        {/* Documents */}
+                        <div>
+                          <h4 className="font-semibold mb-3">
+                            Uploaded Documents
+                          </h4>
+
+                          <div className="flex gap-5 overflow-x-auto pb-3">
+
+                            {renderImage("ID Proof", agent.idProofImage)}
+                            {renderImage("Aadhar", agent.aadharCard)}
+                            {renderImage("Gumasta", agent.gumastaCertificate)}
+                            {renderImage("Office Photo", agent.officePhoto)}
+                            {renderImage("Owner Selfie", agent.ownerSelfie)}
+
+                          </div>
+                        </div>
+
+                      </td>
+                    </tr>
+                  )}
+
+                </React.Fragment>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      )}
     </div>
   );
 };

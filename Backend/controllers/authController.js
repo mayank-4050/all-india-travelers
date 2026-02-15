@@ -1,70 +1,49 @@
-const User = require('../models/User');
-const bcrypt = require('bcrypt');
-const jwt = require('jsonwebtoken');
-const fs = require('fs');
+require("dotenv").config();
 
-const JWT_SECRET = process.env.JWT_SECRET || 'secretAllIndia';
-const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB
+const User = require("../models/User");
+const bcrypt = require("bcrypt");
+const jwt = require("jsonwebtoken");
+const fs = require("fs");
+const path = require("path");
 
-const isValidEmail = (email) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
-const isValidMobile = (mobile) => /^[6-9]\d{9}$/.test(mobile);
-const isStrongPassword = (password) => password.length >= 8;
+const JWT_SECRET = process.env.JWT_SECRET || "secretAllIndia";
+
+const isValidEmail = (email) =>
+  /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+
+const isValidMobile = (mobile) =>
+  /^[6-9]\d{9}$/.test(mobile);
+
+const isStrongPassword = (password) =>
+  password.length >= 8;
+
+/*
+=================================================
+🧹 Helper: Delete Uploaded Files if Error
+=================================================
+*/
+const deleteUploadedFiles = (files) => {
+  if (!files) return;
+
+  Object.keys(files).forEach((field) => {
+    files[field].forEach((file) => {
+      if (fs.existsSync(file.path)) {
+        fs.unlinkSync(file.path);
+      }
+    });
+  });
+};
+
+/*
+=================================================
+================= REGISTER ======================
+=================================================
+*/
 
 exports.register = async (req, res) => {
   try {
+
     const {
-      role, fullName, email, mobile, area, city, state, pincode, password, confirmPassword,
-      travelerName, idProofType
-    } = req.body;
-
-    if (!role || !fullName || !email || !mobile || !area || !city || !state || !pincode || !password || !confirmPassword) {
-      return res.status(400).json({ success: false, message: 'All required fields must be provided' });
-    }
-
-
-    if (!['Admin', 'Agent', 'Customer'].includes(role)) {
-      return res.status(400).json({ success: false, message: 'Invalid role specified' });
-    }
-
-    if (!isValidEmail(email)) {
-      return res.status(400).json({ success: false, message: 'Please provide a valid email address' });
-    }
-
-    if (!isValidMobile(mobile)) {
-      return res.status(400).json({ success: false, message: 'Please provide a valid 10-digit mobile number' });
-    }
-
-    if (!isStrongPassword(password)) {
-      return res.status(400).json({ success: false, message: 'Password must be at least 8 characters long' });
-    }
-
-    if (password !== confirmPassword) {
-      return res.status(400).json({ success: false, message: 'Passwords do not match' });
-    }
-
-    const existingUser = await User.findOne({ $or: [{ email }, { mobile }] });
-    if (existingUser) {
-      return res.status(409).json({ success: false, message: 'User already exists with this email or mobile number' });
-    }
-
-    if (role === 'Agent') {
-      if (!travelerName || !state || !pincode || !idProofType) {
-        return res.status(400).json({ success: false, message: 'All agent-specific fields are required' });
-      }
-
-      if (!req.file) {
-        return res.status(400).json({ success: false, message: 'ID proof image is required for agents' });
-      }
-
-      if (req.file.size > MAX_FILE_SIZE) {
-        fs.unlinkSync(req.file.path);
-        return res.status(400).json({ success: false, message: 'File size too large (max 5MB allowed)' });
-      }
-    }
-
-    const hashedPassword = await bcrypt.hash(password, 10);
-
-    const newUser = new User({
       role,
       fullName,
       email,
@@ -73,98 +52,238 @@ exports.register = async (req, res) => {
       city,
       state,
       pincode,
+      password,
+      confirmPassword,
+      travelerName,
+      idProofType
+    } = req.body;
+
+    // ================= BASIC VALIDATION =================
+
+    if (
+      !role ||
+      !fullName ||
+      !email ||
+      !mobile ||
+      !area ||
+      !city ||
+      !state ||
+      !pincode ||
+      !password ||
+      !confirmPassword
+    ) {
+      deleteUploadedFiles(req.files);
+      return res.status(400).json({
+        success: false,
+        message: "All required fields must be provided"
+      });
+    }
+
+    if (!["Admin", "Agent", "Customer"].includes(role)) {
+      deleteUploadedFiles(req.files);
+      return res.status(400).json({
+        success: false,
+        message: "Invalid role specified"
+      });
+    }
+
+    if (!isValidEmail(email)) {
+      deleteUploadedFiles(req.files);
+      return res.status(400).json({
+        success: false,
+        message: "Invalid email address"
+      });
+    }
+
+    if (!isValidMobile(mobile)) {
+      deleteUploadedFiles(req.files);
+      return res.status(400).json({
+        success: false,
+        message: "Invalid mobile number"
+      });
+    }
+
+    if (!isStrongPassword(password)) {
+      deleteUploadedFiles(req.files);
+      return res.status(400).json({
+        success: false,
+        message: "Password must be at least 8 characters"
+      });
+    }
+
+    if (password !== confirmPassword) {
+      deleteUploadedFiles(req.files);
+      return res.status(400).json({
+        success: false,
+        message: "Passwords do not match"
+      });
+    }
+
+    const existingUser = await User.findOne({
+      $or: [{ email }, { mobile }]
+    });
+
+    if (existingUser) {
+      deleteUploadedFiles(req.files);
+      return res.status(409).json({
+        success: false,
+        message: "User already exists"
+      });
+    }
+
+    // ================= AGENT DOCUMENT VALIDATION =================
+
+    let documents = {};
+
+    if (role === "Agent") {
+
+      if (!travelerName || !idProofType) {
+        deleteUploadedFiles(req.files);
+        return res.status(400).json({
+          success: false,
+          message: "Traveler name and ID proof type required"
+        });
+      }
+
+      if (
+        !req.files ||
+        !req.files.idProofImage ||
+        !req.files.aadharCard ||
+        !req.files.gumastaCertificate ||
+        !req.files.officePhoto ||
+        !req.files.ownerSelfie
+      ) {
+        deleteUploadedFiles(req.files);
+        return res.status(400).json({
+          success: false,
+          message: "All agent documents are required"
+        });
+      }
+
+      documents = {
+        idProofImage: `/uploads/${req.files.idProofImage[0].filename}`,
+        aadharCard: `/uploads/${req.files.aadharCard[0].filename}`,
+        gumastaCertificate: `/uploads/${req.files.gumastaCertificate[0].filename}`,
+        officePhoto: `/uploads/${req.files.officePhoto[0].filename}`,
+        ownerSelfie: `/uploads/${req.files.ownerSelfie[0].filename}`
+      };
+    }
+
+    // ================= SAVE USER =================
+
+    const hashedPassword = await bcrypt.hash(password, 10);
+
+    const newUser = new User({
+      role,
+      status: role === "Agent" ? "pending" : "approved",
+      fullName,
+      email,
+      mobile,
+      area,
+      city,
+      state,
+      pincode,
       password: hashedPassword,
-      ...(role === 'Agent' && {
+      ...(role === "Agent" && {
         travelerName,
-        state,
-        pincode,
         idProofType,
-        idProofImage: req.file ? `/uploads/${req.file.filename}` : null
+        ...documents
       })
     });
 
-
     await newUser.save();
-
-    const token = jwt.sign({ userId: newUser._id, role: newUser.role }, JWT_SECRET, { expiresIn: '1d' });
-
-    const userResponse = {
-      _id: newUser._id,
-      role: newUser.role,
-      fullName: newUser.fullName,
-      email: newUser.email,
-      mobile: newUser.mobile,
-      ...(role === 'Agent' && { travelerName: newUser.travelerName })
-    };
 
     return res.status(201).json({
       success: true,
-      message: 'Registration successful',
-      token,
-      user: userResponse
+      message:
+        role === "Agent"
+          ? "Registration successful. Waiting for admin approval."
+          : "Registration successful"
     });
 
   } catch (err) {
-    if (req.file) {
-      fs.unlinkSync(req.file.path);
+
+    deleteUploadedFiles(req.files);
+
+    console.error("❌ REGISTER ERROR:", err);
+
+    if (err.code === 11000) {
+      return res.status(409).json({
+        success: false,
+        message: "Duplicate email or mobile"
+      });
     }
-    console.error('Registration error:', err);
+
     return res.status(500).json({
       success: false,
-      message: 'Internal server error',
-      error: process.env.NODE_ENV === 'development' ? err.message : undefined
+      message: "Internal server error"
     });
   }
 };
 
+/*
+=================================================
+=================== LOGIN =======================
+=================================================
+*/
+
 exports.login = async (req, res) => {
   try {
+
     const { emailOrMobile, password } = req.body;
 
     if (!emailOrMobile || !password) {
-      return res.status(400).json({ success: false, message: 'Email/Mobile and password are required' });
+      return res.status(400).json({
+        success: false,
+        message: "Email/Mobile and password required"
+      });
     }
 
-    // find user by email OR mobile
     const user = await User.findOne({
       $or: [{ email: emailOrMobile }, { mobile: emailOrMobile }]
     });
 
     if (!user) {
-      return res.status(401).json({ success: false, message: 'Invalid credentials' });
+      return res.status(401).json({
+        success: false,
+        message: "Invalid credentials"
+      });
     }
 
-    // check password
-    const isPasswordValid = await bcrypt.compare(password, user.password);
-    if (!isPasswordValid) {
-      return res.status(401).json({ success: false, message: 'Invalid credentials' });
+    const isMatch = await bcrypt.compare(password, user.password);
+
+    if (!isMatch) {
+      return res.status(401).json({
+        success: false,
+        message: "Invalid credentials"
+      });
     }
 
-    // create JWT
-    const token = jwt.sign({ userId: user._id, role: user.role }, JWT_SECRET, { expiresIn: '1d' });
+    if (user.role === "Agent" && user.status !== "approved") {
+      return res.status(403).json({
+        success: false,
+        message: "Please Make Payment To Start Business With Us."
+      });
+    }
 
-    const userResponse = {
-      _id: user._id,
-      role: user.role,
-      fullName: user.fullName,
-      email: user.email,
-      mobile: user.mobile,
-      ...(user.role === 'Agent' && { travelerName: user.travelerName })
-    };
+    const token = jwt.sign(
+      { userId: user._id, role: user.role },
+      JWT_SECRET,
+      { expiresIn: "1d" }
+    );
 
     return res.status(200).json({
       success: true,
-      message: 'Login successful',
+      message: "Login successful",
       token,
-      user: userResponse
+      user
     });
 
   } catch (err) {
-    console.error('Login error:', err);
+    console.error("❌ LOGIN ERROR:", err);
     return res.status(500).json({
       success: false,
-      message: 'Internal server error',
-      error: process.env.NODE_ENV === 'development' ? err.message : undefined
+      message: "Internal server error"
     });
   }
 };

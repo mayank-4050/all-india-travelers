@@ -1,51 +1,30 @@
-const mongoose = require('mongoose');
+const mongoose = require("mongoose");
 
 const BookingSchema = new mongoose.Schema({
   user: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: 'User',
+    ref: "User",
     required: true
   },
-  from: {
-    type: String,
-    required: true
+
+  // 🔥 Offer booking ke liye (nullable for one-way)
+  offerId: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "Offer",
+    default: null
   },
-  to: {
-    type: String,
-    required: true
-  },
-  date: {
-    type: Date,
-    required: true
-  },
-  time: {
-    type: String,
-    required: true
-  },
-  vehicle: {
-    type: String,
-    required: true
-  },
-  seats: {
-    type: Number,
-    required: true
-  },
-  distance: {
-    type: Number,
-    required: true
-  },
-  baseAmount: {
-    type: Number,
-    required: true
-  },
-  driverAllowance: {
-    type: Number,
-    default: 0
-  },
-  totalAmount: {
-    type: Number,
-    required: true
-  },
+
+  from: { type: String, required: true },
+  to: { type: String, required: true },
+  date: { type: Date, required: true },
+  time: { type: String, required: true },
+  vehicle: { type: String, required: true },
+  seats: { type: Number, required: true },
+  distance: { type: Number, required: true },
+  baseAmount: { type: Number, required: true },
+  driverAllowance: { type: Number, default: 0 },
+  totalAmount: { type: Number, required: true },
+
   passenger: {
     name: String,
     phone: String,
@@ -53,15 +32,13 @@ const BookingSchema = new mongoose.Schema({
     idType: String,
     idNumber: String
   },
+
   status: {
     type: String,
-    enum: ['pending', 'confirmed', 'cancelled'],
-    default: 'pending'
-  },
-  createdAt: {
-    type: Date,
-    default: Date.now
+    enum: ["pending", "confirmed", "cancelled", "cancelled by the customer"],
+    default: "confirmed"
   }
-});
 
-module.exports = mongoose.model('Booking', BookingSchema);
+}, { timestamps: true });
+
+module.exports = mongoose.model("Booking", BookingSchema);

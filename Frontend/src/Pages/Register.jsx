@@ -1,29 +1,37 @@
-import React, { useState } from 'react';
-import Navbar from '../Components/UperNavbar';
-import { NavLink } from 'react-router-dom';
+import React, { useState } from "react";
+import Navbar from "../Components/UperNavbar";
+import { NavLink } from "react-router-dom";
+import LiveCameraCapture from "../Components/LiveCameraCapture";
 
 const Register = () => {
-  const [role, setRole] = useState('');
+  const [role, setRole] = useState("");
+  const [loading, setLoading] = useState(false);
+
   const [formData, setFormData] = useState({
-    travelerName: '',
-    fullName: '',
-    email: '',
-    mobile: '',
-    area: '',
-    city: '',
-    state: '',
-    pincode: '',
-    idProofType: '',
+    travelerName: "",
+    fullName: "",
+    email: "",
+    mobile: "",
+    area: "",
+    city: "",
+    state: "",
+    pincode: "",
+    idProofType: "",
     idProofImage: null,
-    password: '',
-    confirmPassword: '',
+    aadharCard: null,
+    gumastaCertificate: null,
+    officePhoto: null,
+    ownerSelfie: null,
+    password: "",
+    confirmPassword: ""
   });
 
   const handleChange = (e) => {
     const { name, value, files } = e.target;
+
     setFormData((prev) => ({
       ...prev,
-      [name]: files ? files[0] : value,
+      [name]: files ? files[0] : value
     }));
   };
 
@@ -31,51 +39,68 @@ const Register = () => {
     e.preventDefault();
 
     if (!role) {
-      alert('Role is required');
-      return;
-    }
-    if (formData.password !== formData.confirmPassword) {
-      alert('Passwords do not match!');
+      alert("Role is required");
       return;
     }
 
+    if (formData.password !== formData.confirmPassword) {
+      alert("Passwords do not match!");
+      return;
+    }
+
+    setLoading(true);
+
     const data = new FormData();
-    data.append('role', role);
+    data.append("role", role);
+
     Object.entries(formData).forEach(([key, value]) => {
-      if (value) data.append(key, value);
+      if (value) {
+        data.append(key, value);
+      }
     });
 
     try {
-      const response = await fetch('http://localhost:5000/api/auth/register', {
-        method: 'POST',
-        body: data,
-      });
+      const response = await fetch(
+        "http://localhost:5000/api/auth/register",
+        {
+          method: "POST",
+          body: data
+        }
+      );
 
       const result = await response.json();
+
       if (response.ok) {
-        alert('✅ Registered Successfully!');
+        alert("✅ Registered Successfully!");
       } else {
-        alert('❌ Error: ' + result.message);
+        alert("❌ Error: " + result.message);
       }
     } catch (error) {
-      console.error('❌ Registration failed:', error);
-      alert('Something went wrong!');
+      console.error("❌ Registration failed:", error);
+      alert("Something went wrong!");
     }
+
+    setLoading(false);
   };
 
   return (
     <div className="w-full">
       <Navbar />
-      <div className="p-5 max-w-3xl mx-auto bg-white border border-orange-500 shadow rounded mt-6">
-        <h2 className="text-2xl font-bold italic mb-6 text-center text-orange-500">Register</h2>
-        <form onSubmit={handleSubmit} className="grid grid-cols-1 md:grid-cols-2 gap-4">
 
+      <div className="p-6 max-w-4xl mx-auto bg-white shadow-lg rounded-lg mt-8 border border-orange-400">
+        <h2 className="text-3xl font-bold text-center text-orange-600 mb-6">
+          Register
+        </h2>
+
+        <form onSubmit={handleSubmit} className="grid md:grid-cols-2 gap-4">
+
+          {/* ROLE */}
           <div className="md:col-span-2">
-            <label className="block mb-1 font-semibold">Select Role:</label>
+            <label className="font-semibold">Select Role</label>
             <select
               value={role}
               onChange={(e) => setRole(e.target.value)}
-              className="w-full border py-1 px-2 rounded"
+              className="w-full border p-2 rounded"
               required
             >
               <option value="">-- Select --</option>
@@ -85,172 +110,190 @@ const Register = () => {
             </select>
           </div>
 
-          {role === 'Agent' && (
-            <div className="md:col-span-2">
-              <label className="block mb-1 font-semibold">Traveler Name:</label>
-              <input
-                type="text"
-                name="travelerName"
-                value={formData.travelerName}
-                onChange={handleChange}
-                className="w-full border py-1 px-2 rounded"
-              />
-            </div>
-          )}
-
-          {/* Common Fields */}
-
-          <div>
-            <label className="block mb-1 font-semibold">Full Name:</label>
-            <input
-              type="text"
-              name="fullName"
-              value={formData.fullName}
-              onChange={handleChange}
-              className="w-full border py-1 px-2 rounded"
-              required
-            />
-          </div>
-
-          <div>
-            <label className="block mb-1 font-semibold">Email:</label>
-            <input
-              type="email"
-              name="email"
-              value={formData.email}
-              onChange={handleChange}
-              className="w-full border py-1 px-2 rounded"
-              required
-            />
-          </div>
-
-          <div>
-            <label className="block mb-1 font-semibold">Mobile Number:</label>
-            <input
-              type="text"
-              name="mobile"
-              value={formData.mobile}
-              onChange={handleChange}
-              className="w-full border py-1 px-2 rounded"
-              required
-            />
-          </div>
-
-          {/* New Address Fields */}
-          <div>
-            <label className="block mb-1 font-semibold">Area:</label>
-            <input
-              type="text"
-              name="area"
-              value={formData.area}
-              onChange={handleChange}
-              className="w-full border py-1 px-2 rounded"
-              required
-            />
-          </div>
-
-          <div>
-            <label className="block mb-1 font-semibold">City:</label>
-            <input
-              type="text"
-              name="city"
-              value={formData.city}
-              onChange={handleChange}
-              className="w-full border py-1 px-2 rounded"
-              required
-            />
-          </div>
-
-          <div>
-            <label className="block mb-1 font-semibold">State:</label>
-            <input
-              type="text"
-              name="state"
-              value={formData.state}
-              onChange={handleChange}
-              className="w-full border py-1 px-2 rounded"
-              required
-            />
-          </div>
-
-          <div>
-            <label className="block mb-1 font-semibold">Pincode:</label>
-            <input
-              type="text"
-              name="pincode"
-              value={formData.pincode}
-              onChange={handleChange}
-              className="w-full border py-1 px-2 rounded"
-              required
-            />
-          </div>
-
-          {/* Agent-only Fields */}
-          {role === 'Agent' && (
+          {/* AGENT SECTION */}
+          {role === "Agent" && (
             <>
+              <div className="md:col-span-2">
+                <label className="font-semibold">Traveler Name</label>
+                <input
+                  type="text"
+                  name="travelerName"
+                  value={formData.travelerName}
+                  onChange={handleChange}
+                  className="w-full border p-2 rounded"
+                />
+              </div>
+
               <div>
-                <label className="block mb-1 font-semibold">ID Proof Type:</label>
+                <label className="font-semibold">ID Proof Type</label>
                 <select
                   name="idProofType"
                   value={formData.idProofType}
                   onChange={handleChange}
-                  className="w-full border py-1 px-2 rounded"
+                  className="w-full border p-2 rounded"
                 >
-                  <option value="">-- Select ID Proof --</option>
+                  <option value="">-- Select --</option>
                   <option value="Aadhar Card">Aadhar Card</option>
                   <option value="Voter ID Card">Voter ID Card</option>
                 </select>
               </div>
+
               <div>
-                <label className="block mb-1 font-semibold">Upload ID Proof:</label>
+                <label className="font-semibold">Upload ID Proof</label>
                 <input
                   type="file"
                   name="idProofImage"
-                  accept="image/*"
                   onChange={handleChange}
-                  className="w-full border py-1 px-2 rounded"
+                  className="w-full border p-2 rounded"
+                />
+              </div>
+
+              <div>
+                <label className="font-semibold">Upload Aadhar Card</label>
+                <input
+                  type="file"
+                  name="aadharCard"
+                  onChange={handleChange}
+                  className="w-full border p-2 rounded"
+                />
+              </div>
+
+              <div>
+                <label className="font-semibold">Upload Gumasta Certificate</label>
+                <input
+                  type="file"
+                  name="gumastaCertificate"
+                  onChange={handleChange}
+                  className="w-full border p-2 rounded"
+                />
+              </div>
+
+              {/* 🔥 LIVE CAMERA COMPONENTS */}
+
+              <div className="md:col-span-2">
+                <LiveCameraCapture
+                  label="Live Office Photo"
+                  name="officePhoto"
+                  setFormData={setFormData}
+                />
+              </div>
+
+              <div className="md:col-span-2">
+                <LiveCameraCapture
+                  label="Owner Live Selfie"
+                  name="ownerSelfie"
+                  setFormData={setFormData}
                 />
               </div>
             </>
           )}
 
-          <div>
-            <label className="block mb-1 font-semibold">Password:</label>
-            <input
-              type="password"
-              name="password"
-              value={formData.password}
-              onChange={handleChange}
-              className="w-full border py-1 px-2 rounded"
-              required
-            />
-          </div>
+          {/* COMMON FIELDS */}
 
-          <div>
-            <label className="block mb-1 font-semibold">Confirm Password:</label>
-            <input
-              type="password"
-              name="confirmPassword"
-              value={formData.confirmPassword}
-              onChange={handleChange}
-              className="w-full border py-1 px-2 rounded"
-              required
-            />
-          </div>
+          <input
+            type="text"
+            name="fullName"
+            placeholder="Full Name"
+            value={formData.fullName}
+            onChange={handleChange}
+            className="border p-2 rounded"
+            required
+          />
+
+          <input
+            type="email"
+            name="email"
+            placeholder="Email"
+            value={formData.email}
+            onChange={handleChange}
+            className="border p-2 rounded"
+            required
+          />
+
+          <input
+            type="text"
+            name="mobile"
+            placeholder="Mobile"
+            value={formData.mobile}
+            onChange={handleChange}
+            className="border p-2 rounded"
+            required
+          />
+
+          <input
+            type="text"
+            name="area"
+            placeholder="Area"
+            value={formData.area}
+            onChange={handleChange}
+            className="border p-2 rounded"
+            required
+          />
+
+          <input
+            type="text"
+            name="city"
+            placeholder="City"
+            value={formData.city}
+            onChange={handleChange}
+            className="border p-2 rounded"
+            required
+          />
+
+          <input
+            type="text"
+            name="state"
+            placeholder="State"
+            value={formData.state}
+            onChange={handleChange}
+            className="border p-2 rounded"
+            required
+          />
+
+          <input
+            type="text"
+            name="pincode"
+            placeholder="Pincode"
+            value={formData.pincode}
+            onChange={handleChange}
+            className="border p-2 rounded"
+            required
+          />
+
+          <input
+            type="password"
+            name="password"
+            placeholder="Password"
+            value={formData.password}
+            onChange={handleChange}
+            className="border p-2 rounded"
+            required
+          />
+
+          <input
+            type="password"
+            name="confirmPassword"
+            placeholder="Confirm Password"
+            value={formData.confirmPassword}
+            onChange={handleChange}
+            className="border p-2 rounded"
+            required
+          />
 
           <div className="md:col-span-2 flex justify-center mt-4">
             <button
               type="submit"
-              className="bg-orange-600 text-white py-1 px-6 rounded hover:bg-orange-700 active:scale-95"
+              disabled={loading}
+              className="bg-orange-600 text-white px-8 py-2 rounded hover:bg-orange-700 transition"
             >
-              Register
+              {loading ? "Registering..." : "Register"}
             </button>
           </div>
         </form>
 
-        <div className="text-center mt-4">
-          Already have an account?{' '}
-          <NavLink to="/login" className="text-blue-500 hover:underline">
+        <div className="text-center mt-6">
+          Already have an account?{" "}
+          <NavLink to="/login" className="text-blue-500 underline">
             Login
           </NavLink>
         </div>

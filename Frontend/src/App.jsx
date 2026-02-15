@@ -1,500 +1,314 @@
-// App.jsx
 import React from "react";
 import { Routes, Route } from "react-router-dom";
 import { BookingProvider } from "./Components/BookingContext";
-
 import ProtectedRoute from "./Components/ProtectedRoute";
+
+/* ================= PAGES & COMPONENTS ================= */
+
 import Home from "./Pages/Home";
 import Login from "./Pages/Login";
-import Register from './Pages/Register';
+import Register from "./Pages/Register";
 import Unauthorized from "./Pages/Unauthorized";
 import Offer from "./Components/Offer";
 import Contactus from "./Pages/ContactUs";
-import AdminProfile from './Components/AdminProfile';
-import CustomerProfile from './Components/CustomerProfile';
-import OneWayTravel from './Pages/OneWayTravel';
-import OneWayShowVecl from './Components/OneWayShowVecl';
-import OneWayConVecl from './Components/OneWayConVecl';
-import CustomerDetailForm from './Components/CustomerDetailForm';
-import OneWayPayAdvnc from './Components/OneWayPayAdvnc';
-import AllBookings from './Components/AllBookings'
-import BookingDetail from './Components/BookingDetail'
-import AllCustomers from './Components/AllCustomers'
-import AdCusDetail from './Components/AdCusDetail'
-import AllAgents from './Components/AllAgents'
-import AdAgentDetail from './Components/AdAgentDetail'
-import AgentProfile from './Components/AgentProfile'
-import AgentTermCondition from './Components/AgentTermCondition'
-import CustomerTermCondition from './Components/CustomerTermCondition'
-import QRCode from "./Pages/QRCode";
-import OneWaydutySlip from './Components/OneWaydutySlip'
-import AdvanceConAdmin from './Pages/AdvanceConAdmin'
+
+import AdminProfile from "./Components/AdminProfile";
+import CustomerProfile from "./Components/CustomerProfile";
+import AgentProfile from "./Components/AgentProfile";
+
+import AgentTermCondition from "./Components/AgentTermCondition";
+import CustomerTermCondition from "./Components/CustomerTermCondition";
+
+import OneWayTravel from "./Pages/OneWayTravel";
+import OneWayShowVecl from "./Components/OneWayShowVecl";
+import OneWayConVecl from "./Components/OneWayConVecl";
+import CustomerDetailForm from "./Components/CustomerDetailForm";
+import OneWayPayAdvnc from "./Components/OneWayPayAdvnc";
+import OneWaydutySlip from "./Components/OneWaydutySlip";
+
 import OfferConVehical from "./Components/OfferConVehical";
 import OfferPayAdvnc from "./Components/OfferPayAdvnc";
-import AddOffer from "./Pages/AddOffer";
-import AllOfferForAdmin from './Pages/AllOfferForAdmin'
 
+import AllBookings from "./Components/AllBookings";
+import BookingDetail from "./Components/BookingDetail";
+import AllCustomers from "./Components/AllCustomers";
+import AdCusDetail from "./Components/AdCusDetail";
+import AllAgents from "./Components/AllAgents";
+import AdAgentDetail from "./Components/AdAgentDetail";
+
+import AddOffer from "./Pages/AddOffer";
+import MyOffers from "./Pages/MyOffers";
+import AgentConfirmedBookings from "./Pages/AgentConfirmedBookings";
+
+import AllOfferForAdmin from "./Pages/AllOfferForAdmin";
+import AdminAgentRequests from "./Pages/AdminAgentRequests";
+import AdvanceConAdmin from "./Pages/AdvanceConAdmin";
+import QRCode from "./Pages/QRCode";
+import WaitingApproval from "./Pages/WaitingApproval";
+import AgentPayment from "./Pages/AgentPayment";
+
+
+/* ================= APP ================= */
 
 export default function App() {
   return (
     <BookingProvider>
       <Routes>
-        {/* Public Routes */}
+
+        {/* ================= PUBLIC ROUTES ================= */}
         <Route path="/" element={<Home />} />
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
         <Route path="/todayoffer" element={<Offer />} />
         <Route path="/contactus" element={<Contactus />} />
         <Route path="/unauthorized" element={<Unauthorized />} />
+        <Route path="/waiting-approval" element={<WaitingApproval />} />
+        <Route path="/agent-payment" element={<AgentPayment />} />
 
-        {/* Admin-only dashboard */}
+
+        {/* ================= ADMIN ROUTES ================= */}
         <Route
           path="/adminprofile"
           element={
-            <ProtectedRoute allowedRoles={["admin"]}>
+            <ProtectedRoute allowedRoles={["Admin"]}>
               <AdminProfile />
             </ProtectedRoute>
           }
         />
+
         <Route
           path="/admin/view-bookings"
           element={
-            <ProtectedRoute allowedRoles={["admin"]}>
+            <ProtectedRoute allowedRoles={["Admin"]}>
               <AllBookings />
             </ProtectedRoute>
           }
         />
+
         <Route
           path="/bookingdetail/:id"
           element={
-            <ProtectedRoute allowedRoles={["admin"]}>
+            <ProtectedRoute allowedRoles={["Admin"]}>
               <BookingDetail />
             </ProtectedRoute>
           }
         />
+
         <Route
           path="/allcustomers"
           element={
-            <ProtectedRoute allowedRoles={["admin"]}>
+            <ProtectedRoute allowedRoles={["Admin"]}>
               <AllCustomers />
             </ProtectedRoute>
           }
         />
+
         <Route
           path="/singlecustomerdetail/:id"
           element={
-            <ProtectedRoute allowedRoles={["admin"]}>
+            <ProtectedRoute allowedRoles={["Admin"]}>
               <AdCusDetail />
             </ProtectedRoute>
           }
         />
+
         <Route
           path="/allagents"
           element={
-            <ProtectedRoute allowedRoles={["admin"]}>
+            <ProtectedRoute allowedRoles={["Admin"]}>
               <AllAgents />
             </ProtectedRoute>
           }
         />
+
         <Route
           path="/singleagentdetail/:id"
           element={
-            <ProtectedRoute allowedRoles={["admin"]}>
+            <ProtectedRoute allowedRoles={["Admin"]}>
               <AdAgentDetail />
             </ProtectedRoute>
           }
         />
+
         <Route
           path="/advanceconformation"
           element={
-            <ProtectedRoute allowedRoles={["admin"]}>
+            <ProtectedRoute allowedRoles={["Admin"]}>
               <AdvanceConAdmin />
             </ProtectedRoute>
           }
         />
+
         <Route
           path="/alloffersforadmin"
           element={
-            <ProtectedRoute allowedRoles={["admin"]}>
+            <ProtectedRoute allowedRoles={["Admin"]}>
               <AllOfferForAdmin />
             </ProtectedRoute>
           }
         />
 
+        <Route
+          path="/admin/agent-requests"
+          element={
+            <ProtectedRoute allowedRoles={["Admin"]}>
+              <AdminAgentRequests />
+            </ProtectedRoute>
+          }
+        />
 
-
-
-
-        {/* Customer dashboard */}
+        {/* ================= CUSTOMER ROUTES ================= */}
         <Route
           path="/customerprofile"
           element={
-            <ProtectedRoute allowedRoles={["customer"]}>
+            <ProtectedRoute allowedRoles={["Customer"]}>
               <CustomerProfile />
             </ProtectedRoute>
           }
         />
+
         <Route
           path="/customertermsconditions"
           element={
-            <ProtectedRoute allowedRoles={["customer"]}>
+            <ProtectedRoute allowedRoles={["Customer"]}>
               <CustomerTermCondition />
             </ProtectedRoute>
           }
         />
 
-
-
-        {/* Agent Deshboard */}
-
+        {/* ================= AGENT ROUTES ================= */}
         <Route
           path="/agentprofile"
           element={
-            <ProtectedRoute allowedRoles={["agent"]}>
+            <ProtectedRoute allowedRoles={["Agent"]}>
               <AgentProfile />
             </ProtectedRoute>
           }
         />
+
         <Route
           path="/agenttermcondition"
           element={
-            <ProtectedRoute allowedRoles={["agent"]}>
+            <ProtectedRoute allowedRoles={["Agent"]}>
               <AgentTermCondition />
             </ProtectedRoute>
           }
         />
 
-
-
-
-
-        {/* accesseble by admin/customer */}
         <Route
-          path="/oneway"
+          path="/my-offers"
           element={
-            <ProtectedRoute allowedRoles={["admin", "customer"]}>
-              <OneWayTravel />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/onewayshowvehical"
-          element={
-            <ProtectedRoute allowedRoles={["admin", "customer"]}>
-              <OneWayShowVecl />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/onewayconfirmvehical"
-          element={
-            <ProtectedRoute allowedRoles={["admin", "customer"]}>
-              <OneWayConVecl />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/customerdetailform"
-          element={
-            <ProtectedRoute allowedRoles={["admin", "customer"]}>
-              <CustomerDetailForm />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/onewaypayadvance"
-          element={
-            <ProtectedRoute allowedRoles={["admin", "customer"]}>
-              <OneWayPayAdvnc />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/qr-code"
-          element={
-            <ProtectedRoute allowedRoles={["admin", "customer"]}>
-              <QRCode />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/onewaydutyslip"
-          element={
-            <ProtectedRoute allowedRoles={["admin", "customer"]}>
-              <OneWaydutySlip />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/offerconvehical"
-          element={
-            <ProtectedRoute allowedRoles={["admin", "customer"]}>
-              <OfferConVehical />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/offerpayadvance"
-          element={
-            <ProtectedRoute allowedRoles={["admin", "customer"]}>
-              <OfferPayAdvnc />
+            <ProtectedRoute allowedRoles={["Agent"]}>
+              <MyOffers />
             </ProtectedRoute>
           }
         />
 
+        {/* 🔥 NEW CONFIRMED BOOKINGS ROUTE */}
+        <Route
+          path="/agent-confirmed-bookings"
+          element={
+            <ProtectedRoute allowedRoles={["Agent"]}>
+              <AgentConfirmedBookings />
+            </ProtectedRoute>
+          }
+        />
 
-        {/* for Admin/Agent */}
-
-          <Route
+        <Route
           path="/addoffer"
           element={
-            <ProtectedRoute allowedRoles={["admin", "agent"]}>
+            <ProtectedRoute allowedRoles={["Admin", "Agent"]}>
               <AddOffer />
             </ProtectedRoute>
           }
         />
 
+        {/* ================= ADMIN + CUSTOMER ROUTES ================= */}
+        <Route
+          path="/oneway"
+          element={
+            <ProtectedRoute allowedRoles={["Admin", "Customer"]}>
+              <OneWayTravel />
+            </ProtectedRoute>
+          }
+        />
 
+        <Route
+          path="/onewayshowvehical"
+          element={
+            <ProtectedRoute allowedRoles={["Admin", "Customer"]}>
+              <OneWayShowVecl />
+            </ProtectedRoute>
+          }
+        />
 
+        <Route
+          path="/onewayconfirmvehical"
+          element={
+            <ProtectedRoute allowedRoles={["Admin", "Customer"]}>
+              <OneWayConVecl />
+            </ProtectedRoute>
+          }
+        />
 
+        <Route
+          path="/customerdetailform"
+          element={
+            <ProtectedRoute allowedRoles={["Admin", "Customer"]}>
+              <CustomerDetailForm />
+            </ProtectedRoute>
+          }
+        />
 
+        <Route
+          path="/onewaypayadvance"
+          element={
+            <ProtectedRoute allowedRoles={["Admin", "Customer"]}>
+              <OneWayPayAdvnc />
+            </ProtectedRoute>
+          }
+        />
 
+        <Route
+          path="/qr-code"
+          element={
+            <ProtectedRoute allowedRoles={["Admin", "Customer"]}>
+              <QRCode />
+            </ProtectedRoute>
+          }
+        />
 
-        {/* Fallback 404 */}
+        <Route
+          path="/onewaydutyslip"
+          element={
+            <ProtectedRoute allowedRoles={["Admin", "Customer"]}>
+              <OneWaydutySlip />
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path="/offerconvehical"
+          element={
+            <ProtectedRoute allowedRoles={["Admin", "Customer"]}>
+              <OfferConVehical />
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path="/offerpayadvance"
+          element={
+            <ProtectedRoute allowedRoles={["Admin", "Customer"]}>
+              <OfferPayAdvnc />
+            </ProtectedRoute>
+          }
+        />
+
+        {/* ================= FALLBACK ================= */}
         <Route path="*" element={<h1>404 Page Not Found</h1>} />
+
       </Routes>
     </BookingProvider>
   );
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// import React from 'react';
-// import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-// import { BookingProvider } from './Components/BookingContext';
-
-// import Home from './Pages/Home';
-// import AddOffer from './Pages/AddOffer';
-// import TodayOffer from './Pages/TodayOffer';
-// import Login from './Pages/Login';
-// import Register from './Pages/Register';
-// import OneWayTravel from './Pages/OneWayTravel';
-// import Offer from './Components/Offer';
-// import OurServices from './Pages/OurServices';
-// import ConfirmVehical from './Components/ConfirmVehical';
-// import CustomerDetailForm from './Components/CustomerDetailForm';
-// import PayAdvance from './Pages/PayAdvance';
-// import ShowVehicle from './Components/ShowVehicle';
-// import OneWayShowVecl from './Components/OneWayShowVecl';
-// import OneWayConVecl from './Components/OneWayConVecl';
-// import OneWayPayAdvnc from './Components/OneWayPayAdvnc';
-
-// // Profiles
-// import AdminProfile from './Components/AdminProfile';
-// import AgentProfile from './Components/AgentProfile';
-// import CustomerProfile from './Components/CustomerProfile';
-// import OneWayDutySlip from './Components/OneWaydutySlip';
-
-// // Booking components
-// import AllBookings from './Components/AllBookings';
-// import BookingDetail from './Components/BookingDetail'; // NEW component
-// import AllCustomers from './Components/AllCustomers';
-// import AdCusDetail from './Components/AdCusDetail';
-// import AllAgents from './Components/AllAgents';
-// import AdAgentDetail from './Components/AdAgentDetail';
-// import ContactUs from './Pages/ContactUs';
-// import AgentTermConditon from './Components/AgentTermCondition'
-// import CustomerTermCondition from './Components/CustomerTermCondition'
-
-// const App = () => {
-//   return (
-//     <BookingProvider>
-//       <Router>
-//         <Routes>
-//           {/* Public Routes */}
-//           <Route path="/" element={<Home />} />
-//           <Route path="/todayoffer" element={<TodayOffer />} />
-//           <Route path="/ourservices" element={<OurServices />} />
-//           <Route path="/contactus" element={<ContactUs />} />
-//           <Route path="/login" element={<Login />} />
-//           <Route path="/register" element={<Register />} />
-//           <Route path="/offer" element={<Offer />} />
-//           <Route path="/onewayshowvehical" element={<OneWayShowVecl />} />
-//           <Route path="/onewayconfirmvehical" element={<OneWayConVecl />} />
-//           <Route path="/onewaypayadvance" element={<OneWayPayAdvnc />} />
-//           <Route path="/showvehicle" element={<ShowVehicle />} />
-//           <Route path="/onewaydutyslip" element={<OneWayDutySlip />} />
-
-//           {/* Booking Routes */}
-//           <Route path="/admin/view-bookings" element={<AllBookings />} /> {/* All bookings */}
-//           <Route path="/bookingdetail/:id" element={<BookingDetail />} />
-//           <Route path="/allcustomers" element={<AllCustomers />} />
-//           <Route path="/singlecustomerdetail/:id" element={<AdCusDetail />} />
-//           <Route path="/allagents" element={<AllAgents />} />
-//           <Route path="/singleagentdetail/:id" element={<AdAgentDetail />} />
-
-
-
-//           {/* Travel / Booking */}
-//           <Route path="/oneway" element={<OneWayTravel />} />
-//           <Route path="/addoffer" element={<AddOffer />} />
-//           <Route path="/confirmvehical" element={<ConfirmVehical />} />
-//           <Route path="/customerdetailform" element={<CustomerDetailForm />} />
-//           <Route path="/payadvance" element={<PayAdvance />} />
-//           <Route path="/agenttermsconditions" element={<AgentTermConditon />} />
-//           <Route path="/customertermsconditions" element={<CustomerTermCondition/>} />
-
-
-//           {/* Profile Pages */}
-//           <Route path="/adminprofile" element={<AdminProfile />} />
-//           <Route path="/agentprofile" element={<AgentProfile />} />
-//           <Route path="/customerprofile" element={<CustomerProfile />} />
-//         </Routes>
-//       </Router>
-//     </BookingProvider>
-//   );
-// };
-
-// export default App;

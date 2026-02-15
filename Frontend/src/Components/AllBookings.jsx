@@ -12,30 +12,42 @@ const AllBookings = () => {
     const fetchBookings = async () => {
       try {
         const token = localStorage.getItem("token");
-        const res = await axios.get("http://localhost:5000/api/bookings/all", {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
-        setBookings(res.data.data);
+
+        if (!token) {
+          console.error("No token found");
+          return;
+        }
+
+        const res = await axios.get(
+          "http://localhost:5000/api/bookings/admin/all", // ✅ UPDATED ROUTE
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+
+        setBookings(res.data.data || []);
       } catch (err) {
-        console.error("Error fetching bookings:", err);
+        console.error("Error fetching bookings:", err.response?.data || err.message);
       } finally {
         setLoading(false);
       }
     };
+
     fetchBookings();
   }, []);
 
   return (
     <div className="p-8 bg-gradient-to-br from-gray-50 to-gray-100 min-h-screen">
+      
       {/* Header */}
       <div className="flex items-center gap-3 mb-8">
         <FaClipboardList className="text-3xl text-blue-600" />
         <h1 className="text-3xl font-bold text-gray-800">All Bookings</h1>
       </div>
 
-      {/* Bookings grid */}
+      {/* Loading Skeleton */}
       {loading ? (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
           {[...Array(6)].map((_, i) => (
@@ -57,7 +69,9 @@ const AllBookings = () => {
           ))}
         </div>
       ) : (
-        <p className="text-gray-600">No bookings found.</p>
+        <div className="text-center text-gray-600 mt-10">
+          <p className="text-lg font-medium">No bookings found.</p>
+        </div>
       )}
     </div>
   );
