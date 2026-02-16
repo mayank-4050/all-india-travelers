@@ -4,6 +4,10 @@ import { NavLink } from "react-router-dom";
 import LiveCameraCapture from "../Components/LiveCameraCapture";
 
 const Register = () => {
+
+  // 🔒 Toggle for Admin Registration
+  const allowAdminRegistration = false;
+
   const [role, setRole] = useState("");
   const [loading, setLoading] = useState(false);
 
@@ -40,6 +44,12 @@ const Register = () => {
 
     if (!role) {
       alert("Role is required");
+      return;
+    }
+
+    // 🔒 Block Admin Registration
+    if (role === "Admin" && !allowAdminRegistration) {
+      alert("Admin registration is temporarily disabled.");
       return;
     }
 
@@ -104,7 +114,11 @@ const Register = () => {
               required
             >
               <option value="">-- Select --</option>
-              <option value="Admin">Admin</option>
+
+              {allowAdminRegistration && (
+                <option value="Admin">Admin</option>
+              )}
+
               <option value="Agent">Agent</option>
               <option value="Customer">Customer</option>
             </select>
@@ -168,8 +182,6 @@ const Register = () => {
                 />
               </div>
 
-              {/* 🔥 LIVE CAMERA COMPONENTS */}
-
               <div className="md:col-span-2">
                 <LiveCameraCapture
                   label="Live Office Photo"
@@ -190,95 +202,15 @@ const Register = () => {
 
           {/* COMMON FIELDS */}
 
-          <input
-            type="text"
-            name="fullName"
-            placeholder="Full Name"
-            value={formData.fullName}
-            onChange={handleChange}
-            className="border p-2 rounded"
-            required
-          />
-
-          <input
-            type="email"
-            name="email"
-            placeholder="Email"
-            value={formData.email}
-            onChange={handleChange}
-            className="border p-2 rounded"
-            required
-          />
-
-          <input
-            type="text"
-            name="mobile"
-            placeholder="Mobile"
-            value={formData.mobile}
-            onChange={handleChange}
-            className="border p-2 rounded"
-            required
-          />
-
-          <input
-            type="text"
-            name="area"
-            placeholder="Area"
-            value={formData.area}
-            onChange={handleChange}
-            className="border p-2 rounded"
-            required
-          />
-
-          <input
-            type="text"
-            name="city"
-            placeholder="City"
-            value={formData.city}
-            onChange={handleChange}
-            className="border p-2 rounded"
-            required
-          />
-
-          <input
-            type="text"
-            name="state"
-            placeholder="State"
-            value={formData.state}
-            onChange={handleChange}
-            className="border p-2 rounded"
-            required
-          />
-
-          <input
-            type="text"
-            name="pincode"
-            placeholder="Pincode"
-            value={formData.pincode}
-            onChange={handleChange}
-            className="border p-2 rounded"
-            required
-          />
-
-          <input
-            type="password"
-            name="password"
-            placeholder="Password"
-            value={formData.password}
-            onChange={handleChange}
-            className="border p-2 rounded"
-            required
-          />
-
-          <input
-            type="password"
-            name="confirmPassword"
-            placeholder="Confirm Password"
-            value={formData.confirmPassword}
-            onChange={handleChange}
-            className="border p-2 rounded"
-            required
-          />
+          <input type="text" name="fullName" placeholder="Full Name" value={formData.fullName} onChange={handleChange} className="border p-2 rounded" required />
+          <input type="email" name="email" placeholder="Email" value={formData.email} onChange={handleChange} className="border p-2 rounded" required />
+          <input type="text" name="mobile" placeholder="Mobile" value={formData.mobile} onChange={handleChange} className="border p-2 rounded" required />
+          <input type="text" name="area" placeholder="Area" value={formData.area} onChange={handleChange} className="border p-2 rounded" required />
+          <input type="text" name="city" placeholder="City" value={formData.city} onChange={handleChange} className="border p-2 rounded" required />
+          <input type="text" name="state" placeholder="State" value={formData.state} onChange={handleChange} className="border p-2 rounded" required />
+          <input type="text" name="pincode" placeholder="Pincode" value={formData.pincode} onChange={handleChange} className="border p-2 rounded" required />
+          <input type="password" name="password" placeholder="Password" value={formData.password} onChange={handleChange} className="border p-2 rounded" required />
+          <input type="password" name="confirmPassword" placeholder="Confirm Password" value={formData.confirmPassword} onChange={handleChange} className="border p-2 rounded" required />
 
           <div className="md:col-span-2 flex justify-center mt-4">
             <button
