@@ -46,7 +46,8 @@ import AdvanceConAdmin from "./Pages/AdvanceConAdmin";
 import QRCode from "./Pages/QRCode";
 import WaitingApproval from "./Pages/WaitingApproval";
 import AgentPayment from "./Pages/AgentPayment";
-
+import MarriagePage from "./Pages/MarriagePage"
+import MarriageBookings from "./Components/Marrige/MarriageBookings"
 
 /* ================= APP ================= */
 
@@ -64,9 +65,21 @@ export default function App() {
         <Route path="/unauthorized" element={<Unauthorized />} />
         <Route path="/waiting-approval" element={<WaitingApproval />} />
         <Route path="/agent-payment" element={<AgentPayment />} />
+        <Route path="/marriage-booking" element={<MarriagePage />} />
+
+
 
 
         {/* ================= ADMIN ROUTES ================= */}
+        
+        <Route
+          path="/admin/marriage-bookings"
+          element={
+            <ProtectedRoute allowedRoles={["Admin"]}>
+              <MarriageBookings  />
+            </ProtectedRoute>
+          }
+        />
         <Route
           path="/adminprofile"
           element={

@@ -23,7 +23,7 @@ const HeroSection = () => {
         <div className="flex flex-col sm:flex-row w-full sm:w-auto justify-center sm:justify-between text-white text-xs sm:text-sm gap-2 sm:gap-6 text-center sm:text-left">
           <div className="flex items-center gap-1 hover:text-gray-200 transition justify-center">
             <i className="fa-solid fa-phone"></i>
-            <p>+91 7987189304</p>
+            <p>+91 9301858537</p>
           </div>
           <div className="flex items-center gap-1 hover:text-gray-200 transition justify-center">
             <i className="fa-solid fa-envelope"></i>

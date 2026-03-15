@@ -45,6 +45,8 @@ const bookingRoutes = require('./routes/bookingRoutes'); // ✅ FIXED NAME
 const userRoutes = require('./routes/UserRoute');
 const offerRoutes = require('./routes/OfferRoute');
 const adminRoutes = require('./routes/adminRoutes');
+const marriageRoutes = require('./routes/marriageBookingRoutes') 
+
 
 app.use('/api/auth', authRoutes);
 app.use('/api/distance', distanceRoutes);
@@ -52,6 +54,8 @@ app.use('/api/bookings', bookingRoutes);
 app.use('/api/users', userRoutes);
 app.use('/api/offers', offerRoutes);
 app.use('/api/admin', adminRoutes);
+app.use("/api/marriage", marriageRoutes);
+
 
 // ==============================
 // 🔥 SOCKET CONNECTION

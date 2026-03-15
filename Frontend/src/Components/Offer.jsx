@@ -36,9 +36,12 @@ const Offer = () => {
 
   return (
     <div className="p-6 bg-gray-50">
-      <h1 className="text-3xl font-bold text-orange-600 mb-6 text-center">
-        Available Travel Offers
-      </h1>
+      <h2
+        className="text-center text-orange-600 mb-6"
+        style={{ fontFamily: "Dancing Script", fontSize: "38px" }}
+      >
+        One way travel offer
+      </h2>
 
       {offers.length === 0 ? (
         <p className="text-center text-gray-500">No offers available.</p>
