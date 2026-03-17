@@ -62,7 +62,7 @@ export default function UpdatedMainHome() {
           <div className="bg-[#F6F8D5] border-2 border-lime-700 rounded-xl p-5 shadow-md">
 
             <h2 className="text-center bg-orange-400 text-white font-semibold py-2 rounded-md mb-5 text-lg">
-              Citizen Booking
+              Customer Booking
             </h2>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
