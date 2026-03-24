@@ -1,75 +1,96 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import { NavLink } from 'react-router-dom';
+import { Phone, Mail, Navigation, MapPin, Clock, Plane, Star } from 'lucide-react';
 
 const HeroSection = () => {
   const travelOptions = [
-    { label: "One way travel", path: "/oneway" },
-    { label: "Round trip Travel" },   
-    { label: "Local travel" },    
-    { label: "Airport/Railway Station" },      
+    { label: "One Way", path: "/oneway", icon: <Navigation size={18} /> },
+    { label: "Round Trip", path: "/roundtrip", icon: <MapPin size={18} /> },
+    { label: "Local City", path: "/local", icon: <Clock size={18} /> },
+    { label: "Airport/Station", path: "/airport", icon: <Plane size={18} /> },
   ];
 
   return (
-    <motion.div
-      className="w-full h-fit flex justify-center mt-4 px-2"
-      initial={{ opacity: 0, y: 30 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.8 }}
-    >
-      <div className="w-full sm:w-[95%] mt-3 h-fit bg-gradient-to-r from-blue-500 via-yellow-500 to-red-500 rounded-xl py-4 px-4 sm:px-7 flex flex-col items-center gap-4 shadow-xl">
+    <div className="relative w-full overflow-hidden pt-4 pb-8 px-4 font-sans">
+      {/* Background Decorative Blobs */}
+      <div className="absolute top-[-10%] left-[-5%] w-64 h-64 bg-orange-500/10 rounded-full blur-3xl animate-pulse"></div>
+      <div className="absolute bottom-0 right-[-5%] w-80 h-80 bg-gray-500/10 rounded-full blur-3xl"></div>
 
-        {/* Contact Info */}
-        <div className="flex flex-col sm:flex-row w-full sm:w-auto justify-center sm:justify-between text-white text-xs sm:text-sm gap-2 sm:gap-6 text-center sm:text-left">
-          <div className="flex items-center gap-1 hover:text-gray-200 transition justify-center">
-            <i className="fa-solid fa-phone"></i>
-            <p>+91 9301858537</p>
-          </div>
-          <div className="flex items-center gap-1 hover:text-gray-200 transition justify-center">
-            <i className="fa-solid fa-envelope"></i>
-            <p className="break-all">allindiatrevls6607@gmail.com</p>
+      <motion.div
+        className="max-w-7xl mx-auto"
+        initial={{ opacity: 0, scale: 0.98 }}
+        animate={{ opacity: 1, scale: 1 }}
+        transition={{ duration: 0.8 }}
+      >
+        <div className="relative overflow-hidden bg-gradient-to-br from-gray-800 via-gray-900 to-orange-950 rounded-[2rem] shadow-2xl border border-white/5">
+          <div className="absolute inset-0 bg-black/30 z-0"></div>
+
+          <div className="relative z-10 py-10 px-6 sm:px-16 flex flex-col items-center gap-8 text-center">
+            
+            {/* Top Bar: Contact Info */}
+            <div className="flex flex-wrap justify-center gap-3">
+              <div className="flex items-center gap-2 bg-white/5 backdrop-blur-xl px-4 py-2 rounded-xl border border-white/10 text-orange-400 text-xs font-bold shadow-lg">
+                <Phone size={14} fill="currentColor" />
+                <span>+91 9301858537</span>
+              </div>
+              <div className="flex items-center gap-2 bg-white/5 backdrop-blur-xl px-4 py-2 rounded-xl border border-white/10 text-white/90 text-xs font-medium shadow-lg">
+                <Mail size={14} className="text-orange-400" />
+                <span className="italic">allindiatrevls6607@gmail.com</span>
+              </div>
+            </div>
+
+            {/* Main Heading Section */}
+            <div className="space-y-4 max-w-4xl">
+              <div className="flex items-center justify-center gap-2 text-orange-500 font-bold tracking-[0.3em] text-[10px] uppercase border-b border-orange-500/20 pb-1 mx-auto w-fit">
+                <Star size={10} fill="currentColor" />
+                Premium Travel Experience
+                <Star size={10} fill="currentColor" />
+              </div>
+
+              <h1 className="font-black text-3xl sm:text-5xl italic tracking-widest text-white leading-tight">
+                ALL INDIA TRAVELS <br />
+                <span className="text-xl sm:text-2xl font-light not-italic tracking-[0.4em] text-orange-500/80 block mt-2">& ONLINE SERVICES</span>
+              </h1>
+            </div>
+
+            {/* --- TRAVEL OPTIONS BUTTONS (Error Fixed) --- */}
+            <div className="grid grid-cols-2 md:grid-cols-4 w-full max-w-4xl gap-3 sm:gap-4 mt-2">
+              {travelOptions.map(({ label, path, icon }, index) => (
+                <NavLink
+                  key={index}
+                  to={path || "#"}
+                  className="group relative"
+                >
+                  {/* NavLink gives access to isActive through a function as a child */}
+                  {({ isActive }) => (
+                    <div className={`
+                      flex flex-col items-center justify-center p-4 sm:p-5 rounded-2xl transition-all duration-300 border
+                      ${isActive
+                        ? "bg-orange-600 border-orange-400 shadow-[0_10px_30px_rgba(234,88,12,0.4)] scale-105"
+                        : "bg-white/5 border-white/10 hover:bg-white/10 hover:border-orange-500/50 backdrop-blur-md"
+                      }
+                    `}>
+                      <div className={`mb-2 transition-transform duration-300 group-hover:-translate-y-1 ${isActive ? "text-white" : "text-orange-500"}`}>
+                        {icon}
+                      </div>
+                      <span className={`text-[10px] sm:text-[11px] font-black uppercase tracking-wider ${isActive ? "text-white" : "text-gray-300 group-hover:text-white"}`}>
+                        {label}
+                      </span>
+                    </div>
+                  )}
+                </NavLink>
+              ))}
+            </div>
+
+            {/* Trust Badges */}
+            <div className="flex gap-6 opacity-30 mt-4 text-[8px] font-bold tracking-widest uppercase italic text-white">
+              <p>Speed</p> <p>Safety</p> <p>Support</p>
+            </div>
           </div>
         </div>
-
-        {/* Travel Type Buttons */}
-        <motion.div
-          className="w-full sm:w-auto h-fit rounded-xl bg-white px-2 py-2 flex flex-wrap justify-center items-center gap-2 shadow-lg"
-          initial={{ scale: 0.95 }}
-          animate={{ scale: 1 }}
-          transition={{ delay: 0.3, duration: 0.4 }}
-        >
-          {travelOptions.map(({ label, path }, index) => (
-            <motion.div
-              key={index}
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.9 }}
-            >
-              <NavLink
-                to={path || "#"}
-                className="px-3 py-2 bg-gray-100 hover:bg-orange-200 rounded cursor-pointer transition text-xs sm:text-sm text-center"
-              >
-                {label}
-              </NavLink>
-            </motion.div>
-          ))}
-        </motion.div>
-
-        {/* Heading Text */}
-        <motion.div
-          className="flex flex-col text-white items-center text-center px-2"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 0.5, duration: 0.7 }}
-        >
-          <h1 className="font-extrabold text-2xl sm:text-4xl italic tracking-widest hover:tracking-wider transition-all duration-300">
-            All India Travel & Online Services
-          </h1>
-          <p className="text-white text-sm sm:text-lg font-medium hover:text-gray-200 transition">
-            Your Journey Begins Here.
-          </p>
-        </motion.div>
-      </div>
-    </motion.div>
+      </motion.div>
+    </div>
   );
 };
 

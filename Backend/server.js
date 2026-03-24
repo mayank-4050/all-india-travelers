@@ -41,12 +41,12 @@ app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 // ==============================
 const authRoutes = require('./routes/authRoutes');
 const distanceRoutes = require('./routes/distanceRoutes');
-const bookingRoutes = require('./routes/bookingRoutes'); // ✅ FIXED NAME
+const bookingRoutes = require('./routes/bookingRoutes'); 
 const userRoutes = require('./routes/UserRoute');
 const offerRoutes = require('./routes/OfferRoute');
 const adminRoutes = require('./routes/adminRoutes');
-const marriageRoutes = require('./routes/marriageBookingRoutes') 
-
+const marriageRoutes = require('./routes/marriageBookingRoutes');
+const roundtripRoutes = require('./routes/RoundtripRoute'); // ✅ NAYA ROUTE IMPORT
 
 app.use('/api/auth', authRoutes);
 app.use('/api/distance', distanceRoutes);
@@ -55,6 +55,7 @@ app.use('/api/users', userRoutes);
 app.use('/api/offers', offerRoutes);
 app.use('/api/admin', adminRoutes);
 app.use("/api/marriage", marriageRoutes);
+app.use("/api/roundtrip", roundtripRoutes); // ✅ NAYA ROUTE USE
 
 
 // ==============================

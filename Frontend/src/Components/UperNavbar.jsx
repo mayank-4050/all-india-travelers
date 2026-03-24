@@ -1,262 +1,189 @@
 import React, { useState, useEffect } from "react";
-import { NavLink, useNavigate } from "react-router-dom";
+import { NavLink, useNavigate, useLocation } from "react-router-dom";
 import AOS from "aos";
 import "aos/dist/aos.css";
-import { Menu, X } from "lucide-react";
+import { Menu, X, ChevronDown, LogOut, User, Zap, PhoneCall } from "lucide-react";
+import { motion, AnimatePresence } from "framer-motion";
 import logo from "/Photos/all india travels.png";
 
 const Navbar = () => {
-
   const [menuOpen, setMenuOpen] = useState(false);
-  const [servicesOpen, setServicesOpen] = useState(false);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
-
+  const [scrolled, setScrolled] = useState(false);
   const navigate = useNavigate();
+  const location = useLocation();
 
   useEffect(() => {
-
     AOS.init({ duration: 800, once: true });
+
+    // Scroll detection for sticky effect
+    const handleScroll = () => setScrolled(window.scrollY > 20);
+    window.addEventListener("scroll", handleScroll);
 
     const token = localStorage.getItem("token");
     setIsLoggedIn(!!token);
 
+    return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
   const handleLogout = () => {
-
     localStorage.removeItem("token");
     localStorage.removeItem("role");
-
+    setIsLoggedIn(false);
     navigate("/login");
-
   };
 
   const getProfileRoute = () => {
-
     const savedRole = (localStorage.getItem("role") || "").toLowerCase();
-
     switch (savedRole) {
-
-      case "admin":
-        return "/adminprofile";
-
-      case "agent":
-        return "/agentprofile";
-
-      case "customer":
-        return "/customerprofile";
-
-      default:
-        return "/login";
+      case "admin": return "/adminprofile";
+      case "agent": return "/agentprofile";
+      case "customer": return "/customerprofile";
+      default: return "/login";
     }
-
   };
 
-  const navBtn =
-    "px-4 py-2 border border-orange-500 text-orange-500 rounded hover:bg-orange-500 hover:text-white transition text-sm font-semibold";
+  // Modern Navigation Link Component
+  const NavItem = ({ to, children, icon: Icon }) => (
+    <NavLink
+      to={to}
+      className={({ isActive }) => `
+        relative px-4 py-2 flex items-center gap-2 text-sm font-bold transition-all duration-300 rounded-full
+        ${isActive ? "text-orange-600 bg-orange-50" : "text-gray-600 hover:text-orange-500 hover:bg-gray-50"}
+      `}
+    >
+      {Icon && <Icon size={16} />}
+      {children}
+    </NavLink>
+  );
 
   return (
     <>
-      {/* Navbar */}
-      <div className="w-full sticky top-0 z-50 bg-white shadow-md px-4 md:px-8">
+      <nav className={`fixed top-0 left-0 right-0 z-[100] transition-all duration-500 ${scrolled
+          ? "top-0 py-2 bg-white/80 backdrop-blur-lg shadow-lg"
+          : "top-0 py-4 bg-white shadow-sm"
+        } mb-10`}>
+        <div className="max-w-7xl  mx-auto px-4 md:px-8 flex items-center justify-between">
 
-        <div className="flex items-center justify-between py-3">
+          {/* LOGO AREA */}
+          <motion.div
+            whileHover={{ scale: 1.05 }}
+            className="w-40 md:w-48 cursor-pointer"
+            onClick={() => navigate("/")}
+          >
+            <img src={logo} alt="logo" className="w-full h-auto" />
+          </motion.div>
 
-          {/* Logo */}
-          <div className="w-[180px]">
-            <img src={logo} alt="logo" className="w-full object-contain" />
-          </div>
+          {/* DESKTOP MENU */}
+          <div className="hidden lg:flex items-center gap-2 bg-gray-100/50 p-1.5 rounded-full border border-gray-100">
+            <NavItem to="/">Home</NavItem>
+            <NavItem to="/todayoffer" icon={Zap}>Offers</NavItem>
 
-          {/* Desktop Menu */}
-          <div className="hidden md:flex items-center gap-3">
-
-            <NavLink to="/" className={navBtn}>
-              Home
-            </NavLink>
-
-            <NavLink to="/todayoffer" className={navBtn}>
-              Limited-Time Offer
-            </NavLink>
-
-            {/* Services Dropdown */}
-            <div className="relative group">
-
-              <button className={navBtn}>
-                Our Services
+            {/* Advanced Dropdown */}
+            <div className="relative group px-2">
+              <button className="flex items-center gap-1 px-4 py-2 text-sm font-bold text-gray-600 hover:text-orange-500 transition-colors">
+                Services <ChevronDown size={14} className="group-hover:rotate-180 transition-transform duration-300" />
               </button>
-
-              <div className="absolute hidden group-hover:block bg-white border shadow-md mt-1 w-48">
-
-                <NavLink
-                  to="/railwayticket"
-                  className="block px-4 py-2 hover:bg-orange-100"
-                >
-                  Railway Ticket
-                </NavLink>
-
-                <NavLink
-                  to="/flightticket"
-                  className="block px-4 py-2 hover:bg-orange-100"
-                >
-                  Flight Ticket
-                </NavLink>
-
-                <NavLink
-                  to="/maiharropeway"
-                  className="block px-4 py-2 hover:bg-orange-100"
-                >
-                  Maihar Ropeway
-                </NavLink>
-
+              <div className="absolute top-full left-0 mt-2 w-56 bg-white border border-gray-100 shadow-2xl rounded-2xl opacity-0 translate-y-2 invisible group-hover:opacity-100 group-hover:translate-y-0 group-hover:visible transition-all duration-300 overflow-hidden">
+                <NavLink to="/railwayticket" className="block px-5 py-3 text-sm font-medium hover:bg-orange-50 hover:text-orange-600 border-b border-gray-50">Railway Ticket</NavLink>
+                <NavLink to="/flightticket" className="block px-5 py-3 text-sm font-medium hover:bg-orange-50 hover:text-orange-600 border-b border-gray-50">Flight Ticket</NavLink>
+                <NavLink to="/maiharropeway" className="block px-5 py-3 text-sm font-medium hover:bg-orange-50 hover:text-orange-600">Maihar Ropeway</NavLink>
               </div>
-
             </div>
 
-            <NavLink to="/contactus" className={navBtn}>
-              Contact Us
-            </NavLink>
+            <NavItem to="/contactus" icon={PhoneCall}>Support</NavItem>
+          </div>
 
+          {/* ACTION BUTTONS */}
+          <div className="hidden md:flex items-center gap-3">
             {!isLoggedIn ? (
-
-              <NavLink to="/register">
-                <button className="px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600">
-                  Register
-                </button>
+              <NavLink to="/register" className="bg-orange-600 hover:bg-orange-700 text-white px-6 py-2.5 rounded-full text-sm font-bold shadow-lg shadow-orange-200 transition-all active:scale-95">
+                Get Started
               </NavLink>
-
             ) : (
-
-              <>
+              <div className="flex items-center gap-2 bg-gray-50 p-1 rounded-full border border-gray-100">
                 <button
                   onClick={() => navigate(getProfileRoute())}
-                  className="px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600"
+                  className="flex items-center gap-2 px-5 py-2 bg-white text-gray-700 rounded-full text-sm font-bold shadow-sm hover:bg-orange-600 hover:text-white transition-all"
                 >
-                  Profile
+                  <User size={16} /> Profile
                 </button>
-
                 <button
                   onClick={handleLogout}
-                  className="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600"
+                  className="p-2.5 text-red-500 hover:bg-red-50 rounded-full transition-colors"
+                  title="Logout"
                 >
-                  Logout
+                  <LogOut size={18} />
                 </button>
-              </>
-
+              </div>
             )}
-
           </div>
 
-          {/* Mobile Menu Button */}
-          <button
-            className="md:hidden"
-            onClick={() => setMenuOpen(true)}
-          >
-            <Menu size={26} />
+          {/* MOBILE TOGGLE */}
+          <button className="lg:hidden p-2 hover:bg-gray-100 rounded-xl transition-colors" onClick={() => setMenuOpen(true)}>
+            <Menu size={28} className="text-gray-700" />
           </button>
-
         </div>
+      </nav>
 
-      </div>
-
-      {/* Mobile Sidebar */}
-      <div
-        className={`fixed top-0 right-0 h-full w-[260px] bg-white shadow-xl z-50 transform transition-transform duration-300
-        ${menuOpen ? "translate-x-0" : "translate-x-full"} md:hidden`}
-      >
-
-        <div className="p-6 flex flex-col gap-3">
-
-          <div className="flex justify-end">
-            <X
-              className="cursor-pointer"
+      {/* MOBILE SIDEBAR (Advanced Slide-in) */}
+      <AnimatePresence>
+        {menuOpen && (
+          <>
+            <motion.div
+              initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
+              className="fixed inset-0 bg-gray-900/60 backdrop-blur-sm z-[200]"
               onClick={() => setMenuOpen(false)}
             />
-          </div>
+            <motion.div
+              initial={{ x: "100%" }} animate={{ x: 0 }} exit={{ x: "100%" }}
+              transition={{ type: "spring", damping: 25, stiffness: 200 }}
+              className="fixed top-0 right-0 h-full w-[300px] bg-white z-[210] shadow-2xl flex flex-col p-8"
+            >
+              <div className="flex justify-between items-center mb-10">
+                <img src={logo} alt="logo" className="w-32" />
+                <button onClick={() => setMenuOpen(false)} className="p-2 bg-gray-100 rounded-full"><X size={20} /></button>
+              </div>
 
-          <NavLink to="/" onClick={() => setMenuOpen(false)} className={navBtn}>
-            Home
-          </NavLink>
+              <div className="space-y-4 flex-grow">
+                <MobileLink to="/" label="Home" onClick={() => setMenuOpen(false)} />
+                <MobileLink to="/todayoffer" label="Offers" onClick={() => setMenuOpen(false)} />
+                <div className="py-2 border-y border-gray-50">
+                  <p className="text-[10px] uppercase font-bold text-gray-400 mb-2 px-4">Services</p>
+                  <MobileLink to="/railwayticket" label="Railway Ticket" onClick={() => setMenuOpen(false)} sub />
+                  <MobileLink to="/flightticket" label="Flight Ticket" onClick={() => setMenuOpen(false)} sub />
+                </div>
+                <MobileLink to="/contactus" label="Contact Us" onClick={() => setMenuOpen(false)} />
+              </div>
 
-          <NavLink to="/todayoffer" onClick={() => setMenuOpen(false)} className={navBtn}>
-            Limited-Time Offer
-          </NavLink>
-
-          <button
-            onClick={() => setServicesOpen(!servicesOpen)}
-            className={navBtn}
-          >
-            Our Services
-          </button>
-
-          {servicesOpen && (
-
-            <div className="flex flex-col gap-2">
-
-              <NavLink to="/railwayticket" onClick={() => setMenuOpen(false)}>
-                Railway Ticket
-              </NavLink>
-
-              <NavLink to="/flightticket" onClick={() => setMenuOpen(false)}>
-                Flight Ticket
-              </NavLink>
-
-              <NavLink to="/maiharropeway" onClick={() => setMenuOpen(false)}>
-                Maihar Ropeway
-              </NavLink>
-
-            </div>
-
-          )}
-
-          <NavLink to="/contactus" onClick={() => setMenuOpen(false)} className={navBtn}>
-            Contact Us
-          </NavLink>
-
-          {!isLoggedIn ? (
-
-            <NavLink to="/register">
-              <button className="px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600">
-                Register
-              </button>
-            </NavLink>
-
-          ) : (
-
-            <>
-              <button
-                onClick={() => {
-                  navigate(getProfileRoute());
-                  setMenuOpen(false);
-                }}
-                className="px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600"
-              >
-                Profile
-              </button>
-
-              <button
-                onClick={handleLogout}
-                className="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600"
-              >
-                Logout
-              </button>
-            </>
-
-          )}
-
-        </div>
-
-      </div>
-
-      {/* Dark Overlay */}
-      {menuOpen && (
-        <div
-          className="fixed inset-0 bg-black/40 z-40 md:hidden"
-          onClick={() => setMenuOpen(false)}
-        />
-      )}
-
+              <div className="mt-auto pt-6 border-t border-gray-100">
+                {!isLoggedIn ? (
+                  <button onClick={() => { navigate("/register"); setMenuOpen(false); }} className="w-full bg-orange-600 text-white py-4 rounded-2xl font-bold">Join Now</button>
+                ) : (
+                  <div className="space-y-3">
+                    <button onClick={() => { navigate(getProfileRoute()); setMenuOpen(false); }} className="w-full bg-gray-100 py-4 rounded-2xl font-bold flex justify-center gap-2 items-center"><User size={18} /> My Profile</button>
+                    <button onClick={handleLogout} className="w-full text-red-500 font-bold py-2">Sign Out</button>
+                  </div>
+                )}
+              </div>
+            </motion.div>
+          </>
+        )}
+      </AnimatePresence>
+      <div className="h-[70px]"></div> {/* Spacer for fixed nav */}
     </>
   );
 };
+
+// Helper for Mobile Links
+const MobileLink = ({ to, label, onClick, sub }) => (
+  <NavLink
+    to={to}
+    onClick={onClick}
+    className={({ isActive }) => `block px-4 py-3 rounded-xl font-bold transition-all ${sub ? 'text-sm ml-4' : 'text-lg'} ${isActive ? 'bg-orange-50 text-orange-600' : 'text-gray-600'}`}
+  >
+    {label}
+  </NavLink>
+);
 
 export default Navbar;

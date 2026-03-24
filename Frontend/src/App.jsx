@@ -48,6 +48,10 @@ import WaitingApproval from "./Pages/WaitingApproval";
 import AgentPayment from "./Pages/AgentPayment";
 import MarriagePage from "./Pages/MarriagePage"
 import MarriageBookings from "./Components/Marrige/MarriageBookings"
+import Roundtrip from "./Components/Round trip/MultiCityPlanner"
+import Roundtripbookingform from "./Components/Round trip/RoundTripBookingform"
+import Roundtripbookingsforadmin from "./Components/Round trip/RoundtripbookigforAdmin"
+import Viewsinglebookingforadmin from "./Components/Round trip/ViewsinglebookingforAdmin"
 
 /* ================= APP ================= */
 
@@ -66,6 +70,8 @@ export default function App() {
         <Route path="/waiting-approval" element={<WaitingApproval />} />
         <Route path="/agent-payment" element={<AgentPayment />} />
         <Route path="/marriage-booking" element={<MarriagePage />} />
+        <Route path="/roundtrip" element={<Roundtrip/>} />
+        <Route path="/roundtripbookingform" element={<Roundtripbookingform/>} />
 
 
 
@@ -77,6 +83,22 @@ export default function App() {
           element={
             <ProtectedRoute allowedRoles={["Admin"]}>
               <MarriageBookings  />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/admin/roundtripbookingforadmin"
+          element={
+            <ProtectedRoute allowedRoles={["Admin"]}>
+              <Roundtripbookingsforadmin  />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/admin/viewroundtripsinglebooking/:id"
+          element={
+            <ProtectedRoute allowedRoles={["Admin"]}>
+              <Viewsinglebookingforadmin  />
             </ProtectedRoute>
           }
         />

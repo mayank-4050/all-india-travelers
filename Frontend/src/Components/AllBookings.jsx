@@ -19,11 +19,9 @@ const AllBookings = () => {
         }
 
         const res = await axios.get(
-          "http://localhost:5000/api/bookings/admin/all", // ✅ UPDATED ROUTE
+          "http://localhost:5000/api/bookings/all", // Yahan se /admin hata diya
           {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
+            headers: { Authorization: `Bearer ${token}` }
           }
         );
 
@@ -40,7 +38,7 @@ const AllBookings = () => {
 
   return (
     <div className="p-8 bg-gradient-to-br from-gray-50 to-gray-100 min-h-screen">
-      
+
       {/* Header */}
       <div className="flex items-center gap-3 mb-8">
         <FaClipboardList className="text-3xl text-blue-600" />

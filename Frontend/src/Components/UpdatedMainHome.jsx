@@ -1,119 +1,119 @@
 import React from "react";
 import { NavLink } from "react-router-dom";
-import {
-  Car,
-  Plane,
-  MapPin,
-  Briefcase,
-  HeartHandshake,
-  TreePine,
+import { 
+  Car, Plane, MapPin, Briefcase, HeartHandshake, 
+  TreePine, ArrowRight, Sparkles, ShieldCheck, UserCheck 
 } from "lucide-react";
+import { motion } from "framer-motion";
 
 export default function UpdatedMainHome() {
   const citizenServices = [
-    { name: "One Way Cab Booking", link: "/oneway", icon: <Car size={20} /> },
-    { name: "Advance Cab Booking", link: "/advance", icon: <Car size={20} /> },
-    { name: "Airport / Railway Pickup", link: "/airport", icon: <Plane size={20} /> },
-    { name: "Office Use Cab Booking", link: "/office", icon: <Briefcase size={20} /> },
-    { name: "Marriage Cab Booking", link: "/marriage-booking", icon: <HeartHandshake size={20} /> },
-    { name: "Local City Cab", link: "/local", icon: <MapPin size={20} /> },
-    { name: "Tour Package Cab", link: "/tour", icon: <Car size={20} /> },
-    { name: "National Park Cab", link: "/park", icon: <TreePine size={20} /> },
+    { name: "Customer One Way Advance Booking", link: "/oneway", icon: <Car />, desc: "Intercity simple drops" },
+    { name: "One Way Travel Offer Booking", link: "/todayoffer", icon: <Car />, desc: "Plan your future trips" },
+    { name: "Airport / Railway", link: "/airport", icon: <Plane />, desc: "On-time pickup/drop" },
+    { name: "Office Use Cab", link: "/office", icon: <Briefcase />, desc: "Daily corporate travel" },
+    { name: "Marriage Booking", link: "/marriage-booking", icon: <HeartHandshake />, desc: "Special event fleet" },
+    { name: "Local City Cab", link: "/local", icon: <MapPin />, desc: "Travel within city" },
+    { name: "Tour Package", link: "/tour", icon: <Car />, desc: "Customized holiday trips" },
+    { name: "National Park", link: "/park", icon: <TreePine />, desc: "Wildlife safari cabs" },
   ];
 
   const agentServices = [
-    "One Way Taxi Service",
-    "Round Trip Taxi Service",
-    "Local City Taxi Service",
-    "Railway Station Pickup",
-    "Airport Pickup / Drop",
-    "National Park Taxi",
-    "Cab Service",
-    "Tour Package Taxi",
+    "One Way Taxi Service", "Round Trip Taxi Service", "Local City Taxi Service",
+    "Railway Station Pickup & Drop", "Airport Pickup / Drop", "National Park Taxi",
+    "Monthly Cab/Taxi Service", "Tour Package Taxi"
   ];
 
   return (
-    <div className=" bg-white p-3 md:p-8 flex justify-center">
-      <div className="w-full max-w-6xl space-y-8">
+    <div className="bg-slate-50 min-h-screen py-10 px-4 md:px-8">
+      <div className="max-w-7xl mx-auto space-y-12">
 
-        {/* Offer Banner */}
-        <div className="flex flex-col md:flex-row items-center gap-3 md:gap-6 border rounded-xl p-4 md:p-6 border-green-700 bg-[#F6F8D5] shadow-sm">
-          <h1 className="text-xl md:text-3xl font-extrabold tracking-wide">
-            ONE WAY TAXI
-          </h1>
-
-          <div className="flex-1 text-center">
-            <span className="text-lg md:text-2xl font-extrabold tracking-wider">
-              LIMITED TIME OFFER
-            </span>
+        {/* --- PRO OFFER BANNER --- */}
+        <motion.div 
+          initial={{ opacity: 0, y: -20 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="relative overflow-hidden rounded-3xl bg-gradient-to-r from-orange-500 to-orange-600 p-8 shadow-2xl shadow-orange-200"
+        >
+          <div className="absolute top-0 right-0 p-4 opacity-10">
+            <Sparkles size={120} />
           </div>
+          <div className="relative z-10 flex flex-col md:flex-row justify-between items-center gap-6">
+            <div className="text-center md:text-left">
+              <span className="bg-orange-400/30 text-white text-xs font-bold px-3 py-1 rounded-full uppercase tracking-widest">Premium Deal</span>
+              <h1 className="text-3xl md:text-5xl font-black text-white mt-2 italic tracking-tighter">ONE WAY TAXI</h1>
+              <p className="text-orange-100 mt-2 font-medium">Safe & Affordable Intercity Travels at Lowest Prices.</p>
+            </div>
+            <div className="flex flex-col items-center">
+              <span className="text-white font-bold text-xl mb-4 animate-pulse">LIMITED TIME OFFER!</span>
+              <NavLink to="/todayoffer">
+                <button className="bg-white text-orange-600 px-8 py-4 rounded-2xl font-black text-sm shadow-xl hover:bg-orange-50 transition-all flex items-center gap-2 group">
+                  EXPLORE OFFERS <ArrowRight className="group-hover:translate-x-1 transition-transform" size={18} />
+                </button>
+              </NavLink>
+            </div>
+          </div>
+        </motion.div>
 
-          <NavLink to="/todayoffer">
-            <button className="bg-orange-400 hover:bg-orange-500 text-white px-4 py-2 rounded-md font-semibold transition">
-              OFFER VISIT
-            </button>
-          </NavLink>
-        </div>
+        {/* --- SERVICES SECTION --- */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-10">
 
-        {/* Services Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-
-          {/* Citizen Booking */}
-          <div className="bg-[#F6F8D5] border-2 border-lime-700 rounded-xl p-5 shadow-md">
-
-            <h2 className="text-center bg-orange-400 text-white font-semibold py-2 rounded-md mb-5 text-lg">
-              Customer Booking
-            </h2>
-
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-
+          {/* CUSTOMER BOOKING */}
+          <section className="space-y-6">
+            <div className="flex items-center gap-3 mb-2">
+              <div className="p-2 bg-orange-100 rounded-lg text-orange-600">
+                <UserCheck size={24} />
+              </div>
+              <h2 className="text-2xl font-black text-gray-800 uppercase tracking-tight">Customer Booking</h2>
+            </div>
+            
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               {citizenServices.map((item) => (
-                <NavLink key={item.name} to={item.link}>
-
-                  <div className="flex items-center gap-3 bg-white border border-lime-700 rounded-lg p-3
-                  hover:bg-lime-50 hover:scale-105 hover:shadow-md transition-all duration-200 cursor-pointer">
-
-                    <div className="text-orange-500">
+                <NavLink key={item.name} to={item.link} className="group">
+                  <div className="h-full bg-white border border-gray-100 rounded-2xl p-4 flex items-center gap-4 shadow-sm group-hover:shadow-xl group-hover:border-orange-200 group-hover:-translate-y-1 transition-all duration-300">
+                    <div className="bg-orange-50 p-3 rounded-xl text-orange-500 group-hover:bg-orange-600 group-hover:text-white transition-colors">
                       {item.icon}
                     </div>
-
-                    <span className="text-sm font-medium">
-                      {item.name}
-                    </span>
-
+                    <div>
+                      <h3 className="text-sm font-bold text-gray-800">{item.name}</h3>
+                      <p className="text-[10px] text-gray-400 mt-0.5">{item.desc}</p>
+                    </div>
                   </div>
-
                 </NavLink>
               ))}
+            </div>
+          </section>
 
+          {/* AGENT SERVICES */}
+          <section className="space-y-6">
+            <div className="flex items-center gap-3 mb-2">
+              <div className="p-2 bg-blue-100 rounded-lg text-blue-600">
+                <ShieldCheck size={24} />
+              </div>
+              <h2 className="text-2xl font-black text-gray-800 uppercase tracking-tight">Agent Services</h2>
             </div>
 
-          </div>
+            <div className="bg-white border border-gray-100 rounded-3xl p-6 shadow-sm relative overflow-hidden">
+               {/* Background Decorative Element */}
+              <div className="absolute -bottom-10 -right-10 text-gray-50 opacity-5">
+                <Briefcase size={200} />
+              </div>
 
-          {/* Agent Services */}
-          <div className="bg-[#F6F8D5] border-2 border-lime-700 rounded-xl p-5 shadow-md">
-
-            <h2 className="text-center bg-orange-400 text-white font-semibold py-2 rounded-md mb-5 text-lg">
-              Agent Services
-            </h2>
-
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-
-              {agentServices.map((item) => (
-
-                <div
-                  key={item}
-                  className="bg-white border border-lime-700 rounded-lg p-3
-                  hover:bg-lime-50 hover:scale-105 hover:shadow-md transition-all duration-200 cursor-pointer text-sm font-medium"
-                >
-                  {item}
-                </div>
-
-              ))}
-
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 relative z-10">
+                {agentServices.map((item) => (
+                  <div key={item} className="flex items-center gap-2 p-3 bg-slate-50 border border-slate-100 rounded-xl text-xs font-bold text-gray-600 hover:bg-white hover:border-blue-200 hover:shadow-md transition-all cursor-default">
+                    <div className="w-1.5 h-1.5 rounded-full bg-blue-400"></div>
+                    {item}
+                  </div>
+                ))}
+              </div>
+              
+              <div className="mt-8 p-4 bg-blue-50 rounded-2xl border border-blue-100">
+                <p className="text-[10px] text-blue-700 font-semibold text-center italic">
+                  Partner with All India Travels for seamless business operations.
+                </p>
+              </div>
             </div>
-
-          </div>
+          </section>
 
         </div>
 
