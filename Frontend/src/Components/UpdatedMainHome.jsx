@@ -8,14 +8,16 @@ import { motion } from "framer-motion";
 
 export default function UpdatedMainHome() {
   const citizenServices = [
-    { name: "Customer One Way Advance Booking", link: "/oneway", icon: <Car />, desc: "Intercity simple drops" },
+    { name: "One Way Advance Booking", link: "/oneway", icon: <Car />, desc: "Intercity simple drops" },
     { name: "One Way Travel Offer Booking", link: "/todayoffer", icon: <Car />, desc: "Plan your future trips" },
-    { name: "Airport / Railway", link: "/airport", icon: <Plane />, desc: "On-time pickup/drop" },
-    { name: "Office Use Cab", link: "/office", icon: <Briefcase />, desc: "Daily corporate travel" },
-    { name: "Marriage Booking", link: "/marriage-booking", icon: <HeartHandshake />, desc: "Special event fleet" },
+    { name: "Airport / Railway", link: "/airportandraiway", icon: <Plane />, desc: "On-time pickup/drop" },
+    { name: "Office Use Cab", link: "/local", icon: <Briefcase />, desc: "Daily corporate travel" },
+    { name: "Monthly Cab Booking", link: "/marriage-booking", icon: <Car />, desc: "For Monthly Cabs" },
     { name: "Local City Cab", link: "/local", icon: <MapPin />, desc: "Travel within city" },
-    { name: "Tour Package", link: "/tour", icon: <Car />, desc: "Customized holiday trips" },
+    { name: "Tour Package", link: "/roundtrip", icon: <Car />, desc: "Customized holiday trips" },
     { name: "National Park", link: "/park", icon: <TreePine />, desc: "Wildlife safari cabs" },
+    { name: "Marrige Cab Booking", link: "/bookingformarrige", icon: <HeartHandshake />, desc: "Celebrate your Favorite Moment" },
+    { name: "Tirth Dham Booking", link: "/#", icon: <Car />, desc: "Tirth Dham" },
   ];
 
   const agentServices = [
@@ -109,7 +111,7 @@ export default function UpdatedMainHome() {
               
               <div className="mt-8 p-4 bg-blue-50 rounded-2xl border border-blue-100">
                 <p className="text-[10px] text-blue-700 font-semibold text-center italic">
-                  Partner with All India Travels for seamless business operations.
+                  Partner with All India Travels & Online Services for seamless business operations.
                 </p>
               </div>
             </div>

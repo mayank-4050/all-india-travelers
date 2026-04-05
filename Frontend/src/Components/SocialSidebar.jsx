@@ -1,14 +1,14 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { Instagram, Twitter, Facebook, Youtube, MessageCircle } from 'lucide-react';
+import { Instagram, Twitter, Facebook, Youtube, MessageCircle, Phone } from 'lucide-react';
 
 const SocialSidebar = () => {
   const socialLinks = [
-    { id: 1, name: 'WhatsApp', icon: <MessageCircle size={18} />, color: 'bg-green-500', link: 'https://wa.me/917987189304' },
-    { id: 2, name: 'Instagram', icon: <Instagram size={18} />, color: 'bg-gradient-to-tr from-yellow-400 via-red-500 to-purple-600', link: '#' },
-    { id: 3, name: 'Facebook', icon: <Facebook size={18} />, color: 'bg-blue-600', link: '#' },
-    { id: 4, name: 'Twitter', icon: <Twitter size={18} />, color: 'bg-sky-500', link: '#' },
-    { id: 5, name: 'YouTube', icon: <Youtube size={18} />, color: 'bg-red-600', link: '#' },
+    { id: 4, name: 'Phone', icon: <Phone size={18} />, color: 'bg-sky-500', link: '#' },
+    { id: 1, name: 'WhatsApp', icon: <MessageCircle size={18} />, color: 'bg-green-500', link: 'https://wa.me/919301858537' },
+    { id: 2, name: 'Instagram', icon: <Instagram size={18} />, color: 'bg-gradient-to-tr from-yellow-400 via-red-500 to-purple-600', link: 'https://www.instagram.com/ashish.kanojiya.104?igsh=MWFuZXZzM21hbWF3aA==&utm_source=ig_contact_invite' },
+    { id: 3, name: 'Facebook', icon: <Facebook size={18} />, color: 'bg-blue-600', link: 'https://www.facebook.com/share/1KYsGx3J1J/' },
+    { id: 5, name: 'YouTube', icon: <Youtube size={18} />, color: 'bg-red-600', link: 'https://www.youtube.com/@Ashishkanojiya2558' },
   ];
 
   return (
@@ -20,7 +20,7 @@ const SocialSidebar = () => {
           target="_blank"
           rel="noopener noreferrer"
           // x: -80 desktop par aur mobile par thoda zyada pichhe
-          initial={{ x: -75 }} 
+          initial={{ x: -75 }}
           whileHover={{ x: 0 }}
           transition={{ type: 'spring', stiffness: 400, damping: 25 }}
           // Mobile par width (w-24) aur pichhe se spacing (pl-1) ko adjust kiya hai
@@ -30,7 +30,7 @@ const SocialSidebar = () => {
           <span className="text-[10px] font-bold uppercase tracking-wider opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none">
             {social.name}
           </span>
-          
+
           {/* Icon: Ye hamesha kinare par dikhega */}
           <div className="shrink-0 group-hover:scale-110 transition-transform">
             {social.icon}

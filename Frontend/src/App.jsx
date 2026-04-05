@@ -1,6 +1,6 @@
-import React from "react";
 import { Routes, Route } from "react-router-dom";
 import { BookingProvider } from "./Components/BookingContext";
+import React, { useState, useEffect } from "react"; // useState aur useEffect add kiya
 import ProtectedRoute from "./Components/ProtectedRoute";
 
 /* ================= PAGES & COMPONENTS ================= */
@@ -21,10 +21,7 @@ import CustomerTermCondition from "./Components/CustomerTermCondition";
 
 import OneWayTravel from "./Pages/OneWayTravel";
 import OneWayShowVecl from "./Components/OneWayShowVecl";
-import OneWayConVecl from "./Components/OneWayConVecl";
-import CustomerDetailForm from "./Components/CustomerDetailForm";
-import OneWayPayAdvnc from "./Components/OneWayPayAdvnc";
-import OneWaydutySlip from "./Components/OneWaydutySlip";
+import OneWayConVecl from "./Components/One Way/OneWayConVehical";
 
 import OfferConVehical from "./Components/OfferConVehical";
 import OfferPayAdvnc from "./Components/OfferPayAdvnc";
@@ -52,10 +49,18 @@ import Roundtrip from "./Components/Round trip/MultiCityPlanner"
 import Roundtripbookingform from "./Components/Round trip/RoundTripBookingform"
 import Roundtripbookingsforadmin from "./Components/Round trip/RoundtripbookigforAdmin"
 import Viewsinglebookingforadmin from "./Components/Round trip/ViewsinglebookingforAdmin"
-
+import Localcity from "./Components/Local trip/Localcity"
+import Localbookingconfirm from "./Components/Local trip/Localbookingconfirm"
+import Localbookingsforadmin from "./Components/Local trip/Localbookingsforadmin"
+import Airportandrailway from "./Components/Airport and raiway/Airportandrailway"
+import Finalmarrige from "./Components/Marrige Cab Final/Marrige"
+import  Finalmarrigebooking from "./Components/Marrige Cab Final/MarrigeBookingConfirm"
+import  Tirthdam from "./Components/Tirath Dham/TirthdhamPage"
+import Onewaybookingforadmin from "./Components/One Way/Bookingsforadmin"
 /* ================= APP ================= */
 
 export default function App() {
+ 
   return (
     <BookingProvider>
       <Routes>
@@ -72,6 +77,16 @@ export default function App() {
         <Route path="/marriage-booking" element={<MarriagePage />} />
         <Route path="/roundtrip" element={<Roundtrip/>} />
         <Route path="/roundtripbookingform" element={<Roundtripbookingform/>} />
+        <Route path="/local" element={<Localcity/>} />
+        <Route path="/localbookin-confirm" element={<Localbookingconfirm/>} />
+        <Route path="/airportandraiway" element={<Airportandrailway/>} />
+        <Route path="/bookingformarrige" element={<Finalmarrige/>} />
+        <Route path="/bookingformarrige-confirm" element={<Finalmarrigebooking/>} />
+        <Route path="/tirathdham" element={<Tirthdam/>} />
+        <Route path="/oneway" element={<OneWayTravel/>} />
+        <Route path="/onewayshowvehical" element={<OneWayShowVecl/>} />
+        <Route path="/onewayconfirmvehical" element={<OneWayConVecl/>} />
+       
 
 
 
@@ -83,6 +98,14 @@ export default function App() {
           element={
             <ProtectedRoute allowedRoles={["Admin"]}>
               <MarriageBookings  />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/admin/onewaybookingforadmin"
+          element={
+            <ProtectedRoute allowedRoles={["Admin"]}>
+              <Onewaybookingforadmin  />
             </ProtectedRoute>
           }
         />
@@ -99,6 +122,14 @@ export default function App() {
           element={
             <ProtectedRoute allowedRoles={["Admin"]}>
               <Viewsinglebookingforadmin  />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/admin/localbookings"
+          element={
+            <ProtectedRoute allowedRoles={["Admin"]}>
+              <Localbookingsforadmin  />
             </ProtectedRoute>
           }
         />
@@ -259,69 +290,7 @@ export default function App() {
         />
 
         {/* ================= ADMIN + CUSTOMER ROUTES ================= */}
-        <Route
-          path="/oneway"
-          element={
-            <ProtectedRoute allowedRoles={["Admin", "Customer"]}>
-              <OneWayTravel />
-            </ProtectedRoute>
-          }
-        />
-
-        <Route
-          path="/onewayshowvehical"
-          element={
-            <ProtectedRoute allowedRoles={["Admin", "Customer"]}>
-              <OneWayShowVecl />
-            </ProtectedRoute>
-          }
-        />
-
-        <Route
-          path="/onewayconfirmvehical"
-          element={
-            <ProtectedRoute allowedRoles={["Admin", "Customer"]}>
-              <OneWayConVecl />
-            </ProtectedRoute>
-          }
-        />
-
-        <Route
-          path="/customerdetailform"
-          element={
-            <ProtectedRoute allowedRoles={["Admin", "Customer"]}>
-              <CustomerDetailForm />
-            </ProtectedRoute>
-          }
-        />
-
-        <Route
-          path="/onewaypayadvance"
-          element={
-            <ProtectedRoute allowedRoles={["Admin", "Customer"]}>
-              <OneWayPayAdvnc />
-            </ProtectedRoute>
-          }
-        />
-
-        <Route
-          path="/qr-code"
-          element={
-            <ProtectedRoute allowedRoles={["Admin", "Customer"]}>
-              <QRCode />
-            </ProtectedRoute>
-          }
-        />
-
-        <Route
-          path="/onewaydutyslip"
-          element={
-            <ProtectedRoute allowedRoles={["Admin", "Customer"]}>
-              <OneWaydutySlip />
-            </ProtectedRoute>
-          }
-        />
-
+       
         <Route
           path="/offerconvehical"
           element={

@@ -13,8 +13,8 @@ import Dzire from "/Photos/dzire.jpg";
 import Tavera from "/Photos/tavera.jpg";
 import Zest from "/Photos/zest.jpg";
 import Ertiga from "/Photos/ertiga.webp";
-import innova from "/Photos/innova.png";
-import travellers from "/Photos/traveller.png";
+import innova from "/Photos/innova.jpg";
+import travellers from "/Photos/travellers.png";
 
 const GEOAPIFY_KEY = "d2d43c2448eb403296a3e49969fa3888";
 

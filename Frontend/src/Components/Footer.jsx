@@ -134,7 +134,7 @@ const Footer = () => {
                 {/* Bottom Bar */}
                 <div className="border-t border-white/5 py-8 flex flex-col md:flex-row justify-between items-center gap-4">
                     <p className="text-gray-500 text-xs">
-                        © {currentYear} <span className="text-orange-500 font-bold">All India Travels</span>. All rights reserved.
+                        © {currentYear} <span className="text-orange-500 font-bold">All India Travels & Online Services</span>. All rights reserved.
                     </p>
                     <div className="flex gap-6">
                         <span className="text-[10px] text-gray-600 uppercase tracking-widest font-bold">Secure Booking</span>

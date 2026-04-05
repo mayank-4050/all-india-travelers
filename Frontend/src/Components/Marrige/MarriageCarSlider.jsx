@@ -1,14 +1,17 @@
 import React, { useEffect, useState } from "react";
-import car1 from "/Photos/bmw.png";
 import car2 from "/Photos/crysta.jpg";
 import car3 from "/Photos/dzire.jpg";
 import car4 from "/Photos/zest.jpg";
-
+import innova from "/Photos/innova.png"
+import ertiga from "/Photos/ertiga.webp"
+import traveller from "/Photos/traveller.png"
 const cars = [
-  { name: "BMW 5 Series", price: "₹8000 / day", img: car1 },
-  { name: "Crysta", price: "₹7500 / day", img: car2 },
-  { name: "Dzire", price: "₹9000 / day", img: car3 },
-  { name: "Zest", price: "₹7000 / day", img: car4 },
+  { name: "Crysta", img: car2 },
+  { name: "Dzire", img: car3 },
+  { name: "Zest", img: car4 },
+  { name: "innova", img: innova },
+  { name: "ertiga", img: ertiga },
+  { name: "traveller", img: traveller },
 ];
 
 // 🔹 Duplicate array for smooth loop
@@ -45,7 +48,7 @@ const MarriageCarSlider = () => {
         className="text-orange-600"
         style={{ fontFamily: "Dancing Script", fontSize: "38px" }}
       >
-        Wedding Cars
+         Monthly Cab Bookings
       </h2>
 
       <div

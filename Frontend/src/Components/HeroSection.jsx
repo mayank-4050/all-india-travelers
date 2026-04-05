@@ -1,14 +1,14 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import { NavLink } from 'react-router-dom';
-import { Phone, Mail, Navigation, MapPin, Clock, Plane, Star } from 'lucide-react';
+import { Phone, Mail, Navigation, MapPin, Clock, Plane, Star, } from 'lucide-react';
 
 const HeroSection = () => {
   const travelOptions = [
     { label: "One Way", path: "/oneway", icon: <Navigation size={18} /> },
     { label: "Round Trip", path: "/roundtrip", icon: <MapPin size={18} /> },
     { label: "Local City", path: "/local", icon: <Clock size={18} /> },
-    { label: "Airport/Station", path: "/airport", icon: <Plane size={18} /> },
+    { label: "Airport/Station", path: "/airportandraiway", icon: <Plane size={18} /> },
   ];
 
   return (

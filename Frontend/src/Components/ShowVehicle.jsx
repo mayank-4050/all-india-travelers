@@ -7,13 +7,12 @@ import zest from '../Photos/zest.jpg';
 import ertiga from '../Photos/ertiga.jpg';
 
 const ShowVehicle = () => {
-
   const navigate = useNavigate();
   const location = useLocation();
   const {
     from, to, pickupDate, dropDate, date,
     startTime, endTime, pickupInfo,
-    distance, duration // from OneWayForm
+    distance, duration 
   } = location.state || {};
 
   const finalPickupDate = pickupDate || date || "";
@@ -27,7 +26,6 @@ const ShowVehicle = () => {
       if (km <= 250 && hrs <= 6) return 18;
       if (km > 250 && hrs <= 8) return 16;
     }
-
     if (vehicle === 'Crysta') {
       if (km <= 20 && hrs <= 2) return 1395;
       if (km <= 40 && hrs <= 4) return 2295;
@@ -36,7 +34,6 @@ const ShowVehicle = () => {
       if (km <= 250 && hrs <= 6) return 30;
       if (km > 250 && hrs <= 8) return 28;
     }
-
     if (vehicle === 'Tavera') {
       if (km <= 20 && hrs <= 2) return 1995;
       if (km <= 40 && hrs <= 4) return 1595;
@@ -45,7 +42,6 @@ const ShowVehicle = () => {
       if (km <= 250 && hrs <= 6) return 23;
       if (km > 250 && hrs <= 8) return 22;
     }
-
     if (vehicle === 'Zest') {
       if (km <= 20 && hrs <= 2) return 745;
       if (km <= 40 && hrs <= 4) return 1195;
@@ -54,7 +50,6 @@ const ShowVehicle = () => {
       if (km <= 250 && hrs <= 6) return 17;
       if (km > 250 && hrs <= 8) return 15;
     }
-
     if (vehicle === 'Ertiga') {
       if (km <= 20 && hrs <= 2) return 1395;
       if (km <= 40 && hrs <= 4) return 1795;
@@ -63,8 +58,7 @@ const ShowVehicle = () => {
       if (km <= 250 && hrs <= 6) return 24;
       if (km > 250 && hrs <= 8) return 22;
     }
-
-    return 10; // default rate if no condition matches
+    return 10; 
   };
 
   const hours = Math.ceil((duration || 0) / 60);
@@ -82,35 +76,33 @@ const ShowVehicle = () => {
     return { ...v, amount };
   });
 
-  const handleConfirm = (v) => {
-    const token = localStorage.getItem("token");
-    if (!token) {
-      navigate("/login");
-      return;
-    }
+  // ShowVehicle.jsx ke andar handleConfirm function ko aise update karein:
 
-    navigate("/confirmvehical", {
-      state: {
-        offer: {
-          from,
-          to,
-          pickupDate: finalPickupDate,
-          dropDate: dropDate || null,
-          startTime,
-          endTime: endTime || null,
-          pickupInfo,
-          vehicle: v.vehicle,
-          seats: v.seats,
-          amount: v.amount
-        }
+const handleConfirm = (v) => {
+  console.log("Selected Vehicle Image:", v.img); // Console mein check karein path aa raha hai ya nahi
+
+  navigate("/onewayconfirmvehical", {
+    state: {
+      offer: {
+        from,
+        to,
+        pickupDate: finalPickupDate,
+        dropDate: dropDate || null,
+        startTime,
+        endTime: endTime || null,
+        pickupInfo,
+        vehicle: v.vehicle,
+        seats: v.seats,
+        amount: v.amount,
+        img: v.img // <--- Yeh confirm karein ki pass ho raha hai
       }
-    });
-  };
+    }
+  });
+};
 
   return (
     <div className='bg-white p-4 rounded-xl shadow-lg'>
       <h2 className='text-xl font-bold text-orange-600 mb-4 text-center'>Available Vehicles</h2>
-
       <div className="overflow-x-auto">
         <table className='min-w-full text-sm text-center border border-gray-200'>
           <thead className='bg-orange-100 text-gray-700'>
@@ -146,11 +138,9 @@ const ShowVehicle = () => {
                 ) : (
                   <td className='border px-2 py-2 whitespace-nowrap'>{finalPickupDate}</td>
                 )}
-
                 <td className='border px-2 py-2'>
                   <img src={v.img} alt={v.vehicle} className="w-16 object-cover rounded-md mx-auto" />
                 </td>
-
                 <td className='border px-2 py-2 whitespace-nowrap'>{v.vehicle}</td>
                 <td className='border px-2 py-2'>{from}</td>
                 <td className='border px-2 py-2'>{to}</td>

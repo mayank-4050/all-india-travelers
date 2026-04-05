@@ -20,19 +20,85 @@ const Offer = () => {
     Ertiga: Ertiga,
   };
 
-  useEffect(() => {
-    const fetchOffers = async () => {
-      try {
-        const res = await axios.get("http://localhost:5000/api/offers");
-        if (res.data.success) {
-          setOffers(res.data.data);
-        }
-      } catch (err) {
-        console.error("❌ Error fetching offers:", err);
+ useEffect(() => {
+  const fetchOffers = async () => {
+    try {
+      const res = await axios.get("http://localhost:5000/api/offers");
+      if (res.data.success) {
+        const now = new Date().getTime();
+
+        const activeOffers = res.data.data.filter((offer) => {
+          try {
+            // 1. Date ko handle karein (Agar DD-MM-YYYY hai toh format badlein)
+            // Agar aapki date "2026-04-01" hai toh ye sahi chalega
+            // Agar date "01-04-2026" hai toh split/reverse zaroori hai
+            let datePart = offer.date;
+            if (datePart.includes("-") && datePart.split("-")[0].length === 2) {
+                datePart = datePart.split("-").reverse().join("-");
+            }
+
+            // 2. Time ko clean karein (Agar 12-hour format AM/PM hai)
+            const timePart = offer.endTime; // Ya startTime jo aap use kar rahe hon
+
+            // 3. Final Comparison
+            const expiryTime = new Date(`${datePart} ${timePart}`).getTime();
+
+            // Check: Agar Date invalid hui toh offer dikha do (safety check)
+            if (isNaN(expiryTime)) return true; 
+
+            return expiryTime > now; // Sirf wo jo abhi khatam nahi hue
+          } catch (e) {
+            return true; // Error aane par offer hide mat karo
+          }
+        });
+
+        setOffers(activeOffers);
       }
-    };
-    fetchOffers();
-  }, []);
+    } catch (err) {
+      console.error("❌ Error fetching offers:", err);
+    }
+  };
+  fetchOffers();
+}, []);
+
+
+  const CountdownTimer = ({ targetDate, startTime }) => {
+    const [timeLeft, setTimeLeft] = useState("");
+
+    useEffect(() => {
+      const calculateTimeLeft = () => {
+        // Date aur Time ko combine karke target timestamp banana
+        // Note: format 'YYYY-MM-DD HH:mm' hona chahiye
+        const target = new Date(`${targetDate} ${startTime}`).getTime();
+        const now = new Date().getTime();
+        const difference = target - now;
+
+        if (difference <= 0) {
+          setTimeLeft("Offer Expired");
+          return;
+        }
+
+        const days = Math.floor(difference / (1000 * 60 * 60 * 24));
+        const hours = Math.floor((difference / (1000 * 60 * 60)) % 24);
+        const minutes = Math.floor((difference / 1000 / 60) % 60);
+        const seconds = Math.floor((difference / 1000) % 60);
+
+        setTimeLeft(`${days}d ${hours}h ${minutes}m ${seconds}s`);
+      };
+
+      const timer = setInterval(calculateTimeLeft, 1000);
+      calculateTimeLeft(); // Initial call
+
+      return () => clearInterval(timer);
+    }, [targetDate, startTime]);
+
+    return (
+      <span className="text-red-500 font-bold text-xs animate-pulse">
+        {timeLeft}
+      </span>
+    );
+  };
+
 
   return (
     <div className="p-6 bg-gray-50">
@@ -57,6 +123,7 @@ const Offer = () => {
                   <th className="p-3 border">Vehicle</th>
                   <th className="p-3 border">Date</th>
                   <th className="p-3 border">Time</th>
+                  <th className="p-3 border">Remaining Time</th>
                   <th className="p-3 border">Distance</th>
                   <th className="p-3 border">Seats</th>
                   <th className="p-3 border">Amount</th>
@@ -89,6 +156,10 @@ const Offer = () => {
 
                     <td className="p-2 border">
                       {offer.startTime} - {offer.endTime}
+                    </td>
+
+                    <td className="p-2 border">
+                      <CountdownTimer targetDate={offer.date} startTime={offer.startTime} />
                     </td>
 
                     <td className="p-2 border">
@@ -152,6 +223,10 @@ const Offer = () => {
 
                 <p className="text-sm">
                   <strong>Time:</strong> {offer.startTime} - {offer.endTime}
+                </p>
+
+                <p className="text-sm">
+                  <strong>Expires In:</strong> <CountdownTimer targetDate={offer.date} startTime={offer.startTime} />
                 </p>
 
                 <p className="text-sm">

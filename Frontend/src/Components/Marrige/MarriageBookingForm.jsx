@@ -46,7 +46,7 @@ const MarriageBookingForm = () => {
         className="text-center text-orange-600 mb-6"
         style={{ fontFamily: "Dancing Script", fontSize: "38px" }}
       >
-        Wedding Car Booking
+        Monthly Cab Booking
       </h2>
 
       <form onSubmit={handleSubmit} className="space-y-5">
@@ -94,7 +94,7 @@ const MarriageBookingForm = () => {
             name="location"
             value={form.location}
             onChange={handleChange}
-            placeholder="Wedding Location"
+            placeholder="Location"
             className="w-full border border-gray-200 pl-10 pr-3 py-2 rounded-lg focus:ring-2 focus:ring-orange-400 outline-none"
           />
         </div>
@@ -104,7 +104,7 @@ const MarriageBookingForm = () => {
           type="submit"
           className="w-full bg-gradient-to-r from-orange-500 to-red-500 text-white font-semibold py-3 rounded-lg shadow-lg hover:scale-105 transition"
         >
-          Book Wedding Car
+          Book
         </button>
 
       </form>

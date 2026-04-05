@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { ChevronLeft, User, Send, Navigation, Users, CheckCircle2, Download, MapPin, Info } from 'lucide-react';
-import axios from 'axios'; 
+import axios from 'axios';
 
 const RoundTripBookingform = () => {
   const { state } = useLocation();
@@ -32,18 +32,19 @@ const RoundTripBookingform = () => {
 
     setLoading(true);
 
+    // ✅ Sabhi Fields ko yahan dhyan se define kiya gaya hai
     const payload = {
-      bookingId: `AIT-${Math.floor(1000 + Math.random() * 9000)}`,
-      customerName: customer.name,
-      mobile: customer.mobile,
-      pickupAddress: customer.pickupAddress,
-      vehicleName: bookingData.vehicle?.name || "N/A",
-      tripDuration: bookingData.duration || 1,
-      minRunningLimit: minRunning,
-      actualRouteDistance: actualKm,
+      bookingId: `AIT-${Math.floor(100000 + Math.random() * 900000)}`, // Required Field
+      customerName: customer.name, // Required Field
+      mobile: customer.mobile, // Required Field
+      pickupAddress: customer.pickupAddress, // Required Field
+      vehicleName: bookingData.vehicle?.name || "N/A", // Required Field
+      tripDuration: bookingData.duration || 1, // Required Field
+      minRunningLimit: minRunning, // Required Field
+      actualRouteDistance: actualKm, // Required Field
       extraKm: parseFloat(extraKm) || 0,
       haltCharges: totalHaltCharges,
-      totalFare: finalPayable,
+      totalFare: finalPayable, // Required Field
       route: [
         {
           place: bookingData.origin || "Origin",
@@ -52,27 +53,27 @@ const RoundTripBookingform = () => {
         },
         ...(bookingData.destinations || [])
           .filter(d => d.formatted)
-          .map(d => ({
-            place: d.formatted.split(',')[0],
-            date: d.date || bookingData.startDate || "N/A",
-            pointType: 'Stop'
-          })),
-        {
-          place: bookingData.origin?.split(',')[0] || "Origin",
-          date: "Return Trip",
-          pointType: 'Return'
-        }
+          .map(d => {
+            const isReturn = d.formatted.toLowerCase().includes(bookingData.origin?.split(',')[0].toLowerCase());
+            return {
+              place: d.formatted.split(',')[0],
+              date: d.date || bookingData.startDate || "N/A",
+              pointType: isReturn ? 'Return' : 'Stop'
+            };
+          })
       ]
     };
+
+    console.log("Final Payload being sent:", payload); // Debugging ke liye check karein console mein
 
     try {
       const response = await axios.post('http://localhost:5000/api/roundtrip/new', payload);
       if (response.data.success) {
-        setConfirmedData(response.data.data); // ✅ Save DB data for Invoice
+        setConfirmedData(response.data.data);
         setIsBooked(true);
       }
     } catch (error) {
-      console.error("Booking failed:", error.response?.data || error.message);
+      console.error("Booking failed Details:", error.response?.data); // Detail error console mein dekhein
       alert("Error: " + (error.response?.data?.error || "Server error"));
     } finally {
       setLoading(false);
@@ -178,7 +179,7 @@ const RoundTripBookingform = () => {
               <div className="flex justify-between border-b-2 border-gray-950 pb-6 mb-8">
                 <div>
                   <h1 className="text-3xl font-black italic uppercase text-orange-600">All India <span className="text-gray-950">Travels</span></h1>
-                  <p className="text-[10px] text-gray-400 font-bold uppercase tracking-widest mt-1">Official Booking Invoice</p>
+                  <p className="text-[10px] text-black font-bold uppercase tracking-widest mt-1">And Online services</p>
                 </div>
                 <div className="text-right text-[10px] font-bold uppercase tracking-widest text-gray-400">
                   <p>Invoice: <span className="text-gray-950">#{confirmedData?.bookingId}</span></p>
@@ -227,8 +228,8 @@ const RoundTripBookingform = () => {
 
               <div>
                 <h4 className="text-[9px] font-black text-orange-600 uppercase tracking-widest mb-3">Terms & Conditions</h4>
-                <ul className="text-[8px] font-bold text-gray-400 uppercase list-disc pl-5 space-y-1.5 leading-tight italic tracking-widest">
-                  <li>Toll Tax, State Tax aur Parking charges alag se dene honge.</li>
+                <ul className="text-[8px] font-bold text-gray-600 uppercase list-disc pl-5 space-y-1.5 leading-tight italic tracking-widest">
+                  <li>Toll Tax, State Tax aur Parking charges and GST billing charges alag se dene honge.</li>
                   <li>KMs aur Time garage se garage tak count hoga.</li>
                   <li>Night halt charge ₹{haltChargePerNight} per night applicable hai.</li>
                   <li>Original slips customer ko driver ko verify karani hogi.</li>
