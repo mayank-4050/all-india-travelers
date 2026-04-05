@@ -82,9 +82,7 @@ const LocalBookingForm = () => {
 
   return (
     <div className="min-h-screen bg-[#F8FAFC] pb-20 font-sans text-slate-900">
-      <div className="bg-white border-b sticky top-0 z-50 p-4 shadow-sm">
-        <h1 className="text-xl font-black tracking-tighter">ALL INDIA <span className="text-orange-500">TRAVELS</span></h1>
-      </div>
+      
 
       <div className="max-w-4xl mx-auto px-4 mt-6 space-y-6">
         {trips.map((trip, index) => (
