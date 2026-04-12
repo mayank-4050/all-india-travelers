@@ -68,7 +68,7 @@ const HeroSection = () => {
                       flex flex-col items-center justify-center p-4 sm:p-5 rounded-2xl transition-all duration-300 border
                       ${isActive
                         ? "bg-orange-600 border-orange-400 shadow-[0_10px_30px_rgba(234,88,12,0.4)] scale-105"
-                        : "bg-white/5 border-white/10 hover:bg-white/10 hover:border-orange-500/50 backdrop-blur-md"
+                        : "bg-white/5 border-orange-500 hover:bg-white/10 hover:border-orange-500/50 backdrop-blur-md"
                       }
                     `}>
                       <div className={`mb-2 transition-transform duration-300 group-hover:-translate-y-1 ${isActive ? "text-white" : "text-orange-500"}`}>
