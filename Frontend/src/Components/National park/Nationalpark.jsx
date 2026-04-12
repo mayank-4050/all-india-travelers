@@ -17,13 +17,12 @@ import Ertiga from "/Photos/ertiga.webp";
 import innova from "/Photos/innova.png";
 import travellers from "/Photos/traveller.png";
 
-import maihar from "/Photos/maihar.png"
-import ayodhya from "/Photos/ayodhya.png"
-import ujjain from "/Photos/ujjain.png"
-import Kedarnath from "/Photos/kedarnath.png"
-import trimbakeshwar from "/Photos/trimbakeshwar.png"
-import vanaras from "/Photos/vanaras.png"
-
+import bandhavgarh from "/Photos/Bandhavgarh National Park (Madhya Pradesh).png"
+import dudhwa from "/Photos/Dudhwa National Park (Uttar Pradesh).png"
+import gir from "/Photos/Gir National Park (Gujarat).png"
+import keibul from "/Photos/Keibul Lamjao National Park (Manipur).png"
+import panna from "/Photos/panna.png"
+ 
 const GEOAPIFY_KEY = "#";
 
 const RoundTripPlanner = () => {
@@ -38,12 +37,11 @@ const RoundTripPlanner = () => {
   ];
 
   const tirthPlaces = [
-    { name: "maihar", image: maihar, state: "Uttarakhand" },
-    { name: "Kedarnath", image: Kedarnath, state: "Uttarakhand" },
-    { name: "Varanasi", image: vanaras, state: "Uttar Pradesh" },
-    { name: "Ayodhya", image: ayodhya, state: "Uttar Pradesh" },
-    { name: "Ujjain", image: ujjain, state: "Madhya Pradesh" },
-    { name: "trimbakeshwar", image: trimbakeshwar, state: "Maharashtra" },
+    { name: "Bandhavgarh National Park", image: bandhavgarh, state: "Madhya Pradesh" },
+    { name: "Dudhwa National Park", image: dudhwa, state: "Uttar Pradesh" },
+    { name: "Gir National Park", image: gir, state: "Gujarat" },
+    { name: "Keibul Lamjao National Park", image: keibul, state: "Manipur" },
+    { name: "Panna National Park", image: panna, state: "Madhya Pradesh" },
   ];
 
   // Jabalpur is fixed here
@@ -130,7 +128,7 @@ const RoundTripPlanner = () => {
         <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }}>
           <h1 className="text-3xl md:text-5xl font-black italic tracking-tighter">All India Travels & Online Services</h1>
           <p className="mt-3 text-md md:text-lg font-medium text-orange-50 italic">
-            "Shraddha Aapki, Suvidha Humari — Pavitra Dhamo ki Shubh Yatra"
+            "National Park"
           </p>
         </motion.div>
       </div>
@@ -138,7 +136,7 @@ const RoundTripPlanner = () => {
       <main className="max-w-7xl mx-auto px-4 md:px-6 py-10">
         <div className="mb-10">
           <h2 className="text-lg font-black mb-4 flex items-center gap-2 uppercase tracking-widest text-slate-700 italic">
-            <Star className="text-orange-500 fill-orange-500" size={18} /> Shubh Darshan Places
+            <Star className="text-orange-500 fill-orange-500" size={18} /> Some Tranding Parks
           </h2>
           <div className="flex overflow-x-auto gap-4 pb-4 scrollbar-hide snap-x">
             {tirthPlaces.map((place, idx) => (

@@ -109,7 +109,7 @@ const RoundTripBookingform = () => {
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div className="bg-gray-50 p-5 rounded-2xl border border-gray-100 focus-within:border-orange-500 transition-all">
                       <label className="text-[9px] font-black text-orange-600 uppercase tracking-widest block mb-2">Full Name</label>
-                      <input type="text" placeholder="Mayank Kori" className="w-full bg-transparent font-bold text-lg outline-none" value={customer.name} onChange={(e) => setCustomer({ ...customer, name: e.target.value })} />
+                      <input type="text" placeholder="Name Pleace" className="w-full bg-transparent font-bold text-lg outline-none" value={customer.name} onChange={(e) => setCustomer({ ...customer, name: e.target.value })} />
                     </div>
                     <div className="bg-gray-50 p-5 rounded-2xl border border-gray-100 focus-within:border-orange-500 transition-all">
                       <label className="text-[9px] font-black text-orange-600 uppercase tracking-widest block mb-2">Mobile Number</label>

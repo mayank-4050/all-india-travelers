@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from "react-router-dom";
 import { Plus, Trash2, MapPin, Calendar, Hash, Car, Navigation, IndianRupee, Send, ChevronDown, Users } from 'lucide-react';
-
+import { motion, AnimatePresence } from 'framer-motion';
 // Photos import
 import crysta from "/Photos/crysta.jpg";
 import dzire from "/Photos/dzire.jpg";
@@ -31,29 +31,11 @@ const pricingData = {
 };
 
 const LocalBookingForm = () => {
+  // FIXED START POINT: Initialize with Jabalpur
   const [trips, setTrips] = useState([
-    { id: Date.now(), startPoint: '', suggestions: [], date: '', time: '', runningKm: '', vehicle: '', isOpen: false, amount: 0, extraHr: 0, extraKm: 0 }
+    { id: Date.now(), startPoint: 'Jabalpur, MP, India', suggestions: [], date: '', time: '', runningKm: '', vehicle: '', isOpen: false, amount: 0, extraHr: 0, extraKm: 0 }
   ]);
   const navigate = useNavigate();
-
-  // Suggestion fetching logic
-  const handleLocationChange = async (id, value) => {
-    setTrips(prev => prev.map(t => t.id === id ? { ...t, startPoint: value } : t));
-
-    if (value.length > 2) {
-      try {
-        const response = await fetch(
-          `https://api.geoapify.com/v1/geocode/autocomplete?text=${value}&filter=countrycode:in&limit=5&apiKey=${GEOAPIFY_KEY}`
-        );
-        const data = await response.json();
-        setTrips(prev => prev.map(t => t.id === id ? { ...t, suggestions: data.features || [] } : t));
-      } catch (error) {
-        console.error("Geoapify Error:", error);
-      }
-    } else {
-      setTrips(prev => prev.map(t => t.id === id ? { ...t, suggestions: [] } : t));
-    }
-  };
 
   const updateTripField = (id, field, value) => {
     setTrips(prev => prev.map(trip => {
@@ -82,9 +64,15 @@ const LocalBookingForm = () => {
 
   return (
     <div className="min-h-screen bg-[#F8FAFC] pb-20 font-sans text-slate-900">
-      <div className="bg-white border-b sticky top-0 z-50 p-4 shadow-sm">
-        <h1 className="text-xl font-black tracking-tighter">ALL INDIA <span className="text-orange-500">TRAVELS</span></h1>
+      <div className="bg-gradient-to-r from-orange-600 to-amber-500 py-12 px-6 text-center text-white shadow-lg">
+        <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }}>
+          <h1 className="text-3xl md:text-5xl font-black italic tracking-tighter">All India Travels & Online Services</h1>
+          <p className="mt-3 text-md md:text-lg font-medium text-orange-50 italic">
+            "Booking For Airport/Reaiway Station"
+          </p>
+        </motion.div>
       </div>
+     
 
       <div className="max-w-4xl mx-auto px-4 mt-6 space-y-6">
         {trips.map((trip, index) => (
@@ -100,31 +88,18 @@ const LocalBookingForm = () => {
             </div>
 
             <div className="space-y-4">
-              {/* Pickup with Suggestions */}
+              {/* PICKUP POINT (LOCKED TO JABALPUR) */}
               <div className="relative">
-                <label className="block text-[10px] font-black text-slate-400 uppercase mb-1">Pickup Point</label>
-                <input 
-                  type="text" 
-                  value={trip.startPoint} 
-                  onChange={(e) => handleLocationChange(trip.id, e.target.value)} 
-                  className="w-full border-2 border-slate-100 p-3 rounded-xl outline-none focus:border-orange-500 font-bold text-sm" 
-                  placeholder="Enter location" 
-                />
-                {trip.suggestions.length > 0 && (
-                  <ul className="absolute z-[60] bg-white border border-slate-200 w-full shadow-2xl rounded-xl mt-1 overflow-hidden">
-                    {trip.suggestions.map((p, i) => (
-                      <li 
-                        key={i} 
-                        className="p-3 text-sm border-b last:border-0 hover:bg-orange-50 cursor-pointer"
-                        onClick={() => {
-                          setTrips(prev => prev.map(t => t.id === trip.id ? { ...t, startPoint: p.properties.formatted, suggestions: [] } : t));
-                        }}
-                      >
-                        {p.properties.formatted}
-                      </li>
-                    ))}
-                  </ul>
-                )}
+                <label className="block text-[10px] font-black text-slate-400 uppercase mb-1">Pickup Point (Fixed)</label>
+                <div className="flex items-center gap-2 border-2 border-slate-100 p-3 rounded-xl bg-slate-50">
+                  <MapPin size={16} className="text-orange-500 shrink-0" />
+                  <input 
+                    type="text" 
+                    value={trip.startPoint} 
+                    readOnly 
+                    className="w-full outline-none font-bold text-sm text-slate-600 cursor-default bg-transparent" 
+                  />
+                </div>
               </div>
 
               {/* Vehicle Custom Dropdown */}
@@ -201,7 +176,7 @@ const LocalBookingForm = () => {
 
         <div className="flex flex-col gap-4 py-8">
           <button 
-            onClick={() => setTrips([...trips, { id: Date.now(), startPoint: '', suggestions: [], date: '', time: '', runningKm: '', vehicle: '', isOpen: false, amount: 0, extraHr: 0, extraKm: 0 }])} 
+            onClick={() => setTrips([...trips, { id: Date.now(), startPoint: 'Jabalpur, MP, India', suggestions: [], date: '', time: '', runningKm: '', vehicle: '', isOpen: false, amount: 0, extraHr: 0, extraKm: 0 }])} 
             className="p-4 border-2 border-dashed border-slate-300 rounded-2xl font-bold text-slate-500 bg-white active:scale-95 transition-all"
           >
             + Add Extra Trip

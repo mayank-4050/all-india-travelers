@@ -24,34 +24,26 @@ const carOptions = [
 ];
 
 const pricingData = {
-  "Dzire Car": { extraHr: 200, extraKm: 11, rates: { "12-100": 2500, "24-250": 5000 } },
-  "Zest": { extraHr: 200, extraKm: 11, rates: { "12-100": 2500, "24-250": 5000 } },
-  "Ertiga": { extraHr: 200, extraKm: 14, rates: { "12-100": 3000, "24-250": 6000 } },
-  "Innova": { extraHr: 200, extraKm: 15, rates: { "12-100": 3250, "24-250": 6500 } },
-  "Inova Crista": { extraHr: 200, extraKm: 17, rates: { "12-100": 3500, "24-250": 7000 } },
-  "Tavera 10": { extraHr: 200, extraKm: 14, rates: { "12-100": 3000, "24-250": 6000 } },
+  "Dzire Car": { extraHr: 200, extraKm: 11, rates: { "12-100": 2500, "24-250": 5000, "12-250": 3500, "24-100": 4000 } },
+  "Zest": { extraHr: 200, extraKm: 11, rates: { "12-100": 2500, "24-250": 5000, "12-250": 3500, "24-100": 4000  } },
+  "Ertiga": { extraHr: 200, extraKm: 14, rates: { "12-100": 3000, "24-250": 6000, "12-250": 4500, "24-100": 5000  } },
+  "Innova": { extraHr: 200, extraKm: 15, rates: { "12-100": 3250, "24-250": 6500, "12-250": 5000, "24-100": 5500  } },
+  "Inova Crista": { extraHr: 200, extraKm: 17, rates: { "12-100": 3500, "24-250": 7000, "12-250": 5500, "24-100": 6000  } },
+  "Tavera 10": { extraHr: 200, extraKm: 14, rates: { "12-100": 3000, "24-250": 6000, "12-250": 4500, "24-100": 5000  } },
   "Teveller 12": { extraHr: 500, extraKm: 25, rates: { "12-150": 6500 } }
 };
 
 const LocalBookingForm = () => {
+  // FIXED START POINT: Initialize with Jabalpur
   const [trips, setTrips] = useState([
-    { id: Date.now(), startPoint: '', suggestions: [], date: '', time: '', runningKm: '', vehicle: '', isOpen: false, amount: 0, extraHr: 0, extraKm: 0 }
+    { id: Date.now(), startPoint: 'Jabalpur, MP, India', suggestions: [], date: '', time: '', runningKm: '', vehicle: '', isOpen: false, amount: 0, extraHr: 0, extraKm: 0 }
   ]);
   const navigate = useNavigate();
 
+  // Updated to only allow location changes if the field isn't locked (though we lock it in UI below)
   const handleLocationChange = async (id, value) => {
+    // If you ever want to unlock it, logic remains, but for now it's bypassed by 'readOnly'
     setTrips(prev => prev.map(t => t.id === id ? { ...t, startPoint: value } : t));
-    if (value.length > 2) {
-      try {
-        const response = await fetch(
-          `https://api.geoapify.com/v1/geocode/autocomplete?text=${value}&filter=countrycode:in&limit=5&apiKey=${GEOAPIFY_KEY}`
-        );
-        const data = await response.json();
-        setTrips(prev => prev.map(t => t.id === id ? { ...t, suggestions: data.features || [] } : t));
-      } catch (error) { console.error("Geoapify Error:", error); }
-    } else {
-      setTrips(prev => prev.map(t => t.id === id ? { ...t, suggestions: [] } : t));
-    }
   };
 
   const updateTripField = (id, field, value) => {
@@ -81,7 +73,6 @@ const LocalBookingForm = () => {
 
   return (
     <div className="min-h-screen bg-[#fff9fa] pb-24 font-sans relative overflow-x-hidden">
-      {/* Wedding Decorations */}
       <style jsx global>{`
         @import url('https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Playfair+Display:wght@700;900&display=swap');
         .font-wedding { font-family: 'Dancing Script', cursive; }
@@ -100,12 +91,10 @@ const LocalBookingForm = () => {
       </div>
 
       <div className="max-w-xl mx-auto px-4 mt-8 space-y-10 relative">
-        {/* Floating Background Sparkle */}
         <Sparkles className="absolute top-0 -left-10 text-rose-200/50" size={100} />
 
         {trips.map((trip, index) => (
           <div key={trip.id} className="relative group">
-            {/* Elegant Card Shadow/Border */}
             <div className="absolute -inset-1 bg-gradient-to-r from-rose-100 via-rose-200 to-rose-100 rounded-[2rem] blur-sm opacity-50 group-hover:opacity-100 transition duration-500"></div>
             
             <div className="relative bg-white rounded-[2rem] p-6 border border-rose-50 shadow-xl overflow-visible">
@@ -124,31 +113,17 @@ const LocalBookingForm = () => {
               </div>
 
               <div className="space-y-5">
-                {/* Pickup Venue */}
+                {/* FIXED PICKUP VENUE */}
                 <div className="relative group/input">
                   <label className="flex items-center gap-1.5 text-[10px] font-black text-rose-400 uppercase mb-1.5 ml-1 tracking-wider">
-                    <MapPin size={12} /> Wedding Venue / Pickup
+                    <MapPin size={12} /> Wedding Venue / Pickup (Fixed)
                   </label>
                   <input 
                     type="text" 
                     value={trip.startPoint} 
-                    onChange={(e) => handleLocationChange(trip.id, e.target.value)} 
-                    className="w-full bg-slate-50 border-2 border-transparent p-4 rounded-2xl outline-none focus:border-rose-300 focus:bg-white font-bold text-sm transition-all shadow-inner" 
-                    placeholder="Where shall the journey begin?" 
+                    readOnly 
+                    className="w-full bg-rose-50/50 border-2 border-rose-100 p-4 rounded-2xl outline-none font-bold text-sm text-slate-600 cursor-not-allowed shadow-inner" 
                   />
-                  {trip.suggestions.length > 0 && (
-                    <ul className="absolute z-[60] bg-white border border-rose-50 w-full shadow-2xl rounded-2xl mt-2 overflow-hidden animate-in fade-in zoom-in duration-200">
-                      {trip.suggestions.map((p, i) => (
-                        <li 
-                          key={i} 
-                          className="p-4 text-sm border-b border-rose-50 last:border-0 hover:bg-rose-50 cursor-pointer transition-colors"
-                          onClick={() => setTrips(prev => prev.map(t => t.id === trip.id ? { ...t, startPoint: p.properties.formatted, suggestions: [] } : t))}
-                        >
-                          {p.properties.formatted}
-                        </li>
-                      ))}
-                    </ul>
-                  )}
                 </div>
 
                 {/* Chariot Selection */}
@@ -188,7 +163,6 @@ const LocalBookingForm = () => {
                   )}
                 </div>
 
-                {/* Ceremony Timing & Distance Grid */}
                 <div className="grid grid-cols-2 gap-4">
                   <div>
                     <label className="flex items-center gap-1.5 text-[10px] font-black text-rose-400 uppercase mb-1.5 ml-1 tracking-wider">
@@ -221,7 +195,6 @@ const LocalBookingForm = () => {
                   </div>
                 </div>
 
-                {/* Big Day Date & Amount */}
                 <div className="grid grid-cols-2 gap-4 items-end">
                   <div>
                     <label className="flex items-center gap-1.5 text-[10px] font-black text-rose-400 uppercase mb-1.5 ml-1 tracking-wider">
@@ -235,7 +208,6 @@ const LocalBookingForm = () => {
                     />
                   </div>
                   
-                  {/* Fare Section */}
                   <div className="gold-gradient p-0.5 rounded-[1.2rem] shadow-lg shadow-rose-200">
                     <div className="bg-white rounded-[1.1rem] p-3 text-center">
                        <p className="text-[8px] font-black uppercase text-rose-400 tracking-tighter">Est. Fare</p>
@@ -253,7 +225,7 @@ const LocalBookingForm = () => {
 
         <div className="flex flex-col gap-5 py-10">
           <button 
-            onClick={() => setTrips([...trips, { id: Date.now(), startPoint: '', suggestions: [], date: '', time: '', runningKm: '', vehicle: '', isOpen: false, amount: 0, extraHr: 0, extraKm: 0 }])} 
+            onClick={() => setTrips([...trips, { id: Date.now(), startPoint: 'Jabalpur, MP, India', suggestions: [], date: '', time: '', runningKm: '', vehicle: '', isOpen: false, amount: 0, extraHr: 0, extraKm: 0 }])} 
             className="group flex items-center justify-center gap-2 p-5 border-2 border-dashed border-rose-200 rounded-[2rem] font-bold text-rose-400 bg-white/50 hover:bg-white hover:border-rose-400 transition-all duration-300 active:scale-95"
           >
             <Plus size={20} className="group-hover:rotate-90 transition-transform" /> Add Extra Wedding Cab

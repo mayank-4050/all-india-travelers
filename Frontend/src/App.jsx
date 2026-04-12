@@ -57,6 +57,7 @@ import Finalmarrige from "./Components/Marrige Cab Final/Marrige"
 import  Finalmarrigebooking from "./Components/Marrige Cab Final/MarrigeBookingConfirm"
 import  Tirthdam from "./Components/Tirath Dham/TirthdhamPage"
 import Onewaybookingforadmin from "./Components/One Way/Bookingsforadmin"
+import Nationalpark from "./Components/National park/Nationalpark"
 /* ================= APP ================= */
 
 export default function App() {
@@ -86,6 +87,7 @@ export default function App() {
         <Route path="/oneway" element={<OneWayTravel/>} />
         <Route path="/onewayshowvehical" element={<OneWayShowVecl/>} />
         <Route path="/onewayconfirmvehical" element={<OneWayConVecl/>} />
+        <Route path="/nationalpark" element={<Nationalpark/>} />
        
 
 

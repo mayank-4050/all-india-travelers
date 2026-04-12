@@ -15,9 +15,9 @@ export default function UpdatedMainHome() {
     { name: "Monthly Cab Booking", link: "/marriage-booking", icon: <Car />, desc: "For Monthly Cabs" },
     { name: "Local City Cab", link: "/local", icon: <MapPin />, desc: "Travel within city" },
     { name: "Tour Package", link: "/roundtrip", icon: <Car />, desc: "Customized holiday trips" },
-    { name: "National Park", link: "/park", icon: <TreePine />, desc: "Wildlife safari cabs" },
+    { name: "National Park", link: "/nationalpark", icon: <TreePine />, desc: "Wildlife safari cabs" },
     { name: "Marrige Cab Booking", link: "/bookingformarrige", icon: <HeartHandshake />, desc: "Celebrate your Favorite Moment" },
-    { name: "Tirth Dham Booking", link: "/#", icon: <Car />, desc: "Tirth Dham" },
+    { name: "Tirth Dham Booking", link: "/tirathdham", icon: <Car />, desc: "Tirth Dham" },
   ];
 
   const agentServices = [
