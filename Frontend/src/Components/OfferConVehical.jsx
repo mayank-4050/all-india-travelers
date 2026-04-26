@@ -34,7 +34,7 @@ const OfferConVehical = () => {
   }
 
   const handleProceed = () => {
-    navigate('/onewaypayadvance', { state: { offer } });
+    navigate('/confirmoffer', { state: { offer } });
   };
 
   // ✅ Match image with car name
@@ -77,7 +77,7 @@ const OfferConVehical = () => {
             onClick={handleProceed} // goes to CustomerDetailForm
             className="px-6 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600 transition-colors duration-200"
           >
-            Add Passenger Detail
+            Proceed
           </button>
         </div>
       </div>

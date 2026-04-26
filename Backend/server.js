@@ -49,6 +49,7 @@ const marriageRoutes = require('./routes/marriageBookingRoutes');
 const roundtripRoutes = require('./routes/RoundtripRoute'); // ✅ NAYA ROUTE IMPORT
 const localRoutes = require('./routes/Localbookingrout')
 const onewaybooking = require('./routes/Onewaybookingrout')
+const offerbookingroute = require('./routes/OfferBookingRoute')
 
 app.use('/api/auth', authRoutes);
 app.use('/api/distance', distanceRoutes);
@@ -60,6 +61,7 @@ app.use("/api/marriage", marriageRoutes);
 app.use("/api/roundtrip", roundtripRoutes); // ✅ NAYA ROUTE USE
 app.use('/api/localbookings', localRoutes);
 app.use('/api/onewaybookingforadmin', onewaybooking);
+app.use("/api/offerbookings", offerbookingroute);
 
 
 // ==============================

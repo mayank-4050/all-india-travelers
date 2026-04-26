@@ -24,7 +24,6 @@ import OneWayShowVecl from "./Components/OneWayShowVecl";
 import OneWayConVecl from "./Components/One Way/OneWayConVehical";
 
 import OfferConVehical from "./Components/OfferConVehical";
-import OfferPayAdvnc from "./Components/OfferPayAdvnc";
 
 import AllBookings from "./Components/AllBookings";
 import BookingDetail from "./Components/BookingDetail";
@@ -58,6 +57,7 @@ import  Finalmarrigebooking from "./Components/Marrige Cab Final/MarrigeBookingC
 import  Tirthdam from "./Components/Tirath Dham/TirthdhamPage"
 import Onewaybookingforadmin from "./Components/One Way/Bookingsforadmin"
 import Nationalpark from "./Components/National park/Nationalpark"
+import OfferConfirmVehicle from "./Components/confirmOffer";
 /* ================= APP ================= */
 
 export default function App() {
@@ -88,6 +88,7 @@ export default function App() {
         <Route path="/onewayshowvehical" element={<OneWayShowVecl/>} />
         <Route path="/onewayconfirmvehical" element={<OneWayConVecl/>} />
         <Route path="/nationalpark" element={<Nationalpark/>} />
+        <Route path="/confirmoffer" element={<OfferConfirmVehicle/>} />
        
 
 
@@ -302,14 +303,7 @@ export default function App() {
           }
         />
 
-        <Route
-          path="/offerpayadvance"
-          element={
-            <ProtectedRoute allowedRoles={["Admin", "Customer"]}>
-              <OfferPayAdvnc />
-            </ProtectedRoute>
-          }
-        />
+       
 
         {/* ================= FALLBACK ================= */}
         <Route path="*" element={<h1>404 Page Not Found</h1>} />

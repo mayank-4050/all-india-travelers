@@ -72,7 +72,7 @@ const Offer = () => {
         const target = new Date(`${targetDate} ${startTime}`).getTime();
         const now = new Date().getTime();
         const difference = target - now;
-
+ 
         if (difference <= 0) {
           setTimeLeft("Offer Expired");
           return;

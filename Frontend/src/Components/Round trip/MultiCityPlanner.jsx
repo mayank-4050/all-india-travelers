@@ -1,8 +1,8 @@
-import React, { useState, useEffect, useRef } from 'react'; // ✅ useRef add kiyaimport { NavLink, useNavigate, useLocation } from "react-router-dom";
+import React, { useState, useEffect, useRef } from 'react'; 
 import {
   MapPin, PlusCircle, X, CalendarDays,
   Users, Send, Search, Info, Route, Car,
-  ShieldCheck, Timer, ChevronDown // ✅ Ye wala icon yahan add karein
+  ShieldCheck, Timer, ChevronDown 
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { NavLink, useNavigate, useLocation } from "react-router-dom";
@@ -133,16 +133,16 @@ const RoundTripPlanner = () => {
       }
     };
 
-    // 🔥 SABSE JARURI: Function ko yahan call karna padega tabhi calculation hogi
     calculateRoute();
 
-  }, [destinations, startLocation]); // Jab bhi destination ya start badlega, ye chalega
+  }, [destinations, startLocation]); 
 
   return (
     <div className="min-h-screen bg-gray-50 text-gray-900 font-sans pb-20">
 
 
       <main className="max-w-7xl mx-auto px-4 md:px-6 py-12">
+        
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-10">
 
           <div className="lg:col-span-2 space-y-10">

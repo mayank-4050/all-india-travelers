@@ -9,7 +9,7 @@ export default function OffersPopup() {
       setShowPopup(true);
     }, 300);
     return () => clearTimeout(timer);
-  }, []); // Always runs on refresh
+  }, []); 
 
   const closePopup = () => {
     setShowPopup(false);
