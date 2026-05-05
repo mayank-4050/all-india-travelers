@@ -22,6 +22,7 @@ import CustomerTermCondition from "./Components/CustomerTermCondition";
 import OneWayTravel from "./Pages/OneWayTravel";
 import OneWayShowVecl from "./Components/OneWayShowVecl";
 import OneWayConVecl from "./Components/One Way/OneWayConVehical";
+import Cutomerdataoneway from "./Components/One Way/Customerdata";
 
 import OfferConVehical from "./Components/OfferConVehical";
 
@@ -58,6 +59,7 @@ import  Tirthdam from "./Components/Tirath Dham/TirthdhamPage"
 import Onewaybookingforadmin from "./Components/One Way/Bookingsforadmin"
 import Nationalpark from "./Components/National park/Nationalpark"
 import OfferConfirmVehicle from "./Components/confirmOffer";
+import Customerdatalocalbooking from "./Components/Local trip/LocalCustomerData";
 /* ================= APP ================= */
 
 export default function App() {
@@ -89,6 +91,8 @@ export default function App() {
         <Route path="/onewayconfirmvehical" element={<OneWayConVecl/>} />
         <Route path="/nationalpark" element={<Nationalpark/>} />
         <Route path="/confirmoffer" element={<OfferConfirmVehicle/>} />
+        <Route path="/customerdataoneway" element={<Cutomerdataoneway/>} />
+        <Route path="/customerdatalocalbooking" element={<Customerdatalocalbooking/>} />
        
 
 

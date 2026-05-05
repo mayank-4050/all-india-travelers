@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
 
-// Har ek individual trip ka schema
+// Individual trip details (Add More data)
 const TripSchema = new mongoose.Schema({
     startPoint: { 
         type: String, 
@@ -11,15 +11,15 @@ const TripSchema = new mongoose.Schema({
         required: true 
     },
     date: { 
-        type: String, // String isliye taki '2026-03-28' format safe rahe
+        type: String, 
         required: true 
     },
     time: { 
-        type: Number, // Duration in Hours
+        type: Number, 
         required: true 
     },
     runningKm: { 
-        type: Number, // KM Limit
+        type: Number, 
         required: true 
     },
     amount: { 
@@ -41,15 +41,33 @@ const LocalBookingSchema = new mongoose.Schema({
     bookingId: {
         type: String,
         unique: true,
-        default: () => `LCL-${Date.now()}` // Unique ID generator
+        default: () => `LCL-${Date.now()}` 
     },
-    // Array of trips taki "Add More" wala data save ho sake
+
+    // --- CUSTOMER DATA (Added) ---
+    customerName: {
+        type: String,
+        required: true,
+        trim: true
+    },
+    customerMobile: {
+        type: String,
+        required: true
+    },
+    customerAddress: {
+        type: String,
+        required: true
+    },
+
+    // Array of trips
     trips: [TripSchema], 
     
-    totalAmount: {
+    // Updated to match frontend key 'grandTotal'
+    grandTotal: {
         type: Number,
         required: true
     },
+
     status: {
         type: String,
         enum: ['Pending', 'Confirmed', 'Completed', 'Cancelled'],

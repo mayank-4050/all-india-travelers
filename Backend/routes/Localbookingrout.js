@@ -3,12 +3,17 @@ const router = express.Router();
 
 const {
     createLocalBooking,
-    getLocalBookings,
+    getallLocalBookings, // Updated name to match the controller
     deleteLocalBooking
 } = require('../controllers/LocalbookingController');
 
-router.post('/', createLocalBooking);
-router.get('/', getLocalBookings);
-router.delete('/:id', deleteLocalBooking);
+// POST: Create a new booking
+router.post('/new-booking', createLocalBooking);
+
+// GET: Fetch all bookings for Admin
+router.get('/all', getallLocalBookings);
+
+// DELETE: Remove a booking by ID
+router.delete('/delete/:id', deleteLocalBooking);
 
 module.exports = router;
