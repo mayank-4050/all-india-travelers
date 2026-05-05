@@ -10,4 +10,4 @@ router.post("/offer-confirm", confirmBooking);
 // Optional: GET route if you want to see all bookings in an Admin Panel later
 // router.get("/all-bookings", getAllBookings);
 
-module.exports = router;
+module.exports = router; 

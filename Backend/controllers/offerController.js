@@ -1,7 +1,6 @@
 const Offer = require("../models/Offer");
 const sendSMS = require("../utils/sendSMS");
-
-
+const OfferBooking = require("../models/OfferBookingModel").default || require("../models/OfferBookingModel");
 // =================================================
 // ✅ CREATE OFFER (with agency auto-attach + SMS)
 // =================================================
@@ -192,5 +191,25 @@ exports.updateOffer = async (req, res) => {
       success: false,
       message: "Update failed"
     });
+  }
+};
+
+exports.getAgentOfferBookings = async (req, res) => {
+  try {
+    // 1. Find offers created by this agent
+    const myOffers = await Offer.find({ createdBy: req.user._id });
+    const myOfferIds = myOffers.map(o => o._id);
+
+    // 2. Find bookings that match those offers
+    const bookings = await OfferBooking.find({ offerId: { $in: myOfferIds } })
+      .populate("offerId")
+      .sort({ bookedAt: -1 });
+
+    res.json({
+      success: true,
+      data: bookings
+    });
+  } catch (error) {
+    res.status(500).json({ success: false, message: error.message });
   }
 };

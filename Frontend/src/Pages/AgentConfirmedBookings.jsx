@@ -11,8 +11,9 @@ const AgentConfirmedBookings = () => {
       try {
         const token = localStorage.getItem("token");
 
+        // ✅ Pointing to the 'offers' route as per your server setup
         const res = await axios.get(
-          "http://localhost:5000/api/bookings/agent/confirmed-bookings",
+          "http://localhost:5000/api/offers/my-agent-bookings",
           {
             headers: {
               Authorization: `Bearer ${token}`,
@@ -51,41 +52,33 @@ const AgentConfirmedBookings = () => {
                 <tr>
                   <th className="p-3 border">Customer Name</th>
                   <th className="p-3 border">Phone</th>
-                  <th className="p-3 border">Email</th>
                   <th className="p-3 border">From</th>
                   <th className="p-3 border">To</th>
                   <th className="p-3 border">Vehicle</th>
                   <th className="p-3 border">Amount</th>
-                  <th className="p-3 border">Date</th>
+                  <th className="p-3 border">Travel Date</th>
                 </tr>
               </thead>
               <tbody>
                 {bookings.map((booking) => (
                   <tr key={booking._id} className="hover:bg-gray-50">
-                    <td className="p-3 border">
-                      {booking.user?.fullName}
-                    </td>
-                    <td className="p-3 border">
-                      {booking.user?.mobile}
-                    </td>
-                    <td className="p-3 border">
-                      {booking.user?.email}
-                    </td>
-                    <td className="p-3 border">
-                      {booking.offerId?.from}
-                    </td>
-                    <td className="p-3 border">
-                      {booking.offerId?.to}
-                    </td>
-                    <td className="p-3 border">
-                      {booking.offerId?.vehicle}
-                    </td>
+                    {/* ✅ FIX: Using customerName instead of user.fullName */}
+                    <td className="p-3 border">{booking.customerName}</td>
+                    
+                    {/* ✅ FIX: Using customerPhone instead of user.mobile */}
+                    <td className="p-3 border">{booking.customerPhone}</td>
+                    
+                    <td className="p-3 border">{booking.offerId?.from}</td>
+                    <td className="p-3 border">{booking.offerId?.to}</td>
+                    <td className="p-3 border">{booking.offerId?.vehicle}</td>
+                    
+                    {/* ✅ FIX: Using amount instead of totalAmount */}
                     <td className="p-3 border text-green-600 font-semibold">
-                      ₹{booking.totalAmount}
+                      ₹{booking.amount}
                     </td>
-                    <td className="p-3 border">
-                      {new Date(booking.date).toLocaleDateString()}
-                    </td>
+                    
+                    {/* ✅ FIX: Using travelDate instead of date */}
+                    <td className="p-3 border">{booking.travelDate}</td>
                   </tr>
                 ))}
               </tbody>

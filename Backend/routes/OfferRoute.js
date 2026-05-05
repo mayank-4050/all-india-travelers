@@ -6,7 +6,8 @@ const {
   getAllOffers,
   getMyOffers,
   updateOffer,
-  deleteOffer
+  deleteOffer,
+  getAgentOfferBookings
 } = require("../controllers/offerController");
 
 const { authMiddleware, authorizeRoles } = require("../middleware/authMiddleware");
@@ -59,6 +60,13 @@ router.delete(
   authMiddleware,
   authorizeRoles("Admin", "Agent"),
   deleteOffer
+);
+
+router.get(
+  "/my-agent-bookings",
+  authMiddleware,
+  authorizeRoles("Admin", "Agent"),
+  getAgentOfferBookings
 );
 
 
